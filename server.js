@@ -743,7 +743,7 @@ if (
         res.end("Page not found");
     });
 
-    server.listen(3000, () => {
+    server.listen(process.env.PORT || 3000, () => {
         console.log(
             "School website running at http://localhost:3000"
         );
