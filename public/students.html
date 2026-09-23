@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students - My School</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>🎓 My School</h1>
+    <p>Student Management</p>
+</header>
+
+<main>
+
+    <h2>👨‍🎓 Add Student</h2>
+
+    <form id="studentForm">
+
+        <input type="text" id="name"
+            placeholder="Student Name" required>
+
+        <input type="text" id="father"
+            placeholder="Father Name" required>
+
+        <input type="text" id="className"
+            placeholder="Class" required>
+
+        <input type="text" id="roll"
+            placeholder="Roll Number" required>
+
+        <button type="submit">Add Student</button>
+
+    </form>
+
+    <h2>Student List</h2>
+
+    <div id="studentList"></div>
+
+    <br>
+
+    <a href="/">⬅ Back to Dashboard</a>
+
+</main>
+
+<script>
+
+const form = document.getElementById("studentForm");
+const studentList = document.getElementById("studentList");
+
+async function loadStudents() {
+
+    const response = await fetch("/api/students");
+    const students = await response.json();
+
+    studentList.innerHTML = "";
+
+    students.forEach(student => {
+
+        const div = document.createElement("div");
+
+        div.className = "card";
+
+        div.innerHTML = `
+            <h3>👨‍🎓 ${student.name}</h3>
+
+            <p>Father: ${student.father}</p>
+
+            <p>Class: ${student.className}</p>
+
+            <p>Roll No: ${student.roll}</p>
+
+            <button onclick="editStudent(
+                ${student.id},
+                '${student.name}',
+                '${student.father}',
+                '${student.className}',
+                '${student.roll}'
+            )">
+                ✏️ Edit
+            </button>
+
+            <button onclick="deleteStudent(${student.id})">
+                🗑️ Delete
+            </button>
+        `;
+
+        studentList.appendChild(div);
+    });
+}
+
+
+// ADD STUDENT
+
+form.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const student = {
+
+        name: document.getElementById("name").value,
+
+        father: document.getElementById("father").value,
+
+        className: document.getElementById("className").value,
+
+        roll: document.getElementById("roll").value
+    };
+
+    const response = await fetch("/api/students", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(student)
+    });
+
+    if (response.ok) {
+
+        alert("Student saved successfully! ✅");
+
+        form.reset();
+
+        loadStudents();
+
+    } else {
+
+        alert("Something went wrong ❌");
+    }
+
+});
+
+
+// DELETE STUDENT
+
+async function deleteStudent(id) {
+
+    const confirmDelete =
+        confirm("Are you sure you want to delete this student?");
+
+    if (!confirmDelete) {
+        return;
+    }
+
+    await fetch("/api/students/" + id, {
+        method: "DELETE"
+    });
+
+    alert("Student deleted! 🗑️");
+
+    loadStudents();
+}
+
+
+// EDIT STUDENT
+
+async function editStudent(
+    id,
+    name,
+    father,
+    className,
+    roll
+) {
+
+    const newName =
+        prompt("Student Name:", name);
+
+    if (newName === null) return;
+
+    const newFather =
+        prompt("Father Name:", father);
+
+    if (newFather === null) return;
+
+    const newClass =
+        prompt("Class:", className);
+
+    if (newClass === null) return;
+
+    const newRoll =
+        prompt("Roll Number:", roll);
+
+    if (newRoll === null) return;
+
+    const student = {
+
+        name: newName,
+
+        father: newFather,
+
+        className: newClass,
+
+        roll: newRoll
+    };
+
+    await fetch("/api/students/" + id, {
+
+        method: "PUT",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(student)
+    });
+
+    alert("Student updated! ✏️");
+
+    loadStudents();
+}
+
+
+// LOAD STUDENTS
+
+loadStudents();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My School - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>🎓 My School</h1>
+    <p>School Management Dashboard</p>
+</header>
+
+
+<nav class="main-nav">
+
+    <a href="/">🏠 Dashboard</a>
+
+    <a href="/students.html">👨‍🎓 Students</a>
+
+    <a href="/teachers.html">👨‍🏫 Teachers</a>
+
+    <a href="/attendance.html">📅 Attendance</a>
+
+    <a href="/attendance-report.html">📊 Reports</a>
+
+    <a href="/fees.html">💰 Fees</a>
+
+    <a href="/classes.html">🏫 Classes</a>
+
+</nav>
+<button
+    id="logoutButton"
+    type="button"
+    onclick="logout()"
+>
+    🚪 Logout
+</button>
+
+<main>
+
+    <h2>📊 Dashboard</h2>
+
+    <div class="stats">
+
+        <div class="stat-card">
+            <h3>👨‍🎓 Students</h3>
+            <p id="studentCount">0</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>👨‍🏫 Teachers</h3>
+            <p id="teacherCount">0</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>🏫 Classes</h3>
+            <p id="classCount">0</p>
+        </div>
+
+    </div>
+
+
+    <div class="dashboard">
+
+        <a href="/students.html" class="card">
+            <h3>👨‍🎓 Students</h3>
+            <p>Manage students</p>
+        </a>
+
+        <a href="/teachers.html" class="card">
+            <h3>👨‍🏫 Teachers</h3>
+            <p>Manage teachers</p>
+        </a>
+
+        <a href="/attendance.html" class="card">
+            <h3>📅 Attendance</h3>
+            <p>Mark attendance</p>
+        </a>
+
+        <a href="/fees.html" class="card">
+            <h3>💰 Fees</h3>
+            <p>Manage school fees</p>
+        </a>
+
+        <a href="/classes.html" class="card">
+            <h3>🏫 Classes</h3>
+            <p>Manage classes & sections</p>
+        </a>
+
+<div class="stats">
+
+    <div class="stat-card">
+        <h3>📅 Present Today</h3>
+        <p id="presentCount">0</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>❌ Absent Today</h3>
+        <p id="absentCount">0</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>📈 Attendance</h3>
+        <p id="attendancePercentage">0%</p>
+    </div>
+<a href="/attendance-report.html" class="card">
+
+    <h3>📊 Attendance Report</h3>
+
+    <p>
+        View attendance history
+    </p>
+
+</a>
+</div>
+    </div>
+<h2>👨‍🎓 Recent Students</h2>
+
+<div id="recentStudents" class="dashboard">
+    <p>Loading students...</p>
+</div>
+
+<h2>🏫 Class-wise Students</h2>
+
+<div id="classSummary" class="dashboard">
+    <p>Loading classes...</p>
+</div>
+
+<script>
+async function logout() {
+
+    try {
+
+        const response =
+            await fetch("/api/logout", {
+                method: "POST"
+            });
+
+        const result =
+            await response.json();
+
+        if (result.success) {
+
+            window.location.href =
+                "/login.html";
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Logout error:",
+            error
+        );
+
+    }
+
+}
+
+async function loadDashboard() {
+
+    try {
+
+        // =========================
+        // RECENT STUDENTS
+        // =========================
+
+        const studentsResponse =
+            await fetch("/api/students");
+
+        const students =
+            await studentsResponse.json();
+
+        const recentStudents =
+            document.getElementById("recentStudents");
+
+        if (students.length === 0) {
+
+            recentStudents.innerHTML =
+                "<p>No students found.</p>";
+
+        } else {
+
+            recentStudents.innerHTML =
+                students.slice(-5).reverse().map(student => `
+                    <div class="card">
+                        <h3>👨‍🎓 ${student.name}</h3>
+                        <p>Father: ${student.father}</p>
+                        <p>Class: ${student.className}</p>
+                        <p>Roll No: ${student.roll}</p>
+                    </div>
+                `).join("");
+
+        }
+
+
+        // =========================
+        // CLASS-WISE STUDENTS
+        // =========================
+
+        const classSummary =
+            document.getElementById("classSummary");
+
+        if (students.length === 0) {
+
+            classSummary.innerHTML =
+                "<p>No student data available.</p>";
+
+        } else {
+
+            const classCounts = {};
+
+            students.forEach(student => {
+
+                const className =
+                    student.className || "Unknown";
+
+                classCounts[className] =
+                    (classCounts[className] || 0) + 1;
+
+            });
+
+
+            classSummary.innerHTML =
+                Object.entries(classCounts)
+                    .map(([className, count]) => `
+                        <div class="card">
+                            <h3>🏫 ${className}</h3>
+                            <p>Students: ${count}</p>
+                        </div>
+                    `)
+                    .join("");
+
+        }
+
+        const response =
+            await fetch("/api/dashboard");
+
+        const data =
+            await response.json();
+
+
+        // =========================
+        // BASIC COUNTS
+        // =========================
+
+        document.getElementById(
+            "studentCount"
+        ).textContent = data.students;
+
+
+        document.getElementById(
+            "teacherCount"
+        ).textContent = data.teachers;
+
+
+        document.getElementById(
+            "classCount"
+        ).textContent = data.classes;
+
+
+        // =========================
+        // ATTENDANCE
+        // =========================
+
+        const present =
+            data.attendance.present || 0;
+
+        const total =
+            data.attendance.total || 0;
+
+
+        const absent =
+            Math.max(total - present, 0);
+
+
+        let percentage = 0;
+
+        if (total > 0) {
+
+            percentage =
+                Math.round(
+                    (present / total) * 100
+                );
+
+        }
+
+
+        document.getElementById(
+            "presentCount"
+        ).textContent = present;
+
+
+        document.getElementById(
+            "absentCount"
+        ).textContent = absent;
+
+
+        document.getElementById(
+            "attendancePercentage"
+        ).textContent =
+            percentage + "%";
+
+
+        console.log(
+            "Dashboard loaded:",
+            data
+        );
+
+    }
+
+    catch (error) {
+
+        console.log(
+            "Dashboard error:",
+            error
+        );
+
+    }
+
+}
+
+
+// Load dashboard
+loadDashboard();
+
+
+// Refresh every 30 seconds
+setInterval(
+    loadDashboard,
+    30000
+);
+
+</script>
+</body>
+</html>

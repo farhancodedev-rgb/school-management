@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Attendance Report - My School</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .report-tools {
+            background: white;
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,.1);
+        }
+
+        .report-tools input,
+        .report-tools select {
+            width: 100%;
+            padding: 12px;
+            margin: 7px 0 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 15px 8px;
+            text-align: center;
+            border-radius: 12px;
+            box-shadow: 0 3px 8px rgba(0,0,0,.1);
+        }
+
+        .summary-card h3 {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .summary-card p {
+            margin: 6px 0 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .report-card {
+            background: white;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 14px;
+            box-shadow: 0 3px 10px rgba(0,0,0,.1);
+        }
+
+        .report-card h3 {
+            margin: 0 0 6px;
+        }
+
+        .report-card p {
+            margin: 5px 0;
+        }
+
+        .present {
+            color: green;
+            font-weight: bold;
+        }
+
+        .absent {
+            color: red;
+            font-weight: bold;
+        }
+
+        .not-marked {
+            color: #777;
+            font-weight: bold;
+        }
+
+        .percentage {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .view-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 9px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .summary {
+                grid-template-columns: 1fr;
+            }
+        }
+
+/* MOBILE REPORT IMPROVEMENT */
+
+@media (max-width: 600px) {
+
+    main {
+        padding: 12px 10px;
+    }
+
+    .report-tools {
+        padding: 14px;
+    }
+
+    .report-tools button {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .summary {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .summary-card {
+        padding: 14px 6px;
+        min-width: 0;
+    }
+
+    .summary-card h3 {
+        font-size: 13px;
+    }
+
+    .summary-card p {
+        font-size: 22px;
+    }
+
+    .report-card {
+        padding: 14px;
+    }
+
+    .report-card h3 {
+        font-size: 18px;
+    }
+
+    .report-card p {
+        font-size: 14px;
+    }
+}
+
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎓 My School</h1>
+    <p>Attendance History & Report</p>
+</header>
+
+<main>
+
+    <h2>📊 Attendance Report</h2>
+
+    <div class="report-tools">
+
+        <label for="reportDate">
+            📅 Select Date:
+        </label>
+
+        <input type="date" id="reportDate">
+
+        <button
+            class="view-btn"
+            onclick="loadReport()">
+            🔍 View Report
+        </button>
+
+    </div>
+
+    <div id="summary"></div>
+
+    <div id="report"></div>
+
+    <br>
+
+    <a href="/">
+        ⬅ Back to Dashboard
+    </a>
+
+</main>
+
+<script>
+
+const reportDate =
+    document.getElementById("reportDate");
+
+const report =
+    document.getElementById("report");
+
+const summary =
+    document.getElementById("summary");
+
+
+/* Today's date */
+
+const today =
+    new Date()
+        .toISOString()
+        .split("T")[0];
+
+reportDate.value = today;
+
+
+/* Load report */
+
+async function loadReport() {
+
+    const date =
+        reportDate.value;
+
+    if (!date) {
+        alert("Please select a date");
+        return;
+    }
+
+    try {
+
+        const studentsResponse =
+            await fetch("/api/students");
+
+        const students =
+            await studentsResponse.json();
+
+
+        const attendanceResponse =
+            await fetch(
+                "/api/attendance?date=" +
+                encodeURIComponent(date)
+            );
+
+        const attendance =
+            await attendanceResponse.json();
+
+
+        report.innerHTML = "";
+        summary.innerHTML = "";
+
+
+        let present = 0;
+        let absent = 0;
+        let notMarked = 0;
+
+
+        students.forEach(student => {
+
+            const record =
+                attendance.find(
+                    item =>
+                        item.studentId == student.id
+                );
+
+
+            let status = "Not Marked";
+
+            if (record) {
+                status = record.status;
+            }
+
+
+            if (status === "Present") {
+                present++;
+            }
+
+            else if (status === "Absent") {
+                absent++;
+            }
+
+            else {
+                notMarked++;
+            }
+
+
+            let statusClass =
+                "not-marked";
+
+            if (status === "Present") {
+                statusClass = "present";
+            }
+
+            if (status === "Absent") {
+                statusClass = "absent";
+            }
+
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "report-card";
+
+
+            div.innerHTML = `
+
+                <h3>
+                    👨‍🎓 ${student.name}
+                </h3>
+
+                <p>
+                    🏫 Class:
+                    ${student.className}
+                </p>
+
+                <p>
+                    🔢 Roll No:
+                    ${student.roll}
+                </p>
+
+                <p>
+                    Status:
+                    <span class="${statusClass}">
+                        ${status}
+                    </span>
+                </p>
+
+            `;
+
+
+            report.appendChild(div);
+
+        });
+
+
+        const total =
+            students.length;
+
+
+        let percentage = 0;
+
+        if (total > 0) {
+            percentage =
+                Math.round(
+                    (present / total) * 100
+                );
+        }
+
+
+        summary.innerHTML = `
+
+            <div class="summary">
+
+                <div class="summary-card">
+                    <h3>👨‍🎓 Total</h3>
+                    <p>${total}</p>
+                </div>
+
+                <div class="summary-card">
+                    <h3>✅ Present</h3>
+                    <p>${present}</p>
+                </div>
+
+                <div class="summary-card">
+                    <h3>❌ Absent</h3>
+                    <p>${absent}</p>
+                </div>
+
+                <div class="summary-card">
+                    <h3>⏳ Not Marked</h3>
+                    <p>${notMarked}</p>
+                </div>
+
+                <div class="summary-card">
+                    <h3>📈 Attendance</h3>
+                    <p class="percentage">
+                        ${percentage}%
+                    </p>
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+    catch (error) {
+
+        console.log(
+            "Report error:",
+            error
+        );
+
+        report.innerHTML =
+            "<p>❌ Could not load attendance report.</p>";
+
+    }
+
+}
+
+
+/* Load today's report automatically */
+
+loadReport();
+
+</script>
+
+</body>
+</html>

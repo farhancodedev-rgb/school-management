@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Attendance History - My School</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .history-tools {
+            background: white;
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,.1);
+        }
+
+        .history-tools select,
+        .history-tools input {
+            width: 100%;
+            padding: 12px;
+            margin: 7px 0 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .history-tools button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 9px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 15px 8px;
+            text-align: center;
+            border-radius: 12px;
+            box-shadow: 0 3px 8px rgba(0,0,0,.1);
+        }
+
+        .summary-card h3 {
+            margin: 0;
+            font-size: 13px;
+        }
+
+        .summary-card p {
+            margin: 6px 0 0;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .history-card {
+            background: white;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 14px;
+            box-shadow: 0 3px 10px rgba(0,0,0,.1);
+        }
+
+        .present {
+            color: green;
+            font-weight: bold;
+        }
+
+        .absent {
+            color: red;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎓 My School</h1>
+    <p>Student Attendance History</p>
+</header>
+
+<main>
+
+    <h2>📊 Student History</h2>
+
+    <div class="history-tools">
+
+        <label>Select Student:</label>
+
+        <select id="studentSelect">
+            <option value="">-- Select Student --</option>
+        </select>
+
+        <label>From Date:</label>
+        <input type="date" id="fromDate">
+
+        <label>To Date:</label>
+        <input type="date" id="toDate">
+
+        <button onclick="loadHistory()">
+            🔍 View Attendance
+        </button>
+
+    </div>
+
+    <div id="summary"></div>
+
+    <div id="history"></div>
+
+    <br>
+
+    <a href="/">⬅ Back to Dashboard</a>
+
+</main>
+
+<script>
+
+const studentSelect =
+    document.getElementById("studentSelect");
+
+const fromDate =
+    document.getElementById("fromDate");
+
+const toDate =
+    document.getElementById("toDate");
+
+const summary =
+    document.getElementById("summary");
+
+const history =
+    document.getElementById("history");
+
+
+// Today's date
+
+const today =
+    new Date()
+        .toISOString()
+        .split("T")[0];
+
+toDate.value = today;
+
+
+// Load students
+
+async function loadStudents() {
+
+    try {
+
+        const response =
+            await fetch("/api/students");
+
+        const students =
+            await response.json();
+
+        studentSelect.innerHTML =
+            '<option value="">-- Select Student --</option>';
+
+        students.forEach(student => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = student.id;
+
+            option.textContent =
+                student.name +
+                " - Roll No: " +
+                student.roll;
+
+            studentSelect.appendChild(option);
+
+        });
+
+    } catch (error) {
+
+        console.log(
+            "Students error:",
+            error
+        );
+
+    }
+}
+
+
+// Load attendance history
+
+async function loadHistory() {
+
+    const studentId =
+        studentSelect.value;
+
+    const from =
+        fromDate.value;
+
+    const to =
+        toDate.value;
+
+    if (!studentId) {
+
+        alert("Please select a student.");
+
+        return;
+    }
+
+    if (!from || !to) {
+
+        alert("Please select both dates.");
+
+        return;
+    }
+
+    if (from > to) {
+
+        alert(
+            "From date cannot be after To date."
+        );
+
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/attendance?studentId=" +
+                encodeURIComponent(studentId)
+            );
+
+        const records =
+            await response.json();
+
+        const filtered =
+            records.filter(record =>
+                record.date >= from &&
+                record.date <= to
+            );
+
+        let present = 0;
+        let absent = 0;
+
+        history.innerHTML = "";
+
+        filtered.forEach(record => {
+
+            if (record.status === "Present") {
+                present++;
+            }
+
+            if (record.status === "Absent") {
+                absent++;
+            }
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "history-card";
+
+            const statusClass =
+                record.status === "Present"
+                    ? "present"
+                    : "absent";
+
+            div.innerHTML = `
+                <h3>📅 ${record.date}</h3>
+
+                <p>
+                    Status:
+                    <span class="${statusClass}">
+                        ${record.status}
+                    </span>
+                </p>
+            `;
+
+            history.appendChild(div);
+
+        });
+
+
+        const total =
+            present + absent;
+
+        let percentage = 0;
+
+        if (total > 0) {
+
+            percentage =
+                Math.round(
+                    (present / total) * 100
+                );
+
+        }
+
+
+        summary.innerHTML = `
+
+            <div class="summary">
+
+                <div class="summary-card">
+                    <h3>✅ Present</h3>
+                    <p>${present}</p>
+                </div>
+
+                <div class="summary-card">
+                    <h3>❌ Absent</h3>
+                    <p>${absent}</p>
+                </div>
+
+                <div class="summary-card">
+                    <h3>📈 Attendance</h3>
+                    <p>${percentage}%</p>
+                </div>
+
+            </div>
+
+        `;
+
+
+        if (filtered.length === 0) {
+
+            history.innerHTML =
+                "<div class='card'>" +
+                "<p>📭 No attendance records found.</p>" +
+                "</div>";
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "History error:",
+            error
+        );
+
+        history.innerHTML =
+            "<p>❌ Could not load attendance history.</p>";
+
+    }
+
+}
+
+
+// Start
+
+loadStudents();
+
+</script>
+
+</body>
+</html>

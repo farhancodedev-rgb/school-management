@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fees - My School</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>🎓 My School</h1>
+    <p>Fee Management</p>
+</header>
+
+<main>
+
+    <h2>💰 Add Fee Payment</h2>
+
+    <form id="feeForm">
+
+        <select id="studentId" required>
+            <option value="">Select Student</option>
+        </select>
+
+        <input
+            type="number"
+            id="totalFees"
+            placeholder="Total Fees"
+            required
+        >
+
+        <input
+            type="number"
+            id="paidAmount"
+            placeholder="Paid Amount"
+            required
+        >
+
+        <input
+            type="date"
+            id="paymentDate"
+            required
+        >
+
+        <button type="submit">
+            💾 Save Payment
+        </button>
+
+    </form>
+
+    <h2>Fee Records</h2>
+
+    <div id="feeList"></div>
+
+    <br>
+
+    <a href="/">⬅ Back to Dashboard</a>
+
+</main>
+
+<script>
+
+const feeForm =
+    document.getElementById("feeForm");
+
+const studentSelect =
+    document.getElementById("studentId");
+
+const feeList =
+    document.getElementById("feeList");
+
+
+// Load students into dropdown
+
+async function loadStudents() {
+
+    const response =
+        await fetch("/api/students");
+
+    const students =
+        await
