@@ -1,12 +1,20 @@
 const http = require("http");
 const fs = require("fs");
 const initSqlJs = require("sql.js");
-
+const path = require("path");
 let db;
 let sessions = new Set();
 
 async function startServer() {
-    const SQL = await initSqlJs();
+
+const SQL = await initSqlJs({
+    locateFile: file =>
+        path.join(
+            __dirname,
+            "node_modules/sql.js/dist",
+            file
+        )
+});
 
     if (fs.existsSync("school.db")) {
         db = new SQL.Database(
