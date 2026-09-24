@@ -2,88 +2,114 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
     <title>Attendance Report - My School</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css">
 
     <style>
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
         .report-tools {
             background: white;
-            padding: 18px;
-            border-radius: 15px;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
             margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,.1);
+        }
+
+        .report-tools label {
+            display: block;
+            font-weight: bold;
+            margin: 8px 0;
         }
 
         .report-tools input,
         .report-tools select {
             width: 100%;
-            padding: 12px;
-            margin: 7px 0 15px;
             box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
         }
 
         .summary {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
             margin-bottom: 20px;
         }
 
         .summary-card {
             background: white;
-            padding: 15px 8px;
+            padding: 18px 10px;
             text-align: center;
-            border-radius: 12px;
-            box-shadow: 0 3px 8px rgba(0,0,0,.1);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
         }
 
         .summary-card h3 {
             margin: 0;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .summary-card p {
-            margin: 6px 0 0;
-            font-size: 24px;
+            margin: 7px 0 0;
+            font-size: 26px;
             font-weight: bold;
         }
 
         .report-card {
             background: white;
-            padding: 16px;
+            padding: 18px;
             margin-bottom: 12px;
-            border-radius: 14px;
-            box-shadow: 0 3px 10px rgba(0,0,0,.1);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
 
         .report-card h3 {
-            margin: 0 0 6px;
+            margin: 0 0 7px;
         }
 
         .report-card p {
             margin: 5px 0;
+            color: var(--muted);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 5px;
         }
 
         .present {
-            color: green;
-            font-weight: bold;
+            background: #dcfce7;
+            color: #166534;
         }
 
         .absent {
-            color: red;
-            font-weight: bold;
+            background: #fee2e2;
+            color: #991b1b;
         }
 
         .not-marked {
-            color: #777;
-            font-weight: bold;
+            background: #fef3c7;
+            color: #92400e;
         }
 
         .percentage {
@@ -91,124 +117,228 @@
             font-weight: bold;
         }
 
-        .view-btn {
-            width: 100%;
-            padding: 13px;
-            border: none;
-            border-radius: 9px;
-            font-size: 16px;
-            cursor: pointer;
+        .empty-message {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .report-count {
+            color: var(--muted);
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 850px) {
+
+            .summary {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
         }
 
         @media (max-width: 600px) {
-            .summary {
-                grid-template-columns: 1fr;
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
             }
+
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .summary-card {
+                padding: 14px 6px;
+            }
+
+            .summary-card p {
+                font-size: 22px;
+            }
+
         }
 
-/* MOBILE REPORT IMPROVEMENT */
-
-@media (max-width: 600px) {
-
-    main {
-        padding: 12px 10px;
-    }
-
-    .report-tools {
-        padding: 14px;
-    }
-
-    .report-tools button {
-        width: 100%;
-        margin: 5px 0;
-    }
-
-    .summary {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-    }
-
-    .summary-card {
-        padding: 14px 6px;
-        min-width: 0;
-    }
-
-    .summary-card h3 {
-        font-size: 13px;
-    }
-
-    .summary-card p {
-        font-size: 22px;
-    }
-
-    .report-card {
-        padding: 14px;
-    }
-
-    .report-card h3 {
-        font-size: 18px;
-    }
-
-    .report-card p {
-        font-size: 14px;
-    }
-}
-
     </style>
+
 </head>
+
 
 <body>
 
+
 <header>
+
     <h1>🎓 My School</h1>
-    <p>Attendance History & Report</p>
+
+    <p>
+        Attendance History & Report
+    </p>
+
 </header>
+
+
+<nav class="main-nav">
+
+    <a href="/">
+        🏠 Dashboard
+    </a>
+
+    <a href="/students.html">
+        👨‍🎓 Students
+    </a>
+
+    <a href="/teachers.html">
+        👨‍🏫 Teachers
+    </a>
+
+    <a href="/attendance.html">
+        📅 Attendance
+    </a>
+
+    <a href="/attendance-report.html" class="active">
+        📊 Reports
+    </a>
+
+    <a href="/classes.html">
+        🏫 Classes
+    </a>
+
+</nav>
+
 
 <main>
 
-    <h2>📊 Attendance Report</h2>
+
+    <div class="page-header">
+
+        <div>
+
+            <h2>
+                📊 Attendance Report
+            </h2>
+
+            <p style="color:var(--muted);">
+                View attendance for any date
+            </p>
+
+        </div>
+
+        <strong id="reportDateLabel">
+            Today
+        </strong>
+
+    </div>
+
+
+    <!-- FILTERS -->
 
     <div class="report-tools">
 
         <label for="reportDate">
-            📅 Select Date:
+            📅 Select Date
         </label>
 
-        <input type="date" id="reportDate">
+        <input
+            type="date"
+            id="reportDate">
 
-        <button
-            class="view-btn"
-            onclick="loadReport()">
-            🔍 View Report
-        </button>
+
+        <label for="searchStudent">
+            🔍 Search Student
+        </label>
+
+        <input
+            type="search"
+            id="searchStudent"
+            placeholder="Search by name or roll number...">
+
+
+        <label for="classFilter">
+            🏫 Filter Class
+        </label>
+
+        <select id="classFilter">
+
+            <option value="all">
+                All Classes
+            </option>
+
+        </select>
 
     </div>
 
+
+    <!-- SUMMARY -->
+
     <div id="summary"></div>
 
-    <div id="report"></div>
+
+    <div
+        id="reportCount"
+        class="report-count">
+    </div>
+
+
+    <!-- REPORT -->
+
+    <div id="report">
+
+        <div class="empty-message">
+            Loading report...
+        </div>
+
+    </div>
+
 
     <br>
+
 
     <a href="/">
         ⬅ Back to Dashboard
     </a>
 
+
 </main>
+
 
 <script>
 
+let students = [];
+
+let attendance = [];
+
+
 const reportDate =
-    document.getElementById("reportDate");
+    document.getElementById(
+        "reportDate"
+    );
+
+const searchStudent =
+    document.getElementById(
+        "searchStudent"
+    );
+
+const classFilter =
+    document.getElementById(
+        "classFilter"
+    );
 
 const report =
-    document.getElementById("report");
+    document.getElementById(
+        "report"
+    );
 
 const summary =
-    document.getElementById("summary");
+    document.getElementById(
+        "summary"
+    );
 
 
-/* Today's date */
+/* =========================
+   TODAY
+========================= */
 
 const today =
     new Date()
@@ -218,24 +348,52 @@ const today =
 reportDate.value = today;
 
 
-/* Load report */
+/* =========================
+   LOAD DATA
+========================= */
 
 async function loadReport() {
 
     const date =
         reportDate.value;
 
+
     if (!date) {
-        alert("Please select a date");
+
+        alert(
+            "Please select a date."
+        );
+
         return;
+
     }
+
+
+    report.innerHTML = `
+        <div class="empty-message">
+            Loading report...
+        </div>
+    `;
+
 
     try {
 
         const studentsResponse =
-            await fetch("/api/students");
+            await fetch(
+                "/api/students"
+            );
 
-        const students =
+
+        if (!studentsResponse.ok) {
+
+            throw new Error(
+                "Students API failed"
+            );
+
+        }
+
+
+        students =
             await studentsResponse.json();
 
 
@@ -245,146 +403,25 @@ async function loadReport() {
                 encodeURIComponent(date)
             );
 
-        const attendance =
-            await attendanceResponse.json();
 
+        if (!attendanceResponse.ok) {
 
-        report.innerHTML = "";
-        summary.innerHTML = "";
+            throw new Error(
+                "Attendance API failed"
+            );
 
-
-        let present = 0;
-        let absent = 0;
-        let notMarked = 0;
-
-
-        students.forEach(student => {
-
-            const record =
-                attendance.find(
-                    item =>
-                        item.studentId == student.id
-                );
-
-
-            let status = "Not Marked";
-
-            if (record) {
-                status = record.status;
-            }
-
-
-            if (status === "Present") {
-                present++;
-            }
-
-            else if (status === "Absent") {
-                absent++;
-            }
-
-            else {
-                notMarked++;
-            }
-
-
-            let statusClass =
-                "not-marked";
-
-            if (status === "Present") {
-                statusClass = "present";
-            }
-
-            if (status === "Absent") {
-                statusClass = "absent";
-            }
-
-
-            const div =
-                document.createElement("div");
-
-            div.className =
-                "report-card";
-
-
-            div.innerHTML = `
-
-                <h3>
-                    👨‍🎓 ${student.name}
-                </h3>
-
-                <p>
-                    🏫 Class:
-                    ${student.className}
-                </p>
-
-                <p>
-                    🔢 Roll No:
-                    ${student.roll}
-                </p>
-
-                <p>
-                    Status:
-                    <span class="${statusClass}">
-                        ${status}
-                    </span>
-                </p>
-
-            `;
-
-
-            report.appendChild(div);
-
-        });
-
-
-        const total =
-            students.length;
-
-
-        let percentage = 0;
-
-        if (total > 0) {
-            percentage =
-                Math.round(
-                    (present / total) * 100
-                );
         }
 
 
-        summary.innerHTML = `
+        attendance =
+            await attendanceResponse.json();
 
-            <div class="summary">
 
-                <div class="summary-card">
-                    <h3>👨‍🎓 Total</h3>
-                    <p>${total}</p>
-                </div>
+        createClassFilter();
 
-                <div class="summary-card">
-                    <h3>✅ Present</h3>
-                    <p>${present}</p>
-                </div>
+        updateDateLabel();
 
-                <div class="summary-card">
-                    <h3>❌ Absent</h3>
-                    <p>${absent}</p>
-                </div>
-
-                <div class="summary-card">
-                    <h3>⏳ Not Marked</h3>
-                    <p>${notMarked}</p>
-                </div>
-
-                <div class="summary-card">
-                    <h3>📈 Attendance</h3>
-                    <p class="percentage">
-                        ${percentage}%
-                    </p>
-                </div>
-
-            </div>
-
-        `;
+        renderReport();
 
     }
 
@@ -395,15 +432,502 @@ async function loadReport() {
             error
         );
 
-        report.innerHTML =
-            "<p>❌ Could not load attendance report.</p>";
+
+        summary.innerHTML = "";
+
+
+        report.innerHTML = `
+            <div class="empty-message">
+                ❌ Could not load attendance report.
+            </div>
+        `;
 
     }
 
 }
 
 
-/* Load today's report automatically */
+/* =========================
+   CLASS FILTER
+========================= */
+
+function createClassFilter() {
+
+    const currentValue =
+        classFilter.value;
+
+
+    const classes = [
+        ...new Set(
+            students
+                .map(
+                    student =>
+                        student.className
+                )
+                .filter(Boolean)
+        )
+    ];
+
+
+    classFilter.innerHTML = `
+        <option value="all">
+            All Classes
+        </option>
+    `;
+
+
+    classes.sort().forEach(
+        className => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                className;
+
+            option.textContent =
+                className;
+
+            classFilter.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    if (
+        classes.includes(
+            currentValue
+        )
+    ) {
+
+        classFilter.value =
+            currentValue;
+
+    }
+
+}
+
+
+/* =========================
+   RENDER REPORT
+========================= */
+
+function renderReport() {
+
+    const search =
+        searchStudent.value
+            .toLowerCase()
+            .trim();
+
+
+    const selectedClass =
+        classFilter.value;
+
+
+    const filtered =
+        students.filter(
+            student => {
+
+                const name =
+                    String(
+                        student.name || ""
+                    )
+                    .toLowerCase();
+
+
+                const roll =
+                    String(
+                        student.roll || ""
+                    )
+                    .toLowerCase();
+
+
+                const matchesSearch =
+                    name.includes(search) ||
+                    roll.includes(search);
+
+
+                const matchesClass =
+                    selectedClass === "all" ||
+                    student.className ===
+                        selectedClass;
+
+
+                return (
+                    matchesSearch &&
+                    matchesClass
+                );
+
+            }
+        );
+
+
+    let present = 0;
+    let absent = 0;
+    let notMarked = 0;
+
+
+    /*
+     * Summary should represent
+     * the selected class/search results.
+     */
+
+    filtered.forEach(
+        student => {
+
+            const record =
+                attendance.find(
+                    item =>
+                        item.studentId ==
+                        student.id
+                );
+
+
+            const status =
+                record
+                    ? record.status
+                    : "Not Marked";
+
+
+            if (
+                status === "Present"
+            ) {
+                present++;
+            }
+
+            else if (
+                status === "Absent"
+            ) {
+                absent++;
+            }
+
+            else {
+                notMarked++;
+            }
+
+        }
+    );
+
+
+    const total =
+        filtered.length;
+
+
+    const marked =
+        present + absent;
+
+
+    let percentage = 0;
+
+
+    if (marked > 0) {
+
+        percentage =
+            Math.round(
+                (present / marked) * 100
+            );
+
+    }
+
+
+    /* SUMMARY */
+
+    summary.innerHTML = `
+
+        <div class="summary">
+
+            <div class="summary-card">
+
+                <h3>
+                    👨‍🎓 Total
+                </h3>
+
+                <p>
+                    ${total}
+                </p>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <h3>
+                    ✅ Present
+                </h3>
+
+                <p>
+                    ${present}
+                </p>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <h3>
+                    ❌ Absent
+                </h3>
+
+                <p>
+                    ${absent}
+                </p>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <h3>
+                    ⏳ Not Marked
+                </h3>
+
+                <p>
+                    ${notMarked}
+                </p>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <h3>
+                    📈 Attendance
+                </h3>
+
+                <p class="percentage">
+                    ${percentage}%
+                </p>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "reportCount"
+    ).textContent =
+        "Showing " +
+        total +
+        " student" +
+        (total === 1 ? "" : "s");
+
+
+    /* REPORT LIST */
+
+    report.innerHTML = "";
+
+
+    if (!filtered.length) {
+
+        report.innerHTML = `
+            <div class="empty-message">
+                🔍 No students found.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    filtered.forEach(
+        student => {
+
+            const record =
+                attendance.find(
+                    item =>
+                        item.studentId ==
+                        student.id
+                );
+
+
+            const status =
+                record
+                    ? record.status
+                    : "Not Marked";
+
+
+            let statusClass =
+                "not-marked";
+
+
+            if (
+                status === "Present"
+            ) {
+
+                statusClass =
+                    "present";
+
+            }
+
+
+            if (
+                status === "Absent"
+            ) {
+
+                statusClass =
+                    "absent";
+
+            }
+
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "report-card";
+
+
+            div.innerHTML = `
+
+                <h3>
+                    👨‍🎓
+                    ${escapeHTML(
+                        student.name
+                    )}
+                </h3>
+
+                <p>
+                    🏫 Class:
+                    ${escapeHTML(
+                        student.className
+                    )}
+                </p>
+
+                <p>
+                    🔢 Roll No:
+                    ${escapeHTML(
+                        student.roll
+                    )}
+                </p>
+
+                <p>
+
+                    Status:
+
+                    <span
+                        class="status ${statusClass}">
+
+                        ${status}
+
+                    </span>
+
+                </p>
+
+            `;
+
+
+            report.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================
+   DATE LABEL
+========================= */
+
+function updateDateLabel() {
+
+    const date =
+        reportDate.value;
+
+
+    if (!date) return;
+
+
+    const selected =
+        new Date(
+            date + "T00:00:00"
+        );
+
+
+    document.getElementById(
+        "reportDateLabel"
+    ).textContent =
+        selected.toLocaleDateString(
+            "en-US",
+            {
+                day: "numeric",
+                month: "short",
+                year: "numeric"
+            }
+        );
+
+}
+
+
+/* =========================
+   EVENTS
+========================= */
+
+reportDate.addEventListener(
+    "change",
+    loadReport
+);
+
+
+searchStudent.addEventListener(
+    "input",
+    renderReport
+);
+
+
+classFilter.addEventListener(
+    "change",
+    renderReport
+);
+
+
+/* =========================
+   HTML SAFETY
+========================= */
+
+function escapeHTML(value) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/* =========================
+   START
+========================= */
 
 loadReport();
 

@@ -1,222 +1,848 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
     <title>Students - My School</title>
-    <link rel="stylesheet" href="style.css">
+
+    <link
+        rel="stylesheet"
+        href="style.css">
+
+    <style>
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            margin: 0;
+        }
+
+        #studentList {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .student-card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .student-card h3 {
+            margin-top: 0;
+        }
+
+        .student-info {
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .student-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .student-actions button {
+            flex: 1;
+        }
+
+        .edit-btn {
+            background: #2563eb;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+        }
+
+        .empty-message {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .modal-box {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            padding: 22px;
+            border-radius: 18px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+
+        .modal-box h2 {
+            margin-top: 0;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+        }
+
+        .cancel-btn {
+            background: #64748b;
+        }
+
+        @media (max-width: 650px) {
+
+            #studentList {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .student-actions {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-<header>
-    <h1>🎓 My School</h1>
-    <p>Student Management</p>
+<header class="dashboard-header">
+
+    <div>
+
+        <h1>🎓 My School</h1>
+
+        <p>
+            Student Management
+        </p>
+
+    </div>
+
+    <a
+        href="/"
+        style="color:white;text-decoration:none;font-weight:bold;">
+        🏠 Dashboard
+    </a>
+
 </header>
+
+
+<nav class="main-nav">
+
+    <a href="/">
+        🏠 Dashboard
+    </a>
+
+    <a href="/students.html" class="active">
+        👨‍🎓 Students
+    </a>
+
+    <a href="/teachers.html">
+        👨‍🏫 Teachers
+    </a>
+
+    <a href="/attendance.html">
+        📅 Attendance
+    </a>
+
+    <a href="/attendance-report.html">
+        📊 Reports
+    </a>
+
+    <a href="/classes.html">
+        🏫 Classes
+    </a>
+
+</nav>
+
 
 <main>
 
-    <h2>👨‍🎓 Add Student</h2>
+    <div class="page-header">
+
+        <div>
+
+            <h2>
+                👨‍🎓 Students
+            </h2>
+
+            <p style="color:var(--muted);">
+                Add and manage school students
+            </p>
+
+        </div>
+
+        <strong id="studentTotal">
+            0 Students
+        </strong>
+
+    </div>
+
+
+    <!-- ADD STUDENT -->
 
     <form id="studentForm">
 
-        <input type="text" id="name"
-            placeholder="Student Name" required>
+        <h3>
+            ➕ Add New Student
+        </h3>
 
-        <input type="text" id="father"
-            placeholder="Father Name" required>
+        <input
+            type="text"
+            id="name"
+            placeholder="Student Name"
+            required>
 
-        <input type="text" id="className"
-            placeholder="Class" required>
+        <input
+            type="text"
+            id="father"
+            placeholder="Father Name"
+            required>
 
-        <input type="text" id="roll"
-            placeholder="Roll Number" required>
+        <input
+            type="text"
+            id="className"
+            placeholder="Class"
+            required>
 
-        <button type="submit">Add Student</button>
+        <input
+            type="text"
+            id="roll"
+            placeholder="Roll Number"
+            required>
+
+        <button type="submit">
+            ➕ Add Student
+        </button>
 
     </form>
 
-    <h2>Student List</h2>
 
-    <div id="studentList"></div>
+    <!-- SEARCH -->
 
-    <br>
+    <div class="search-box">
 
-    <a href="/">⬅ Back to Dashboard</a>
+        <input
+            type="search"
+            id="searchStudent"
+            placeholder="🔍 Search student, father, class or roll...">
+
+    </div>
+
+
+    <!-- STUDENT LIST -->
+
+    <div id="studentList">
+
+        <p>
+            Loading students...
+        </p>
+
+    </div>
 
 </main>
 
+
+<!-- EDIT MODAL -->
+
+<div
+    id="editModal"
+    class="modal">
+
+    <div class="modal-box">
+
+        <h2>
+            ✏️ Edit Student
+        </h2>
+
+        <input
+            type="text"
+            id="editName"
+            placeholder="Student Name">
+
+        <input
+            type="text"
+            id="editFather"
+            placeholder="Father Name">
+
+        <input
+            type="text"
+            id="editClass"
+            placeholder="Class">
+
+        <input
+            type="text"
+            id="editRoll"
+            placeholder="Roll Number">
+
+        <div class="modal-actions">
+
+            <button
+                class="cancel-btn"
+                onclick="closeEditModal()">
+                Cancel
+            </button>
+
+            <button
+                onclick="saveEdit()">
+                💾 Save Changes
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 <script>
 
-const form = document.getElementById("studentForm");
-const studentList = document.getElementById("studentList");
+let students = [];
+
+let editingStudentId = null;
+
+
+/* =========================
+   LOAD STUDENTS
+========================= */
 
 async function loadStudents() {
 
-    const response = await fetch("/api/students");
-    const students = await response.json();
+    try {
 
-    studentList.innerHTML = "";
+        const response =
+            await fetch("/api/students");
 
-    students.forEach(student => {
+        students =
+            await response.json();
 
-        const div = document.createElement("div");
+        renderStudents();
 
-        div.className = "card";
+    }
 
-        div.innerHTML = `
-            <h3>👨‍🎓 ${student.name}</h3>
+    catch (error) {
 
-            <p>Father: ${student.father}</p>
+        console.log(
+            "Student loading error:",
+            error
+        );
 
-            <p>Class: ${student.className}</p>
+        document.getElementById(
+            "studentList"
+        ).innerHTML =
+            "<div class='empty-message'>❌ Could not load students.</div>";
 
-            <p>Roll No: ${student.roll}</p>
+    }
 
-            <button onclick="editStudent(
-                ${student.id},
-                '${student.name}',
-                '${student.father}',
-                '${student.className}',
-                '${student.roll}'
-            )">
-                ✏️ Edit
-            </button>
-
-            <button onclick="deleteStudent(${student.id})">
-                🗑️ Delete
-            </button>
-        `;
-
-        studentList.appendChild(div);
-    });
 }
 
 
-// ADD STUDENT
+/* =========================
+   RENDER
+========================= */
 
-form.addEventListener("submit", async function(event) {
+function renderStudents() {
 
-    event.preventDefault();
+    const list =
+        document.getElementById(
+            "studentList"
+        );
+
+    const search =
+        document.getElementById(
+            "searchStudent"
+        ).value
+        .toLowerCase()
+        .trim();
+
+
+    const filtered =
+        students.filter(student => {
+
+            return (
+
+                String(student.name || "")
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(student.father || "")
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(student.className || "")
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(student.roll || "")
+                    .toLowerCase()
+                    .includes(search)
+
+            );
+
+        });
+
+
+    document.getElementById(
+        "studentTotal"
+    ).textContent =
+        students.length +
+        (students.length === 1
+            ? " Student"
+            : " Students");
+
+
+    if (!filtered.length) {
+
+        list.innerHTML = `
+            <div class="empty-message">
+                🔍 No students found.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    list.innerHTML =
+        filtered.map(student => `
+
+            <div class="student-card">
+
+                <h3>
+                    👨‍🎓 ${escapeHTML(student.name)}
+                </h3>
+
+                <div class="student-info">
+
+                    <div>
+                        👨‍👦 Father:
+                        ${escapeHTML(student.father)}
+                    </div>
+
+                    <div>
+                        🏫 Class:
+                        ${escapeHTML(student.className)}
+                    </div>
+
+                    <div>
+                        🔢 Roll No:
+                        ${escapeHTML(student.roll)}
+                    </div>
+
+                </div>
+
+
+                <div class="student-actions">
+
+                    <button
+                        class="edit-btn"
+                        onclick="openEditModal(${student.id})">
+
+                        ✏️ Edit
+
+                    </button>
+
+
+                    <button
+                        class="delete-btn"
+                        onclick="deleteStudent(${student.id})">
+
+                        🗑️ Delete
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        `).join("");
+
+}
+
+
+/* =========================
+   ADD STUDENT
+========================= */
+
+document.getElementById(
+    "studentForm"
+).addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const student = {
+
+            name:
+                document.getElementById(
+                    "name"
+                ).value.trim(),
+
+            father:
+                document.getElementById(
+                    "father"
+                ).value.trim(),
+
+            className:
+                document.getElementById(
+                    "className"
+                ).value.trim(),
+
+            roll:
+                document.getElementById(
+                    "roll"
+                ).value.trim()
+
+        };
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/students",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                student
+                            )
+
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to add student"
+                );
+
+            }
+
+
+            this.reset();
+
+            await loadStudents();
+
+
+            alert(
+                "Student added successfully! ✅"
+            );
+
+        }
+
+        catch (error) {
+
+            console.log(error);
+
+            alert(
+                "Could not add student ❌"
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================
+   SEARCH
+========================= */
+
+document.getElementById(
+    "searchStudent"
+).addEventListener(
+    "input",
+    renderStudents
+);
+
+
+/* =========================
+   EDIT MODAL
+========================= */
+
+function openEditModal(id) {
+
+    const student =
+        students.find(
+            item => item.id == id
+        );
+
+    if (!student) return;
+
+
+    editingStudentId = id;
+
+
+    document.getElementById(
+        "editName"
+    ).value =
+        student.name || "";
+
+
+    document.getElementById(
+        "editFather"
+    ).value =
+        student.father || "";
+
+
+    document.getElementById(
+        "editClass"
+    ).value =
+        student.className || "";
+
+
+    document.getElementById(
+        "editRoll"
+    ).value =
+        student.roll || "";
+
+
+    document.getElementById(
+        "editModal"
+    ).style.display =
+        "flex";
+
+}
+
+
+function closeEditModal() {
+
+    editingStudentId = null;
+
+    document.getElementById(
+        "editModal"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =========================
+   SAVE EDIT
+========================= */
+
+async function saveEdit() {
+
+    if (!editingStudentId) return;
+
 
     const student = {
 
-        name: document.getElementById("name").value,
+        name:
+            document.getElementById(
+                "editName"
+            ).value.trim(),
 
-        father: document.getElementById("father").value,
+        father:
+            document.getElementById(
+                "editFather"
+            ).value.trim(),
 
-        className: document.getElementById("className").value,
+        className:
+            document.getElementById(
+                "editClass"
+            ).value.trim(),
 
-        roll: document.getElementById("roll").value
+        roll:
+            document.getElementById(
+                "editRoll"
+            ).value.trim()
+
     };
 
-    const response = await fetch("/api/students", {
 
-        method: "POST",
+    try {
 
-        headers: {
-            "Content-Type": "application/json"
-        },
+        const response =
+            await fetch(
+                "/api/students/" +
+                editingStudentId,
+                {
 
-        body: JSON.stringify(student)
-    });
+                    method: "PUT",
 
-    if (response.ok) {
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-        alert("Student saved successfully! ✅");
+                    body:
+                        JSON.stringify(
+                            student
+                        )
 
-        form.reset();
+                }
+            );
 
-        loadStudents();
 
-    } else {
+        if (!response.ok) {
 
-        alert("Something went wrong ❌");
+            throw new Error(
+                "Update failed"
+            );
+
+        }
+
+
+        closeEditModal();
+
+        await loadStudents();
+
+
+        alert(
+            "Student updated successfully! ✅"
+        );
+
     }
 
-});
+    catch (error) {
+
+        console.log(error);
+
+        alert(
+            "Could not update student ❌"
+        );
+
+    }
+
+}
 
 
-// DELETE STUDENT
+/* =========================
+   DELETE
+========================= */
 
 async function deleteStudent(id) {
 
-    const confirmDelete =
-        confirm("Are you sure you want to delete this student?");
-
-    if (!confirmDelete) {
+    if (
+        !confirm(
+            "Delete this student?"
+        )
+    ) {
         return;
     }
 
-    await fetch("/api/students/" + id, {
-        method: "DELETE"
-    });
 
-    alert("Student deleted! 🗑️");
+    try {
 
-    loadStudents();
+        const response =
+            await fetch(
+                "/api/students/" + id,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Delete failed"
+            );
+
+        }
+
+
+        await loadStudents();
+
+
+        alert(
+            "Student deleted successfully! 🗑️"
+        );
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+        alert(
+            "Could not delete student ❌"
+        );
+
+    }
+
 }
 
 
-// EDIT STUDENT
+/* =========================
+   HTML SAFETY
+========================= */
 
-async function editStudent(
-    id,
-    name,
-    father,
-    className,
-    roll
-) {
+function escapeHTML(value) {
 
-    const newName =
-        prompt("Student Name:", name);
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
-    if (newName === null) return;
-
-    const newFather =
-        prompt("Father Name:", father);
-
-    if (newFather === null) return;
-
-    const newClass =
-        prompt("Class:", className);
-
-    if (newClass === null) return;
-
-    const newRoll =
-        prompt("Roll Number:", roll);
-
-    if (newRoll === null) return;
-
-    const student = {
-
-        name: newName,
-
-        father: newFather,
-
-        className: newClass,
-
-        roll: newRoll
-    };
-
-    await fetch("/api/students/" + id, {
-
-        method: "PUT",
-
-        headers: {
-            "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify(student)
-    });
-
-    alert("Student updated! ✏️");
-
-    loadStudents();
 }
 
 
-// LOAD STUDENTS
+/* =========================
+   INITIAL LOAD
+========================= */
 
 loadStudents();
 

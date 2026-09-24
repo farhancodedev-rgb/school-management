@@ -2,48 +2,62 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport"
+
+    <meta
+        name="viewport"
         content="width=device-width, initial-scale=1.0">
 
     <title>Attendance - My School</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css">
 
     <style>
 
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
         .attendance-tools {
             background: white;
-            padding: 18px;
+            padding: 20px;
             border-radius: 16px;
-            box-shadow: 0 3px 10px rgba(0,0,0,.10);
+            box-shadow: var(--shadow);
             margin-bottom: 20px;
+        }
+
+        .attendance-tools label {
+            display: block;
+            font-weight: bold;
+            margin: 8px 0;
         }
 
         .attendance-tools input,
         .attendance-tools select {
             width: 100%;
-            padding: 12px;
-            margin: 7px 0;
             box-sizing: border-box;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 16px;
         }
 
         .summary {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 15px 0;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .summary-card {
             background: white;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 18px 10px;
+            border-radius: 15px;
             text-align: center;
-            box-shadow: 0 3px 8px rgba(0,0,0,.10);
+            box-shadow: var(--shadow);
         }
 
         .summary-card h3 {
@@ -52,139 +66,247 @@
         }
 
         .summary-card p {
-            font-size: 25px;
-            font-weight: bold;
-            margin: 5px 0 0;
-        }
-
-        .student-row {
-            background: white;
-            padding: 16px;
-            margin-bottom: 12px;
-            border-radius: 14px;
-            box-shadow: 0 3px 10px rgba(0,0,0,.10);
-        }
-
-        .student-info h3 {
-            margin: 0 0 5px;
-        }
-
-        .student-info p {
-            margin: 3px 0;
-            color: #666;
-        }
-
-        .attendance-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .attendance-buttons button {
-            flex: 1;
-            padding: 11px;
-            border-radius: 9px;
-            border: 2px solid transparent;
-            font-size: 15px;
-            cursor: pointer;
-        }
-
-        .present-btn {
-            background: #e8f7e8;
-        }
-
-        .absent-btn {
-            background: #ffe8e8;
-        }
-
-        .present-btn.active {
-            border-color: green;
-            font-weight: bold;
-        }
-
-        .absent-btn.active {
-            border-color: red;
+            margin: 7px 0 0;
+            font-size: 27px;
             font-weight: bold;
         }
 
         .quick-buttons {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .quick-buttons button {
-            flex: 1;
-            padding: 11px;
-            border: none;
-            border-radius: 9px;
-            cursor: pointer;
+            margin: 0;
+        }
+
+        .student-row {
+            background: white;
+            padding: 18px;
+            margin-bottom: 12px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .student-info h3 {
+            margin: 0 0 7px;
+        }
+
+        .student-info p {
+            margin: 4px 0;
+            color: var(--muted);
+        }
+
+        .attendance-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .attendance-buttons button {
+            margin: 0;
+            border: 2px solid transparent;
+        }
+
+        .present-btn {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .absent-btn {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .present-btn.active {
+            border-color: #16a34a;
+            box-shadow: 0 0 0 2px rgba(22,163,74,.12);
+            font-weight: bold;
+        }
+
+        .absent-btn.active {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 2px rgba(220,38,38,.12);
+            font-weight: bold;
         }
 
         .save-btn {
             width: 100%;
             padding: 15px;
-            margin-top: 15px;
+            margin-top: 10px;
             font-size: 17px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
         }
 
-        @media (max-width: 500px) {
+        .empty-message {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .status-present {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-absent {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        @media (max-width: 700px) {
 
             .summary {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
 
-            .summary-card p {
-                font-size: 20px;
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
             }
+
+        }
+
+        @media (max-width: 400px) {
+
+            .summary-card p {
+                font-size: 23px;
+            }
+
+            .attendance-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-buttons {
+                grid-template-columns: 1fr;
+            }
+
         }
 
     </style>
+
 </head>
+
 
 <body>
 
+
 <header>
+
     <h1>🎓 My School</h1>
-    <p>Student Attendance</p>
+
+    <p>
+        Student Attendance
+    </p>
+
 </header>
+
+
+<nav class="main-nav">
+
+    <a href="/">
+        🏠 Dashboard
+    </a>
+
+    <a href="/students.html">
+        👨‍🎓 Students
+    </a>
+
+    <a href="/teachers.html">
+        👨‍🏫 Teachers
+    </a>
+
+    <a href="/attendance.html" class="active">
+        📅 Attendance
+    </a>
+
+    <a href="/attendance-report.html">
+        📊 Reports
+    </a>
+
+    <a href="/classes.html">
+        🏫 Classes
+    </a>
+
+</nav>
+
 
 <main>
 
-    <h2>📅 Mark Attendance</h2>
+
+    <div class="page-header">
+
+        <div>
+
+            <h2>
+                📅 Mark Attendance
+            </h2>
+
+            <p style="color:var(--muted);">
+                Select a date and mark student attendance
+            </p>
+
+        </div>
+
+        <strong id="attendanceStatus">
+            Not saved
+        </strong>
+
+    </div>
+
+
+    <!-- FILTERS -->
 
     <div class="attendance-tools">
 
-        <label>
-            📅 Select Date
+        <label for="attendanceDate">
+            📅 Date
         </label>
 
         <input
             type="date"
-            id="attendanceDate"
-        >
+            id="attendanceDate">
 
-        <label>
+
+        <label for="searchStudent">
             🔍 Search Student
         </label>
 
         <input
-            type="text"
+            type="search"
             id="searchStudent"
-            placeholder="Search by student name..."
-        >
+            placeholder="Search by name, roll number...">
 
-        <label>
-            🏫 Filter Class
+
+        <label for="classFilter">
+            🏫 Class
         </label>
 
         <select id="classFilter">
+
             <option value="all">
                 All Classes
             </option>
+
         </select>
 
     </div>
@@ -195,18 +317,54 @@
     <div class="summary">
 
         <div class="summary-card">
-            <h3>👨‍🎓 Total</h3>
-            <p id="totalCount">0</p>
+
+            <h3>
+                👨‍🎓 Total
+            </h3>
+
+            <p id="totalCount">
+                0
+            </p>
+
         </div>
 
-        <div class="summary-card">
-            <h3>✅ Present</h3>
-            <p id="presentCount">0</p>
-        </div>
 
         <div class="summary-card">
-            <h3>❌ Absent</h3>
-            <p id="absentCount">0</p>
+
+            <h3>
+                ✅ Present
+            </h3>
+
+            <p id="presentCount">
+                0
+            </p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <h3>
+                ❌ Absent
+            </h3>
+
+            <p id="absentCount">
+                0
+            </p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <h3>
+                ⏳ Pending
+            </h3>
+
+            <p id="pendingCount">
+                0
+            </p>
+
         </div>
 
     </div>
@@ -216,12 +374,21 @@
 
     <div class="quick-buttons">
 
-        <button onclick="markAll('Present')">
-            ✅ All Present
+        <button
+            type="button"
+            onclick="markAll('Present')">
+
+            ✅ Mark All Present
+
         </button>
 
-        <button onclick="markAll('Absent')">
-            ❌ All Absent
+
+        <button
+            type="button"
+            onclick="markAll('Absent')">
+
+            ❌ Mark All Absent
+
         </button>
 
     </div>
@@ -229,22 +396,33 @@
 
     <!-- STUDENTS -->
 
-    <div id="attendanceList"></div>
+    <div id="attendanceList">
 
+        <div class="empty-message">
+            Loading students...
+        </div>
+
+    </div>
+
+
+    <!-- SAVE -->
 
     <button
         class="save-btn"
-        onclick="saveAttendance()"
-    >
+        onclick="saveAttendance()">
+
         💾 Save Attendance
+
     </button>
 
 
     <br><br>
 
+
     <a href="/">
         ⬅ Back to Dashboard
     </a>
+
 
 </main>
 
@@ -255,88 +433,244 @@ let students = [];
 
 const attendance = {};
 
+let isLoadingDate = false;
+
+
 const attendanceDate =
-    document.getElementById("attendanceDate");
+    document.getElementById(
+        "attendanceDate"
+    );
 
 const searchStudent =
-    document.getElementById("searchStudent");
+    document.getElementById(
+        "searchStudent"
+    );
 
 const classFilter =
-    document.getElementById("classFilter");
+    document.getElementById(
+        "classFilter"
+    );
 
 const attendanceList =
-    document.getElementById("attendanceList");
+    document.getElementById(
+        "attendanceList"
+    );
 
-const today = new Date()
-    .toISOString()
-    .split("T")[0];
+
+/* =========================
+   TODAY
+========================= */
+
+const today =
+    new Date()
+        .toISOString()
+        .split("T")[0];
 
 attendanceDate.value = today;
 
 
-// LOAD STUDENTS
+/* =========================
+   LOAD STUDENTS
+========================= */
 
 async function loadStudents() {
 
     try {
 
         const response =
-            await fetch("/api/students");
+            await fetch(
+                "/api/students"
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                "Students API failed"
+            );
+        }
 
         students =
             await response.json();
 
-        students.forEach(student => {
-
-            attendance[student.id] = "Present";
-
-        });
 
         createClassFilter();
 
-await loadSavedAttendance();
+        await loadSavedAttendance();
 
-    } catch (error) {
-
-        console.log(error);
-
-        attendanceList.innerHTML =
-            "<p>❌ Unable to load students.</p>";
     }
+
+    catch (error) {
+
+        console.log(
+            "Students error:",
+            error
+        );
+
+        attendanceList.innerHTML = `
+            <div class="empty-message">
+                ❌ Unable to load students.
+            </div>
+        `;
+
+    }
+
 }
 
 
-// CREATE CLASS FILTER
+/* =========================
+   CLASS FILTER
+========================= */
 
 function createClassFilter() {
 
     const classes = [
         ...new Set(
-            students.map(student =>
-                student.className
-            )
+            students
+                .map(
+                    student =>
+                        student.className
+                )
+                .filter(Boolean)
         )
     ];
 
-    classFilter.innerHTML =
-        `<option value="all">All Classes</option>`;
 
-    classes.forEach(className => {
+    classFilter.innerHTML = `
+        <option value="all">
+            All Classes
+        </option>
+    `;
 
-        const option =
-            document.createElement("option");
 
-        option.value = className;
+    classes.sort().forEach(
+        className => {
 
-        option.textContent = className;
+            const option =
+                document.createElement(
+                    "option"
+                );
 
-        classFilter.appendChild(option);
+            option.value =
+                className;
 
-    });
+            option.textContent =
+                className;
+
+            classFilter.appendChild(
+                option
+            );
+
+        }
+    );
+
 }
 
 
-// RENDER STUDENTS
+/* =========================
+   LOAD SAVED ATTENDANCE
+========================= */
+
+async function loadSavedAttendance() {
+
+    const date =
+        attendanceDate.value;
+
+
+    if (!date) return;
+
+
+    isLoadingDate = true;
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/attendance?date=" +
+                encodeURIComponent(date)
+            );
+
+
+        if (!response.ok) {
+            throw new Error(
+                "Attendance API failed"
+            );
+        }
+
+
+        const records =
+            await response.json();
+
+
+        /*
+         * IMPORTANT:
+         * New/unmarked students are Pending,
+         * NOT Present.
+         */
+
+        students.forEach(
+            student => {
+
+                attendance[
+                    student.id
+                ] = "Pending";
+
+            }
+        );
+
+
+        records.forEach(
+            record => {
+
+                attendance[
+                    record.studentId
+                ] =
+                    record.status;
+
+            }
+        );
+
+
+        renderStudents();
+
+
+        updateSavedStatus(
+            records.length > 0
+        );
+
+    }
+
+    catch (error) {
+
+        console.log(
+            "Attendance load error:",
+            error
+        );
+
+
+        students.forEach(
+            student => {
+
+                attendance[
+                    student.id
+                ] = "Pending";
+
+            }
+        );
+
+
+        renderStudents();
+
+    }
+
+
+    isLoadingDate = false;
+
+}
+
+
+/* =========================
+   RENDER STUDENTS
+========================= */
 
 function renderStudents() {
 
@@ -345,231 +679,488 @@ function renderStudents() {
             .toLowerCase()
             .trim();
 
+
     const selectedClass =
         classFilter.value;
 
-    attendanceList.innerHTML = "";
 
     const filtered =
-        students.filter(student => {
+        students.filter(
+            student => {
 
-            const matchesSearch =
-                student.name
-                    .toLowerCase()
-                    .includes(search);
-
-            const matchesClass =
-                selectedClass === "all" ||
-                student.className === selectedClass;
-
-            return matchesSearch &&
-                   matchesClass;
-
-        });
+                const name =
+                    String(
+                        student.name || ""
+                    )
+                    .toLowerCase();
 
 
-    if (filtered.length === 0) {
+                const roll =
+                    String(
+                        student.roll || ""
+                    )
+                    .toLowerCase();
 
-        attendanceList.innerHTML =
-            "<p>🔍 No students found.</p>";
+
+                const matchesSearch =
+                    name.includes(search) ||
+                    roll.includes(search);
+
+
+                const matchesClass =
+                    selectedClass === "all" ||
+                    student.className ===
+                        selectedClass;
+
+
+                return (
+                    matchesSearch &&
+                    matchesClass
+                );
+
+            }
+        );
+
+
+    attendanceList.innerHTML = "";
+
+
+    if (!filtered.length) {
+
+        attendanceList.innerHTML = `
+            <div class="empty-message">
+                🔍 No students found.
+            </div>
+        `;
 
         updateSummary();
 
         return;
+
     }
 
 
-    filtered.forEach(student => {
+    filtered.forEach(
+        student => {
 
-        const div =
-            document.createElement("div");
+            const div =
+                document.createElement(
+                    "div"
+                );
 
-        div.className = "student-row";
 
-        const status =
-            attendance[student.id] || "Present";
+            div.className =
+                "student-row";
 
-        div.innerHTML = `
 
-            <div class="student-info">
+            const status =
+                attendance[
+                    student.id
+                ] || "Pending";
 
-                <h3>
-                    👨‍🎓 ${student.name}
-                </h3>
 
-                <p>
-                    🏫 Class: ${student.className}
-                </p>
+            let badgeClass =
+                "status-pending";
 
-                <p>
-                    🔢 Roll No: ${student.roll}
-                </p>
 
-            </div>
+            if (
+                status === "Present"
+            ) {
+                badgeClass =
+                    "status-present";
+            }
 
-            <div class="attendance-buttons">
 
-                <button
-                    class="present-btn
-                    ${status === "Present" ? "active" : ""}"
-                    onclick="setAttendance(
-                        ${student.id},
-                        'Present'
-                    )"
-                >
-                    ✅ Present
-                </button>
+            if (
+                status === "Absent"
+            ) {
+                badgeClass =
+                    "status-absent";
+            }
 
-                <button
-                    class="absent-btn
-                    ${status === "Absent" ? "active" : ""}"
-                    onclick="setAttendance(
-                        ${student.id},
-                        'Absent'
-                    )"
-                >
-                    ❌ Absent
-                </button>
 
-            </div>
-        `;
+            div.innerHTML = `
 
-        attendanceList.appendChild(div);
+                <div class="student-info">
 
-    });
+                    <h3>
+                        👨‍🎓
+                        ${escapeHTML(
+                            student.name
+                        )}
+                    </h3>
+
+                    <p>
+                        🏫 Class:
+                        ${escapeHTML(
+                            student.className
+                        )}
+                    </p>
+
+                    <p>
+                        🔢 Roll No:
+                        ${escapeHTML(
+                            student.roll
+                        )}
+                    </p>
+
+                    <span
+                        class="status-badge ${badgeClass}">
+
+                        ${status}
+
+                    </span>
+
+                </div>
+
+
+                <div class="attendance-buttons">
+
+                    <button
+                        type="button"
+                        class="present-btn
+                        ${status === "Present"
+                            ? "active"
+                            : ""}"
+
+                        onclick="
+                            setAttendance(
+                                ${student.id},
+                                'Present'
+                            )
+                        ">
+
+                        ✅ Present
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="absent-btn
+                        ${status === "Absent"
+                            ? "active"
+                            : ""}"
+
+                        onclick="
+                            setAttendance(
+                                ${student.id},
+                                'Absent'
+                            )
+                        ">
+
+                        ❌ Absent
+
+                    </button>
+
+                </div>
+
+            `;
+
+
+            attendanceList.appendChild(
+                div
+            );
+
+        }
+    );
+
 
     updateSummary();
+
 }
 
 
-// SET ATTENDANCE
+/* =========================
+   SET ATTENDANCE
+========================= */
 
-function setAttendance(id, status) {
+function setAttendance(
+    id,
+    status
+) {
 
-    attendance[id] = status;
+    attendance[id] =
+        status;
+
+
+    updateSavedStatus(false);
+
 
     renderStudents();
+
 }
 
 
-// MARK ALL
+/* =========================
+   MARK ALL
+========================= */
 
 function markAll(status) {
 
-    students.forEach(student => {
+    if (!students.length) {
 
-        attendance[student.id] =
-            status;
+        alert(
+            "No students available."
+        );
 
-    });
+        return;
+
+    }
+
+
+    students.forEach(
+        student => {
+
+            attendance[
+                student.id
+            ] =
+                status;
+
+        }
+    );
+
+
+    updateSavedStatus(false);
+
 
     renderStudents();
+
 }
 
 
-// SUMMARY
+/* =========================
+   SUMMARY
+========================= */
 
 function updateSummary() {
 
     const total =
         students.length;
 
+
     let present = 0;
     let absent = 0;
+    let pending = 0;
 
-    students.forEach(student => {
 
-        if (
-            attendance[student.id] ===
-            "Present"
-        ) {
-            present++;
+    students.forEach(
+        student => {
+
+            const status =
+                attendance[
+                    student.id
+                ];
+
+
+            if (
+                status === "Present"
+            ) {
+                present++;
+            }
+
+            else if (
+                status === "Absent"
+            ) {
+                absent++;
+            }
+
+            else {
+                pending++;
+            }
+
         }
+    );
 
-        if (
-            attendance[student.id] ===
-            "Absent"
-        ) {
-            absent++;
-        }
-
-    });
 
     document.getElementById(
         "totalCount"
-    ).textContent = total;
+    ).textContent =
+        total;
+
 
     document.getElementById(
         "presentCount"
-    ).textContent = present;
+    ).textContent =
+        present;
+
 
     document.getElementById(
         "absentCount"
-    ).textContent = absent;
+    ).textContent =
+        absent;
+
+
+    document.getElementById(
+        "pendingCount"
+    ).textContent =
+        pending;
+
 }
 
 
-// SAVE ATTENDANCE
+/* =========================
+   SAVE
+========================= */
 
 async function saveAttendance() {
 
     const date =
         attendanceDate.value;
 
+
     if (!date) {
 
-        alert("Please select a date.");
+        alert(
+            "Please select a date."
+        );
 
         return;
+
+    }
+
+
+    const pending =
+        students.filter(
+            student =>
+                !attendance[
+                    student.id
+                ] ||
+                attendance[
+                    student.id
+                ] === "Pending"
+        );
+
+
+    if (pending.length > 0) {
+
+        const proceed =
+            confirm(
+                pending.length +
+                " student(s) are not marked. Save anyway?"
+            );
+
+
+        if (!proceed) {
+            return;
+        }
+
     }
 
 
     try {
 
-        for (const student of students) {
+        let failed = 0;
 
-            await fetch(
-                "/api/attendance",
-                {
-                    method: "POST",
 
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
+        for (
+            const student of students
+        ) {
 
-                    body: JSON.stringify({
+            const status =
+                attendance[
+                    student.id
+                ];
 
-                        studentId:
-                            student.id,
 
-                        date: date,
+            if (
+                status === "Pending"
+            ) {
+                continue;
+            }
 
-                        status:
-                            attendance[student.id]
 
-                    })
-                }
-            );
+            const response =
+                await fetch(
+                    "/api/attendance",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                studentId:
+                                    student.id,
+
+                                date:
+                                    date,
+
+                                status:
+                                    status
+
+                            })
+
+                    }
+                );
+
+
+            if (!response.ok) {
+                failed++;
+            }
 
         }
+
+
+        if (failed > 0) {
+
+            alert(
+                "Some attendance records could not be saved ❌"
+            );
+
+            return;
+
+        }
+
+
+        updateSavedStatus(true);
+
 
         alert(
             "Attendance saved successfully! ✅"
         );
 
-    } catch (error) {
+    }
 
-        console.log(error);
+    catch (error) {
+
+        console.log(
+            "Save attendance error:",
+            error
+        );
+
 
         alert(
             "Could not save attendance ❌"
         );
+
     }
+
 }
 
 
-// SEARCH
+/* =========================
+   DATE CHANGE
+========================= */
+
+attendanceDate.addEventListener(
+    "change",
+    async function() {
+
+        await loadSavedAttendance();
+
+    }
+);
+
+
+/* =========================
+   SEARCH
+========================= */
 
 searchStudent.addEventListener(
     "input",
@@ -577,62 +1168,81 @@ searchStudent.addEventListener(
 );
 
 
-// CLASS FILTER
+/* =========================
+   CLASS
+========================= */
 
 classFilter.addEventListener(
     "change",
     renderStudents
 );
 
-// LOAD SAVED ATTENDANCE
 
-async function loadSavedAttendance() {
+/* =========================
+   SAVE STATUS
+========================= */
 
-    const date = attendanceDate.value;
+function updateSavedStatus(
+    saved
+) {
 
-    try {
-
-        const response = await fetch(
-            "/api/attendance?date=" +
-            encodeURIComponent(date)
+    const element =
+        document.getElementById(
+            "attendanceStatus"
         );
 
-        const records = await response.json();
 
-        // Reset all students to Present
-        students.forEach(student => {
-            attendance[student.id] = "Present";
-        });
+    if (saved) {
 
-        // Apply saved attendance
-        records.forEach(record => {
+        element.textContent =
+            "✅ Saved";
 
-            attendance[record.studentId] =
-                record.status;
+    } else {
 
-        });
-
-        renderStudents();
-
-    } catch (error) {
-
-        console.log(
-            "Attendance load error:",
-            error
-        );
+        element.textContent =
+            "✏️ Unsaved changes";
 
     }
+
 }
 
 
-// DATE CHANGE
+/* =========================
+   HTML SAFETY
+========================= */
 
-attendanceDate.addEventListener(
-    "change",
-    loadSavedAttendance
-);
+function escapeHTML(value) {
 
-// START
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/* =========================
+   START
+========================= */
 
 loadStudents();
 

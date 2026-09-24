@@ -4,171 +4,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>My School - Dashboard</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header>
-    <h1>🎓 My School</h1>
-    <p>School Management Dashboard</p>
+<header class="dashboard-header">
+    <div>
+        <h1>🎓 My School</h1>
+        <p>School Management Dashboard</p>
+    </div>
+
+    <button id="logoutButton" onclick="logout()">
+        🚪 Logout
+    </button>
 </header>
 
 
 <nav class="main-nav">
 
-    <a href="/">🏠 Dashboard</a>
-
+    <a href="/" class="active">🏠 Dashboard</a>
     <a href="/students.html">👨‍🎓 Students</a>
-
     <a href="/teachers.html">👨‍🏫 Teachers</a>
-
     <a href="/attendance.html">📅 Attendance</a>
-
     <a href="/attendance-report.html">📊 Reports</a>
-
-    <a href="/fees.html">💰 Fees</a>
-
     <a href="/classes.html">🏫 Classes</a>
 
 </nav>
-<button
-    id="logoutButton"
-    type="button"
-    onclick="logout()"
->
-    🚪 Logout
-</button>
+
 
 <main>
 
-    <h2>📊 Dashboard</h2>
+    <div class="welcome-section">
+        <div>
+            <h2>📊 Dashboard</h2>
+            <p>Welcome to your school management system.</p>
+        </div>
 
-    <div class="stats">
+        <span id="lastUpdated">
+            Updating...
+        </span>
+    </div>
+
+
+    <!-- MAIN STATISTICS -->
+
+    <section class="stats">
 
         <div class="stat-card">
-            <h3>👨‍🎓 Students</h3>
+            <span class="stat-icon">👨‍🎓</span>
+            <h3>Students</h3>
             <p id="studentCount">0</p>
         </div>
 
         <div class="stat-card">
-            <h3>👨‍🏫 Teachers</h3>
+            <span class="stat-icon">👨‍🏫</span>
+            <h3>Teachers</h3>
             <p id="teacherCount">0</p>
         </div>
 
         <div class="stat-card">
-            <h3>🏫 Classes</h3>
+            <span class="stat-icon">🏫</span>
+            <h3>Classes</h3>
             <p id="classCount">0</p>
         </div>
 
-    </div>
+    </section>
 
 
-    <div class="dashboard">
+    <!-- ATTENDANCE -->
+
+    <h2 class="section-title">📅 Today's Attendance</h2>
+
+    <section class="stats">
+
+        <div class="stat-card attendance-present">
+            <span class="stat-icon">✅</span>
+            <h3>Present</h3>
+            <p id="presentCount">0</p>
+        </div>
+
+        <div class="stat-card attendance-absent">
+            <span class="stat-icon">❌</span>
+            <h3>Absent</h3>
+            <p id="absentCount">0</p>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">📈</span>
+            <h3>Attendance</h3>
+            <p id="attendancePercentage">0%</p>
+        </div>
+
+    </section>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <h2 class="section-title">⚡ Quick Actions</h2>
+
+    <section class="dashboard">
 
         <a href="/students.html" class="card">
-            <h3>👨‍🎓 Students</h3>
+            <span class="card-icon">👨‍🎓</span>
+            <h3>Students</h3>
             <p>Manage students</p>
         </a>
 
         <a href="/teachers.html" class="card">
-            <h3>👨‍🏫 Teachers</h3>
+            <span class="card-icon">👨‍🏫</span>
+            <h3>Teachers</h3>
             <p>Manage teachers</p>
         </a>
 
         <a href="/attendance.html" class="card">
-            <h3>📅 Attendance</h3>
+            <span class="card-icon">📅</span>
+            <h3>Attendance</h3>
             <p>Mark attendance</p>
         </a>
 
-        <a href="/fees.html" class="card">
-            <h3>💰 Fees</h3>
-            <p>Manage school fees</p>
+        <a href="/attendance-report.html" class="card">
+            <span class="card-icon">📊</span>
+            <h3>Attendance Report</h3>
+            <p>View attendance history</p>
         </a>
 
         <a href="/classes.html" class="card">
-            <h3>🏫 Classes</h3>
-            <p>Manage classes & sections</p>
+            <span class="card-icon">🏫</span>
+            <h3>Classes</h3>
+            <p>Manage classes</p>
         </a>
 
-<div class="stats">
+    </section>
 
-    <div class="stat-card">
-        <h3>📅 Present Today</h3>
-        <p id="presentCount">0</p>
-    </div>
 
-    <div class="stat-card">
-        <h3>❌ Absent Today</h3>
-        <p id="absentCount">0</p>
-    </div>
+    <!-- RECENT STUDENTS -->
 
-    <div class="stat-card">
-        <h3>📈 Attendance</h3>
-        <p id="attendancePercentage">0%</p>
-    </div>
-<a href="/attendance-report.html" class="card">
+    <h2 class="section-title">👨‍🎓 Recent Students</h2>
 
-    <h3>📊 Attendance Report</h3>
+    <section id="recentStudents" class="dashboard">
+        <p>Loading students...</p>
+    </section>
 
-    <p>
-        View attendance history
-    </p>
 
-</a>
-</div>
-    </div>
-<h2>👨‍🎓 Recent Students</h2>
+    <!-- CLASS SUMMARY -->
 
-<div id="recentStudents" class="dashboard">
-    <p>Loading students...</p>
-</div>
+    <h2 class="section-title">🏫 Class-wise Students</h2>
 
-<h2>🏫 Class-wise Students</h2>
+    <section id="classSummary" class="dashboard">
+        <p>Loading classes...</p>
+    </section>
 
-<div id="classSummary" class="dashboard">
-    <p>Loading classes...</p>
-</div>
+</main>
+
 
 <script>
+
 async function logout() {
 
     try {
 
-        const response =
-            await fetch("/api/logout", {
-                method: "POST"
-            });
+        const response = await fetch("/api/logout", {
+            method: "POST"
+        });
 
-        const result =
-            await response.json();
+        const result = await response.json();
 
         if (result.success) {
-
-            window.location.href =
-                "/login.html";
-
+            window.location.href = "/login.html";
         }
 
     } catch (error) {
 
-        console.log(
-            "Logout error:",
-            error
-        );
+        console.log("Logout error:", error);
 
     }
 
 }
 
+
 async function loadDashboard() {
 
     try {
 
-        // =========================
-        // RECENT STUDENTS
-        // =========================
+        /* =========================
+           STUDENTS
+        ========================= */
 
         const studentsResponse =
             await fetch("/api/students");
@@ -176,10 +200,12 @@ async function loadDashboard() {
         const students =
             await studentsResponse.json();
 
+
         const recentStudents =
             document.getElementById("recentStudents");
 
-        if (students.length === 0) {
+
+        if (!students.length) {
 
             recentStudents.innerHTML =
                 "<p>No students found.</p>";
@@ -187,26 +213,47 @@ async function loadDashboard() {
         } else {
 
             recentStudents.innerHTML =
-                students.slice(-5).reverse().map(student => `
-                    <div class="card">
-                        <h3>👨‍🎓 ${student.name}</h3>
-                        <p>Father: ${student.father}</p>
-                        <p>Class: ${student.className}</p>
-                        <p>Roll No: ${student.roll}</p>
-                    </div>
-                `).join("");
+                students
+                    .slice(0, 5)
+                    .map(student => `
+
+                        <div class="card">
+
+                            <span class="card-icon">
+                                👨‍🎓
+                            </span>
+
+                            <h3>
+                                ${student.name}
+                            </h3>
+
+                            <p>
+                                Class:
+                                ${student.className}
+                            </p>
+
+                            <p>
+                                Roll No:
+                                ${student.roll}
+                            </p>
+
+                        </div>
+
+                    `)
+                    .join("");
 
         }
 
 
-        // =========================
-        // CLASS-WISE STUDENTS
-        // =========================
+        /* =========================
+           CLASS SUMMARY
+        ========================= */
 
         const classSummary =
             document.getElementById("classSummary");
 
-        if (students.length === 0) {
+
+        if (!students.length) {
 
             classSummary.innerHTML =
                 "<p>No student data available.</p>";
@@ -214,6 +261,7 @@ async function loadDashboard() {
         } else {
 
             const classCounts = {};
+
 
             students.forEach(student => {
 
@@ -229,14 +277,32 @@ async function loadDashboard() {
             classSummary.innerHTML =
                 Object.entries(classCounts)
                     .map(([className, count]) => `
+
                         <div class="card">
-                            <h3>🏫 ${className}</h3>
-                            <p>Students: ${count}</p>
+
+                            <span class="card-icon">
+                                🏫
+                            </span>
+
+                            <h3>
+                                ${className}
+                            </h3>
+
+                            <p>
+                                ${count} Student${count !== 1 ? "s" : ""}
+                            </p>
+
                         </div>
+
                     `)
                     .join("");
 
         }
+
+
+        /* =========================
+           DASHBOARD API
+        ========================= */
 
         const response =
             await fetch("/api/dashboard");
@@ -245,50 +311,41 @@ async function loadDashboard() {
             await response.json();
 
 
-        // =========================
-        // BASIC COUNTS
-        // =========================
+        /* COUNTS */
 
         document.getElementById(
             "studentCount"
-        ).textContent = data.students;
+        ).textContent = data.students || 0;
 
 
         document.getElementById(
             "teacherCount"
-        ).textContent = data.teachers;
+        ).textContent = data.teachers || 0;
 
 
         document.getElementById(
             "classCount"
-        ).textContent = data.classes;
+        ).textContent = data.classes || 0;
 
 
-        // =========================
-        // ATTENDANCE
-        // =========================
+        /* =========================
+           ATTENDANCE
+        ========================= */
 
         const present =
-            data.attendance.present || 0;
+            data.attendance?.present || 0;
 
         const total =
-            data.attendance.total || 0;
-
+            data.attendance?.total || 0;
 
         const absent =
             Math.max(total - present, 0);
 
 
-        let percentage = 0;
-
-        if (total > 0) {
-
-            percentage =
-                Math.round(
-                    (present / total) * 100
-                );
-
-        }
+        const percentage =
+            total > 0
+                ? Math.round((present / total) * 100)
+                : 0;
 
 
         document.getElementById(
@@ -307,14 +364,18 @@ async function loadDashboard() {
             percentage + "%";
 
 
-        console.log(
-            "Dashboard loaded:",
-            data
-        );
+        /* =========================
+           LAST UPDATED
+        ========================= */
 
-    }
+        document.getElementById(
+            "lastUpdated"
+        ).textContent =
+            "Updated: " +
+            new Date().toLocaleTimeString();
 
-    catch (error) {
+
+    } catch (error) {
 
         console.log(
             "Dashboard error:",
@@ -326,16 +387,19 @@ async function loadDashboard() {
 }
 
 
-// Load dashboard
+/* INITIAL LOAD */
+
 loadDashboard();
 
 
-// Refresh every 30 seconds
+/* AUTO REFRESH */
+
 setInterval(
     loadDashboard,
     30000
 );
 
 </script>
+
 </body>
 </html>

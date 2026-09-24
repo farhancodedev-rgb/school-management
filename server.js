@@ -713,6 +713,38 @@ if (
             });
         }
 
+
+        // EDIT CLASS
+
+        if (
+            req.method === "PUT" &&
+            req.url.startsWith("/api/classes/")
+        ) {
+            const id =
+                req.url.split("/").pop();
+
+            return readBody(req, (classData) => {
+
+                db.run(
+                    `UPDATE classes
+                     SET className = ?,
+                         section = ?
+                     WHERE id = ?`,
+                    [
+                        classData.className,
+                        classData.section,
+                        id
+                    ]
+                );
+
+                saveDatabase();
+
+                return sendJSON(res, {
+                    message: "Class updated"
+                });
+            });
+        }
+
         if (
             req.method === "DELETE" &&
             req.url.startsWith("/api/classes/")
