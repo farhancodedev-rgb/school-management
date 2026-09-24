@@ -165,7 +165,7 @@ if (
        if (req.method === "GET" && req.url === "/") {
             return sendFile(
                 res,
-                "./public/index.html",
+                "index.html",
                 "text/html"
             );
         }
@@ -173,7 +173,7 @@ if (
         if (req.method === "GET" && req.url === "/login.html") {
             return sendFile(
                 res,
-                "./public/login.html",
+                "login.html",
                 "text/html"
             );
         }
@@ -181,7 +181,7 @@ if (
         if (req.method === "GET" && req.url === "/students.html") {
             return sendFile(
                 res,
-                "./public/students.html",
+                "students.html",
                 "text/html"
             );
         }
@@ -189,7 +189,7 @@ if (
         if (req.method === "GET" && req.url === "/teachers.html") {
             return sendFile(
                 res,
-                "./public/teachers.html",
+                "teachers.html",
                 "text/html"
             );
         }
@@ -197,7 +197,7 @@ if (
         if (req.method === "GET" && req.url === "/attendance.html") {
             return sendFile(
                 res,
-                "./public/attendance.html",
+                "attendance.html",
                 "text/html"
             );
         }
@@ -208,7 +208,7 @@ if (
 ) {
     return sendFile(
         res,
-        "public/attendance-report.html",
+        "attendance-report.html",
         "text/html"
     );
 }
@@ -218,7 +218,7 @@ if (
 ) {
     return sendFile(
         res,
-        "./public/student-attendance.html",
+        "student-attendance.html",
         "text/html"
     );
 }
@@ -226,7 +226,7 @@ if (
         if (req.method === "GET" && req.url === "/fees.html") {
             return sendFile(
                 res,
-                "./public/fees.html",
+                "fees.html",
                 "text/html"
             );
         }
@@ -234,7 +234,7 @@ if (
         if (req.method === "GET" && req.url === "/classes.html") {
             return sendFile(
                 res,
-                "./public/classes.html",
+                "classes.html",
                 "text/html"
             );
         }
@@ -242,7 +242,7 @@ if (
         if (req.method === "GET" && req.url === "/style.css") {
             return sendFile(
                 res,
-                "./public/style.css",
+                "style.css",
                 "text/css"
             );
         }
