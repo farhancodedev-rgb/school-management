@@ -801,6 +801,9 @@ if (
 // =========================
 
 function saveDatabase() {
+    if (process.env.VERCEL) {
+        return;
+    }
 
     const data = db.export();
 
@@ -809,7 +812,6 @@ function saveDatabase() {
         Buffer.from(data)
     );
 }
-
 
 // =========================
 // READ JSON BODY
