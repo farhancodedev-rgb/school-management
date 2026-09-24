@@ -886,10 +886,11 @@ function sendJSON(res, data) {
 // SEND FILE
 // =========================
 
+
 function sendFile(res, file, type) {
+    const filePath = path.join(__dirname, "public", file);
 
-    fs.readFile(file, (err, data) => {
-
+    fs.readFile(filePath, (err, data) => {
         if (err) {
             res.writeHead(404, {
                 "Content-Type":
@@ -900,8 +901,7 @@ function sendFile(res, file, type) {
         }
 
         res.writeHead(200, {
-            "Content-Type":
-                type + "; charset=utf-8"
+            "Content-Type": type
         });
 
         res.end(data);
