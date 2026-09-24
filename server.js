@@ -775,12 +775,17 @@ if (
         res.end("Page not found");
     });
 
-server.listen(process.env.PORT || 3000, () => {
-        console.log(
-            "School website running at http://localhost:3000"
-        );
-    });
+    if (require.main === module) {
+        server.listen(process.env.PORT || 3000, () => {
+            console.log(
+                "School website running at http://localhost:3000"
+            );
+        });
+    }
+
+    return server;
 }
+
 
 
 // =========================
@@ -893,4 +898,4 @@ function sendFile(res, file, type) {
     });
 }
 
-startServer();
+module.exports = startServer;
