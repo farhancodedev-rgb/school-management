@@ -149,7 +149,7 @@ async function isLoggedIn(req) {
 if (
     req.method === "GET" &&
     req.url !== "/login.html" &&
-    !isLoggedIn(req)
+    !(await isLoggedIn(req))
 ) {
     res.writeHead(302, {
         "Location": "/login.html"
