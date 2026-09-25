@@ -12,8 +12,28 @@ const pool = new Pool({
 });
 
 const path = require("path");
-let sessions = new Set();
+async function createSession(sessionId) {
+    await pool.query(
+        "INSERT INTO sessions (id) VALUES ($1)",
+        [sessionId]
+    );
+}
 
+async function hasSession(sessionId) {
+    const result = await pool.query(
+        "SELECT id FROM sessions WHERE id = $1",
+        [sessionId]
+    );
+
+    return result.rowCount > 0;
+}
+
+async function deleteSession(sessionId) {
+    await pool.query(
+        "DELETE FROM sessions WHERE id = $1",
+        [sessionId]
+    );
+}
 async function startServer() {
 
     // =========================
@@ -95,8 +115,10 @@ if (
             const match = cookie.match(/(?:^|;\\s*)session=([^;]+)/);
 
             if (match) {
-                sessions.delete(match[1]);
-            }
+           
+await deleteSession(match[1]);
+
+ }
 
             res.writeHead(302, {
                 "Location": "/login.html",
@@ -105,7 +127,7 @@ if (
             return res.end();
         }
 
-function isLoggedIn(req) {
+async function isLoggedIn(req) {
 
     const cookie = req.headers.cookie || "";
 
@@ -117,8 +139,9 @@ function isLoggedIn(req) {
         return false;
     }
 
-    return sessions.has(match[1]);
+    return await hasSession(match[1]);
 }
+
         // =========================
         // PAGES
         // =========================
@@ -229,7 +252,8 @@ if (
             req.method === "POST" &&
             req.url === "/api/login"
         ) {
-            return readBody(req, (login) => {
+            return readBody(req, async (login) => {
+
 
                 const correctUsername = process.env.ADMIN_USERNAME;
                 const correctPassword = process.env.ADMIN_PASSWORD;
@@ -242,7 +266,7 @@ if (
                     const sessionId =
                         crypto.randomBytes(32).toString("hex");
 
-                    sessions.add(sessionId);
+                    await createSession(sessionId);
 
                     res.writeHead(200, {
                         "Content-Type":
@@ -281,8 +305,10 @@ if (
         );
 
     if (match) {
-        sessions.delete(match[1]);
-    }
+   
+await deleteSession(match[1]);
+
+ }
 
     res.writeHead(200, {
         "Content-Type":
