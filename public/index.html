@@ -1,287 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Management System</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .hero {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 50px 25px;
+            text-align: center;
+        }
 
-    <title>My School - Dashboard</title>
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
 
-    <link rel="stylesheet" href="style.css">
+        .hero p {
+            max-width: 700px;
+            margin: 0 auto 30px;
+            color: var(--school-muted);
+            font-size: 18px;
+        }
+
+        .login-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px 32px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: .2px;
+            box-shadow: 0 10px 25px rgba(37,99,235,.25);
+            transition: all .25s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 14px 30px rgba(124,58,237,.30);
+        }
+
+        .features {
+            max-width: 1100px;
+            margin: 0 auto 50px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .feature-card {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .feature-card h3 {
+            margin: 15px 0 8px;
+        }
+
+        .feature-card p {
+            color: var(--school-muted);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 700px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<header class="dashboard-header">
-    <div>
-        <h1>🎓 My School</h1>
-        <p>School Management Dashboard</p>
-    </div>
+    <section class="hero">
+        <div class="card-icon">🏫</div>
 
-</header>
+        <h1>School Management System</h1>
 
+        <p>
+            A simple and modern system for managing students,
+            teachers, attendance, classes, reports and fees.
+        </p>
 
-<nav class="main-nav">
-
-    <a href="/" class="active">🏠 Dashboard</a>
-    <a href="/students.html">👨‍🎓 Students</a>
-    <a href="/teachers.html">👨‍🏫 Teachers</a>
-    <a href="/attendance.html">📅 Attendance</a>
-    <a href="/attendance-report.html">📊 Reports</a>
-    <a href="/classes.html">🏫 Classes</a>
-<a href="/fees.html">💰 Fees</a>
-    <a id="navLogout" href="/logout">🚪 Logout</a>
-
-</nav>
-
-
-<main>
-
-    <div class="welcome-section">
-        <div>
-            <h2>📊 Dashboard</h2>
-            <p>Welcome to your school management system.</p>
-        </div>
-
-        <span id="lastUpdated">
-            Updating...
-        </span>
-    </div>
-
-
-    <!-- MAIN STATISTICS -->
-
-    <section class="stats">
-
-        <div class="stat-card">
-            <span class="stat-icon">👨‍🎓</span>
-            <h3>Students</h3>
-            <p id="studentCount">0</p>
-        </div>
-
-        <div class="stat-card">
-            <span class="stat-icon">👨‍🏫</span>
-            <h3>Teachers</h3>
-            <p id="teacherCount">0</p>
-        </div>
-
-        <div class="stat-card">
-            <span class="stat-icon">🏫</span>
-            <h3>Classes</h3>
-            <p id="classCount">0</p>
-        </div>
-
+        <a href="/login.html" class="login-btn">
+            🔐 Admin Login
+        </a>
     </section>
 
+    <section class="features">
 
-    <!-- ATTENDANCE -->
-
-    <h2 class="section-title">📅 Today's Attendance</h2>
-
-    <section class="stats">
-
-        <div class="stat-card attendance-present">
-            <span class="stat-icon">✅</span>
-            <h3>Present</h3>
-            <p id="presentCount">0</p>
+        <div class="card feature-card">
+            <div class="card-icon">👨‍🎓</div>
+            <h3>Students Management</h3>
+            <p>
+                Add, edit and manage student records easily.
+            </p>
         </div>
 
-        <div class="stat-card attendance-absent">
-            <span class="stat-icon">❌</span>
-            <h3>Absent</h3>
-            <p id="absentCount">0</p>
+        <div class="card feature-card">
+            <div class="card-icon">👨‍🏫</div>
+            <h3>Teachers Management</h3>
+            <p>
+                Manage teacher information and subjects.
+            </p>
         </div>
 
-        <div class="stat-card">
-            <span class="stat-icon">📈</span>
+        <div class="card feature-card">
+            <div class="card-icon">📋</div>
             <h3>Attendance</h3>
-            <p id="attendancePercentage">0%</p>
+            <p>
+                Record and manage daily student attendance.
+            </p>
+        </div>
+
+        <div class="card feature-card">
+            <div class="card-icon">📊</div>
+            <h3>Attendance Reports</h3>
+            <p>
+                View attendance records and student history.
+            </p>
+        </div>
+
+        <div class="card feature-card">
+            <div class="card-icon">🏷️</div>
+            <h3>Classes Management</h3>
+            <p>
+                Organize classes and sections in one place.
+            </p>
+        </div>
+
+        <div class="card feature-card">
+            <div class="card-icon">💰</div>
+            <h3>Fees Management</h3>
+            <p>
+                Record fees, payments and remaining balances.
+            </p>
         </div>
 
     </section>
-
-
-    <!-- QUICK ACTIONS -->
-
-    <h2 class="section-title">⚡ Quick Actions</h2>
-
-    <section class="dashboard">
-
-        <a href="/students.html" class="card">
-            <span class="card-icon">👨‍🎓</span>
-            <h3>Students</h3>
-            <p>Manage students</p>
-        </a>
-
-        <a href="/teachers.html" class="card">
-            <span class="card-icon">👨‍🏫</span>
-            <h3>Teachers</h3>
-            <p>Manage teachers</p>
-        </a>
-
-        <a href="/attendance.html" class="card">
-            <span class="card-icon">📅</span>
-            <h3>Attendance</h3>
-            <p>Mark attendance</p>
-        </a>
-
-        <a href="/attendance-report.html" class="card">
-            <span class="card-icon">📊</span>
-            <h3>Attendance Report</h3>
-            <p>View attendance history</p>
-        </a>
-
-        <a href="/classes.html" class="card">
-            <span class="card-icon">🏫</span>
-            <h3>Classes</h3>
-            <p>Manage classes</p>
-        </a>
-
-<a href="/fees.html" class="card">
-    <span class="card-icon">💰</span>
-    <h3>Fees</h3>
-    <p>Manage fee payments</p>
-</a>
-
-    </section>
-
-
-
-
-</main>
-
-
-<script>
-
-async function logout() {
-
-    try {
-
-        const response = await fetch("/api/logout", {
-            method: "POST"
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            window.location.href = "/login.html";
-        }
-
-    } catch (error) {
-
-        console.log("Logout error:", error);
-
-    }
-
-}
-
-
-async function loadDashboard() {
-
-    try {
-
-
-
-        /* =========================
-           DASHBOARD API
-        ========================= */
-
-        const response =
-            await fetch("/api/dashboard");
-
-        const data =
-            await response.json();
-
-
-        /* COUNTS */
-
-        document.getElementById(
-            "studentCount"
-        ).textContent = data.students || 0;
-
-
-        document.getElementById(
-            "teacherCount"
-        ).textContent = data.teachers || 0;
-
-
-        document.getElementById(
-            "classCount"
-        ).textContent = data.classes || 0;
-
-
-        /* =========================
-           ATTENDANCE
-        ========================= */
-
-        const present =
-            data.attendance?.present || 0;
-
-        const total =
-            data.attendance?.total || 0;
-
-        const absent =
-            Math.max(total - present, 0);
-
-
-        const percentage =
-            total > 0
-                ? Math.round((present / total) * 100)
-                : 0;
-
-
-        document.getElementById(
-            "presentCount"
-        ).textContent = present;
-
-
-        document.getElementById(
-            "absentCount"
-        ).textContent = absent;
-
-
-        document.getElementById(
-            "attendancePercentage"
-        ).textContent =
-            percentage + "%";
-
-
-        /* =========================
-           LAST UPDATED
-        ========================= */
-
-        document.getElementById(
-            "lastUpdated"
-        ).textContent =
-            "Updated: " +
-            new Date().toLocaleTimeString();
-
-
-    } catch (error) {
-
-        console.log(
-            "Dashboard error:",
-            error
-        );
-
-    }
-
-}
-
-
-/* INITIAL LOAD */
-
-loadDashboard();
-
-
-/* AUTO REFRESH */
-
-setInterval(
-    loadDashboard,
-    30000
-);
-
-</script>
 
 </body>
 </html>

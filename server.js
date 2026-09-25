@@ -148,7 +148,7 @@ async function isLoggedIn(req) {
 
 if (
     req.method === "GET" &&
-    req.url !== "/login.html" &&
+    req.url !== "/login.html" && req.url !== "/" &&
     !(await isLoggedIn(req))
 ) {
     res.writeHead(302, {
@@ -165,6 +165,10 @@ if (
                 "text/html"
             );
         }
+
+    if (req.method === "GET" && req.url === "/dashboard.html") {
+        return sendFile(res, "dashboard.html", "text/html");
+    }
 
         if (req.method === "GET" && req.url === "/login.html") {
             return sendFile(

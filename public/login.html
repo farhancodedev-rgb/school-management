@@ -1,209 +1,433 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Admin Login - My School</title>
+    <title>Login - School Management</title>
 
-    <link rel="stylesheet" href="style.css?v=2">
-<style>
-.login-page {
-    min-height: 100vh;
-    margin: 0;
-    background: #0f172a;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-}
+    <link rel="stylesheet" href="/style.css">
 
-.login-page::before,
-.login-page::after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(2px);
-    opacity: .35;
-    animation: floatCircle 6s ease-in-out infinite;
-}
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-.login-page::before {
-    width: 220px;
-    height: 220px;
-    background: #6366f1;
-    top: -80px;
-    left: -70px;
-}
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+        }
 
-.login-page::after {
-    width: 260px;
-    height: 260px;
-    background: #06b6d4;
-    right: -100px;
-    bottom: -100px;
-    animation-delay: 2s;
-}
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
 
-.login-page header {
-    background: transparent;
-    text-align: center;
-    box-shadow: none;
-    padding: 0 20px 18px;
-    position: relative;
-    z-index: 2;
-}
+        .login-container {
+            width: 100%;
+            max-width: 950px;
+            min-height: 570px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 25px 70px rgba(15, 23, 42, .15);
+        }
 
-.login-page header h1 {
-    margin: 0;
-    font-size: 30px;
-    color: white;
-}
+        /* LEFT SIDE */
 
-.login-page header p {
-    margin-top: 6px;
-    color: #cbd5e1;
-}
+        .login-info {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 42px;
+            color: white;
+            background:
+                linear-gradient(
+                    145deg,
+                    #0f172a,
+                    #1e3a8a
+                );
+        }
 
-.login-page main {
-    width: 100%;
-    max-width: 390px;
-    padding: 15px;
-    position: relative;
-    z-index: 2;
-}
+        .login-info::after {
+            content: "";
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            right: -90px;
+            bottom: -90px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.08);
+        }
 
-.login-page form {
-    margin: 0;
-    padding: 30px;
-    border-radius: 24px;
-    background: rgba(255,255,255,.10);
-    border: 1px solid rgba(255,255,255,.20);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    box-shadow: 0 25px 60px rgba(0,0,0,.35);
-    animation: loginAppear .7s ease;
-}
+        .logo {
+            width: 62px;
+            height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.18);
+            font-size: 30px;
+        }
 
-.login-page h2 {
-    color: white;
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 22px;
-}
+        .login-info h1 {
+            max-width: 360px;
+            margin: 35px 0 15px;
+            font-size: 42px;
+            line-height: 1.1;
+        }
 
-.login-page input {
-    background: rgba(255,255,255,.10);
-    color: white;
-    border: 1px solid rgba(255,255,255,.25);
-    border-radius: 12px;
-    padding: 13px;
-    box-sizing: border-box;
-}
+        .login-info p {
+            max-width: 350px;
+            color: #cbd5e1;
+            line-height: 1.7;
+            font-size: 15px;
+        }
 
-.login-page input::placeholder {
-    color: #cbd5e1;
-}
+        .feature-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 30px;
+        }
 
-.login-page input:focus {
-    border-color: #818cf8;
-    box-shadow: 0 0 0 3px rgba(129,140,248,.18);
-    transform: none;
-}
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #e2e8f0;
+            font-size: 14px;
+        }
 
-.login-page button {
-    width: 100%;
-    margin: 6px 0 0;
-    border-radius: 12px;
-    padding: 13px;
-    background: linear-gradient(135deg,#6366f1,#06b6d4);
-    border: none;
-    box-shadow: 0 8px 20px rgba(6,182,212,.25);
-    transition: .25s ease;
-}
+        /* RIGHT SIDE */
 
-.login-page button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(6,182,212,.4);
-}
+        .login-form-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 45px;
+        }
 
-.login-page button:active {
-    transform: scale(.97);
-}
+        .login-form {
+            width: 100%;
+            max-width: 360px;
+        }
 
-@keyframes loginAppear {
-    from {
-        opacity: 0;
-        transform: translateY(25px) scale(.96);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
+        .login-form h2 {
+            margin: 0 0 8px;
+            font-size: 30px;
+        }
 
-@keyframes floatCircle {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(25px); }
-}
+        .login-form .subtitle {
+            margin: 0 0 30px;
+            color: #64748b;
+            font-size: 14px;
+        }
 
-@media (max-width:600px) {
-    .login-page header h1 {
-        font-size: 26px;
-    }
+        .input-group {
+            margin-bottom: 20px;
+        }
 
-    .login-page main {
-        padding: 12px;
-    }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #334155;
+        }
 
-    .login-page form {
-        padding: 24px;
-    }
-}
-</style>
+        .input-wrapper {
+            position: relative;
+        }
+
+
+        .input-wrapper input {
+            width: 100%;
+            height: 54px;
+            padding: 0 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            background: #f8fafc;
+            font-size: 15px;
+            outline: none;
+            transition: .2s ease;
+        }
+
+        .input-wrapper input:focus {
+            background: white;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37,99,235,.10);
+        }
+
+        .login-button {
+            width: 100%;
+            height: 54px;
+            margin-top: 5px;
+            border: 0;
+            border-radius: 12px;
+            background: #2563eb;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .login-button:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        #message {
+            min-height: 22px;
+            margin-top: 14px;
+            text-align: center;
+            color: #dc2626;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .home-link {
+            display: block;
+            margin-top: 25px;
+            text-align: center;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .home-link:hover {
+            color: #2563eb;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 700px) {
+
+            .login-page {
+                padding: 0;
+                align-items: stretch;
+            }
+
+            .login-container {
+                min-height: 100vh;
+                display: block;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .login-info {
+                min-height: 250px;
+                padding: 28px 22px;
+                justify-content: flex-start;
+            }
+
+            .login-info h1 {
+                margin: 20px 0 8px;
+                font-size: 30px;
+            }
+
+            .login-info p {
+                margin: 0;
+                font-size: 13px;
+            }
+
+            .feature-list {
+                display: none;
+            }
+
+            .logo {
+                width: 52px;
+                height: 52px;
+                font-size: 25px;
+                border-radius: 15px;
+            }
+
+            .login-form-area {
+                padding: 32px 22px 28px;
+                align-items: flex-start;
+            }
+
+            .login-form h2 {
+                font-size: 26px;
+            }
+
+            .login-form .subtitle {
+                margin-bottom: 25px;
+            }
+
+            .input-wrapper input,
+            .login-button {
+                height: 56px;
+            }
+        }
+
+        @media (max-width: 360px) {
+
+            .login-info {
+                min-height: 225px;
+                padding: 24px 18px;
+            }
+
+            .login-info h1 {
+                font-size: 26px;
+            }
+
+            .login-form-area {
+                padding: 28px 18px;
+            }
+        }
+    </style>
 </head>
 
-<body class="login-page">
+<body>
 
-<header>
-    <h1>🎓 My School</h1>
-    <p>Admin Login</p>
-</header>
+<div class="login-page">
 
-<main>
+    <div class="login-container">
 
-    <h2>🔐 Login</h2>
+        <section class="login-info">
 
-    <form id="loginForm">
+            <div>
+                <div class="logo">🏫</div>
 
-        <input
-            type="text"
-            id="username"
-            placeholder="Username"
-            required
-        >
+                <h1>
+                    School<br>
+                    Management
+                </h1>
 
-        <input
-            type="password"
-            id="password"
-            placeholder="Password"
-            required
-        >
+                <p>
+                    Manage your school from one simple,
+                    organized dashboard.
+                </p>
+            </div>
 
-        <button type="submit">
-            🔑 Login
-        </button>
+            <div class="feature-list">
 
-    </form>
+                <div class="feature-item">
+                    ✓ Student management
+                </div>
 
-</main>
+                <div class="feature-item">
+                    ✓ Attendance tracking
+                </div>
+
+                <div class="feature-item">
+                    ✓ Fees and reports
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="login-form-area">
+
+            <form class="login-form" id="loginForm">
+
+                <h2>Welcome back</h2>
+
+                <p class="subtitle">
+                    Sign in to access your admin dashboard.
+                </p>
+
+
+                <div class="input-group">
+
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Enter username"
+                            autocomplete="username"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="login-button"
+                >
+                    Login to Dashboard
+                </button>
+
+                <div id="message"></div>
+
+                <a
+                    href="/"
+                    class="home-link"
+                >
+                    ← Back to website
+                </a>
+
+            </form>
+
+        </section>
+
+    </div>
+
+</div>
+
 
 <script>
 
 const loginForm =
     document.getElementById("loginForm");
+
+const message =
+    document.getElementById("message");
+
 
 loginForm.addEventListener(
     "submit",
@@ -211,47 +435,63 @@ loginForm.addEventListener(
 
         event.preventDefault();
 
+        message.textContent = "Signing in...";
+
         const username =
-            document.getElementById(
-                "username"
-            ).value;
+            document.getElementById("username").value;
 
         const password =
-            document.getElementById(
-                "password"
-            ).value;
+            document.getElementById("password").value;
 
-        const response =
-            await fetch("/api/login", {
 
-                method: "POST",
+        try {
 
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
+            const response =
+                await fetch("/api/login", {
 
-                body: JSON.stringify({
-                    username,
-                    password
-                })
-            });
+                    method: "POST",
 
-        const result =
-            await response.json();
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-        if (result.success) {
+                    body: JSON.stringify({
+                        username,
+                        password
+                    })
+                });
 
-            alert("Login successful! ✅");
 
-            window.location.href = "/";
+            const result =
+                await response.json();
 
-        } else {
 
-            alert(
-                "Wrong username or password ❌"
+            if (result.success) {
+
+                window.location.href =
+                    "/dashboard.html";
+
+            } else {
+
+                message.textContent =
+                    result.message ||
+                    "Invalid username or password.";
+
+            }
+
+        } catch (error) {
+
+            console.log(
+                "Login error:",
+                error
             );
+
+            message.textContent =
+                "Unable to connect to server.";
+
         }
+
     }
 );
 

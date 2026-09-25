@@ -1,7 +1,7 @@
 
 /* Dynamic Back to Dashboard */
 function goToDashboard() {
-    window.location.href = "/";
+    window.location.href = "/dashboard.html";
 }
 
 /* Global Logout */

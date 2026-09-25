@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My School - Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="dashboard-header">
+    <div>
+        <h1>🎓 My School</h1>
+        <p>School Management Dashboard</p>
+    </div>
+
+</header>
+
+
+<nav class="main-nav">
+
+    <a href="/dashboard.html" class="active">🏠 Dashboard</a>
+    <a href="/students.html">👨‍🎓 Students</a>
+    <a href="/teachers.html">👨‍🏫 Teachers</a>
+    <a href="/attendance.html">📅 Attendance</a>
+    <a href="/attendance-report.html">📊 Reports</a>
+    <a href="/classes.html">🏫 Classes</a>
+<a href="/fees.html">💰 Fees</a>
+    <a id="navLogout" href="/logout">🚪 Logout</a>
+
+</nav>
+
+
+<main>
+
+    <div class="welcome-section">
+        <div>
+            <h2>📊 Dashboard</h2>
+            <p>Welcome to your school management system.</p>
+        </div>
+
+        <span id="lastUpdated">
+            Updating...
+        </span>
+    </div>
+
+
+    <!-- MAIN STATISTICS -->
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <span class="stat-icon">👨‍🎓</span>
+            <h3>Students</h3>
+            <p id="studentCount">0</p>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">👨‍🏫</span>
+            <h3>Teachers</h3>
+            <p id="teacherCount">0</p>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">🏫</span>
+            <h3>Classes</h3>
+            <p id="classCount">0</p>
+        </div>
+
+    </section>
+
+
+    <!-- ATTENDANCE -->
+
+    <h2 class="section-title">📅 Today's Attendance</h2>
+
+    <section class="stats">
+
+        <div class="stat-card attendance-present">
+            <span class="stat-icon">✅</span>
+            <h3>Present</h3>
+            <p id="presentCount">0</p>
+        </div>
+
+        <div class="stat-card attendance-absent">
+            <span class="stat-icon">❌</span>
+            <h3>Absent</h3>
+            <p id="absentCount">0</p>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">📈</span>
+            <h3>Attendance</h3>
+            <p id="attendancePercentage">0%</p>
+        </div>
+
+    </section>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <h2 class="section-title">⚡ Quick Actions</h2>
+
+    <section class="dashboard">
+
+        <a href="/students.html" class="card">
+            <span class="card-icon">👨‍🎓</span>
+            <h3>Students</h3>
+            <p>Manage students</p>
+        </a>
+
+        <a href="/teachers.html" class="card">
+            <span class="card-icon">👨‍🏫</span>
+            <h3>Teachers</h3>
+            <p>Manage teachers</p>
+        </a>
+
+        <a href="/attendance.html" class="card">
+            <span class="card-icon">📅</span>
+            <h3>Attendance</h3>
+            <p>Mark attendance</p>
+        </a>
+
+        <a href="/attendance-report.html" class="card">
+            <span class="card-icon">📊</span>
+            <h3>Attendance Report</h3>
+            <p>View attendance history</p>
+        </a>
+
+        <a href="/classes.html" class="card">
+            <span class="card-icon">🏫</span>
+            <h3>Classes</h3>
+            <p>Manage classes</p>
+        </a>
+
+<a href="/fees.html" class="card">
+    <span class="card-icon">💰</span>
+    <h3>Fees</h3>
+    <p>Manage fee payments</p>
+</a>
+
+    </section>
+
+
+
+
+</main>
+
+
+<script>
+
+async function logout() {
+
+    try {
+
+        const response = await fetch("/api/logout", {
+            method: "POST"
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            window.location.href = "/login.html";
+        }
+
+    } catch (error) {
+
+        console.log("Logout error:", error);
+
+    }
+
+}
+
+
+async function loadDashboard() {
+
+    try {
+
+
+
+        /* =========================
+           DASHBOARD API
+        ========================= */
+
+        const response =
+            await fetch("/api/dashboard");
+
+        const data =
+            await response.json();
+
+
+        /* COUNTS */
+
+        document.getElementById(
+            "studentCount"
+        ).textContent = data.students || 0;
+
+
+        document.getElementById(
+            "teacherCount"
+        ).textContent = data.teachers || 0;
+
+
+        document.getElementById(
+            "classCount"
+        ).textContent = data.classes || 0;
+
+
+        /* =========================
+           ATTENDANCE
+        ========================= */
+
+        const present =
+            data.attendance?.present || 0;
+
+        const total =
+            data.attendance?.total || 0;
+
+        const absent =
+            Math.max(total - present, 0);
+
+
+        const percentage =
+            total > 0
+                ? Math.round((present / total) * 100)
+                : 0;
+
+
+        document.getElementById(
+            "presentCount"
+        ).textContent = present;
+
+
+        document.getElementById(
+            "absentCount"
+        ).textContent = absent;
+
+
+        document.getElementById(
+            "attendancePercentage"
+        ).textContent =
+            percentage + "%";
+
+
+        /* =========================
+           LAST UPDATED
+        ========================= */
+
+        document.getElementById(
+            "lastUpdated"
+        ).textContent =
+            "Updated: " +
+            new Date().toLocaleTimeString();
+
+
+    } catch (error) {
+
+        console.log(
+            "Dashboard error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* INITIAL LOAD */
+
+loadDashboard();
+
+
+/* AUTO REFRESH */
+
+setInterval(
+    loadDashboard,
+    30000
+);
+
+</script>
+
+</body>
+</html>
