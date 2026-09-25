@@ -145,14 +145,6 @@
 
     </section>
 
-<!-- RECENT STUDENTS -->
-
-<h2 class="section-title">👨‍🎓 Recent Students</h2>
-
-<section id="recentStudents" class="dashboard">
-    <p>Loading students...</p>
-</section>
-
 
 <!-- CLASS SUMMARY -->
 
@@ -205,49 +197,6 @@ async function loadDashboard() {
         const students =
             await studentsResponse.json();
 
-
-        const recentStudents =
-            document.getElementById("recentStudents");
-
-
-        if (!students.length) {
-
-            recentStudents.innerHTML =
-                "<p>No students found.</p>";
-
-        } else {
-
-            recentStudents.innerHTML =
-                students
-                    .slice(0, 5)
-                    .map(student => `
-
-                        <div class="card">
-
-                            <span class="card-icon">
-                                👨‍🎓
-                            </span>
-
-                            <h3>
-                                ${student.name}
-                            </h3>
-
-                            <p>
-                                Class:
-                                ${student.className}
-                            </p>
-
-                            <p>
-                                Roll No:
-                                ${student.roll}
-                            </p>
-
-                        </div>
-
-                    `)
-                    .join("");
-
-        }
 
 
         /* =========================

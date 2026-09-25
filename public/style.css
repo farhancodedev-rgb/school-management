@@ -1258,3 +1258,8 @@ body:has(#loginForm) button:hover {
         padding: 10px 8px;
     }
 }
+
+
+cd ~/school-management
+
+cat >> public/style.css <<'EOF'
