@@ -965,18 +965,6 @@ server.listen(process.env.PORT || 3000, () => {
 // SAVE DATABASE
 // =========================
 
-function saveDatabase() {
-    if (process.env.VERCEL) {
-        return;
-    }
-
-    const data = db.export();
-
-    fs.writeFileSync(
-        "school.db",
-        Buffer.from(data)
-    );
-}
 
 // =========================
 // READ JSON BODY
