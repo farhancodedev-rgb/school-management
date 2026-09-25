@@ -18,9 +18,6 @@
         <p>School Management Dashboard</p>
     </div>
 
-    <button id="logoutButton" onclick="logout()">
-        🚪 Logout
-    </button>
 </header>
 
 
@@ -32,6 +29,8 @@
     <a href="/attendance.html">📅 Attendance</a>
     <a href="/attendance-report.html">📊 Reports</a>
     <a href="/classes.html">🏫 Classes</a>
+<a href="/fees.html">💰 Fees</a>
+    <a id="navLogout" href="/logout">🚪 Logout</a>
 
 </nav>
 
@@ -138,25 +137,31 @@
             <p>Manage classes</p>
         </a>
 
+<a href="/fees.html" class="card">
+    <span class="card-icon">💰</span>
+    <h3>Fees</h3>
+    <p>Manage fee payments</p>
+</a>
+
     </section>
 
+<!-- RECENT STUDENTS -->
 
-    <!-- RECENT STUDENTS -->
+<h2 class="section-title">👨‍🎓 Recent Students</h2>
 
-    <h2 class="section-title">👨‍🎓 Recent Students</h2>
-
-    <section id="recentStudents" class="dashboard">
-        <p>Loading students...</p>
-    </section>
+<section id="recentStudents" class="dashboard">
+    <p>Loading students...</p>
+</section>
 
 
-    <!-- CLASS SUMMARY -->
+<!-- CLASS SUMMARY -->
 
-    <h2 class="section-title">🏫 Class-wise Students</h2>
+<h2 class="section-title">🏫 Class-wise Students</h2>
 
-    <section id="classSummary" class="dashboard">
-        <p>Loading classes...</p>
-    </section>
+<section id="classSummary" class="dashboard">
+    <p>Loading classes...</p>
+</section>
+
 
 </main>
 

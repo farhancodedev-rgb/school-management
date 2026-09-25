@@ -3,3 +3,17 @@ school.db
 *.backup
 *.save
 server-incomplete.js
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Sensitive local files
+cookies.txt
+server-log.txt
+test-db.js
+
+# Backup / temporary files
+*-backup.*
+*.tmp

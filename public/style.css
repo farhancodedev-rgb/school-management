@@ -620,3 +620,641 @@ footer {
         padding: 15px;
     }
 }
+
+/* =========================
+   FEE LIST
+========================= */
+
+.fee-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.fee-card {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+.fee-card h3 {
+    margin-top: 0;
+}
+
+.fee-info {
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+@media (max-width: 650px) {
+    .fee-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* =========================
+   DYNAMIC LOGOUT BUTTON
+========================= */
+
+#logoutButton {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 9999;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(220, 38, 38, 0.30);
+    transition: all 0.25s ease;
+}
+
+#logoutButton:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 10px 25px rgba(220, 38, 38, 0.40);
+}
+
+#logoutButton:active {
+    transform: scale(0.96);
+}
+
+@media (max-width: 600px) {
+    #logoutButton {
+        top: 12px;
+        right: 12px;
+        padding: 9px 13px;
+        font-size: 13px;
+    }
+}
+
+#logoutButton {
+    animation: logoutPulse 2.5s infinite;
+}
+
+@keyframes logoutPulse {
+    0%, 100% {
+        box-shadow: 0 6px 18px rgba(220, 38, 38, 0.30);
+    }
+    50% {
+        box-shadow: 0 6px 24px rgba(220, 38, 38, 0.60);
+    }
+}
+
+#logoutButton {
+    position: static;
+    padding: 7px 11px;
+    font-size: 12px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+}
+
+#logoutButton:hover {
+    transform: translateY(-1px) scale(1.02);
+}
+
+#logoutButton:active {
+    transform: scale(0.96);
+}
+
+.dashboard-header {
+    position: relative;
+}
+
+#logoutButton {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 6px 10px;
+    font-size: 11px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    box-shadow: 0 3px 10px rgba(79, 70, 229, 0.25);
+}
+
+#logoutButton:hover {
+    transform: translateY(-1px) scale(1.03);
+}
+
+/* =========================
+   DYNAMIC DASHBOARD
+========================= */
+
+.dashboard-header {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+        135deg,
+        #0f172a,
+        #1d4ed8,
+        #4f46e5
+    );
+    background-size: 200% 200%;
+    animation: dashboardGradient 8s ease infinite;
+    border-radius: 0 0 22px 22px;
+}
+
+.dashboard-header::before {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    top: -80px;
+    right: 20%;
+    animation: dashboardFloat 5s ease-in-out infinite;
+}
+
+.dashboard-header h1,
+.dashboard-header p,
+#logoutButton {
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes dashboardGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes dashboardFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(18px);
+    }
+}
+
+
+/* =========================
+   NEW LOGOUT DESIGN
+========================= */
+
+#logoutButton {
+    top: 14px;
+    right: 14px;
+    padding: 7px 12px;
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 20px;
+    background: rgba(255,255,255,0.14);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    transition: all 0.25s ease;
+}
+
+#logoutButton:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.22);
+}
+
+#logoutButton:active {
+    transform: scale(0.94);
+}
+
+@media (max-width: 600px) {
+    .dashboard-header {
+        border-radius: 0 0 18px 18px;
+    }
+
+    #logoutButton {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+}
+
+/* =========================
+   ALL PAGE HEADERS
+========================= */
+
+.dashboard-header {
+    position: relative;
+    overflow: hidden;
+    background-size: 200% 200%;
+    animation: dashboardGradient 8s ease infinite;
+    border-radius: 0 0 22px 22px;
+}
+
+.dashboard-header::before {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    top: -80px;
+    right: 20%;
+    animation: dashboardFloat 5s ease-in-out infinite;
+}
+
+.dashboard-header > div {
+    position: relative;
+    z-index: 2;
+}
+
+@media (max-width: 600px) {
+    .dashboard-header {
+        border-radius: 0 0 18px 18px;
+    }
+}
+
+#logoutButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 9px;
+    font-size: 10px;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.45);
+    color: white;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+#logoutButton:hover {
+    background: rgba(255,255,255,0.12);
+    transform: scale(1.03);
+    box-shadow: none;
+}
+
+@media (max-width: 600px) {
+    #logoutButton {
+        top: 8px;
+        right: 8px;
+        padding: 4px 8px;
+        font-size: 9px;
+    }
+}
+
+/* =========================
+   DYNAMIC LOGIN PAGE
+========================= */
+
+body:has(#loginForm) {
+    min-height: 100vh;
+    background: linear-gradient(
+        135deg,
+        #0f172a,
+        #1e3a8a,
+        #4f46e5
+    );
+    background-size: 200% 200%;
+    animation: loginBackground 10s ease infinite;
+}
+
+body:has(#loginForm) header {
+    background: transparent;
+    box-shadow: none;
+    text-align: center;
+    padding-top: 55px;
+}
+
+body:has(#loginForm) header h1 {
+    font-size: 32px;
+    animation: loginTitle 1s ease;
+}
+
+body:has(#loginForm) header p {
+    opacity: 0.85;
+}
+
+body:has(#loginForm) main {
+    max-width: 430px;
+    margin: 25px auto;
+}
+
+body:has(#loginForm) main h2 {
+    color: #0f172a;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+body:has(#loginForm) form {
+    padding: 28px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.96);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    animation: loginCard 0.7s ease;
+}
+
+body:has(#loginForm) input {
+    border-radius: 12px;
+    padding: 14px;
+    transition: 0.25s ease;
+}
+
+body:has(#loginForm) input:focus {
+    transform: translateY(-2px);
+}
+
+body:has(#loginForm) button {
+    width: 100%;
+    margin: 8px 0 0;
+    border-radius: 12px;
+    padding: 13px;
+    background: linear-gradient(
+        135deg,
+        #4f46e5,
+        #2563eb
+    );
+    transition: 0.25s ease;
+}
+
+body:has(#loginForm) button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37,99,235,0.35);
+}
+
+@keyframes loginBackground {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes loginCard {
+    from {
+        opacity: 0;
+        transform: translateY(25px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes loginTitle {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 600px) {
+    body:has(#loginForm) header {
+        padding-top: 35px;
+    }
+
+    body:has(#loginForm) header h1 {
+        font-size: 27px;
+    }
+
+    body:has(#loginForm) main {
+        padding: 12px;
+        margin-top: 10px;
+    }
+
+    body:has(#loginForm) form {
+        padding: 22px;
+    }
+}
+
+
+/* =========================
+   LOGIN PAGE - FINAL DYNAMIC DESIGN
+========================= */
+
+.login-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #020617, #1e3a8a, #6366f1);
+    background-size: 300% 300%;
+    animation: loginBackground 8s ease infinite;
+}
+
+.login-page header {
+    background: transparent;
+    text-align: center;
+    box-shadow: none;
+    padding: 50px 20px 20px;
+}
+
+.login-page header h1 {
+    font-size: 32px;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.login-page main {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 15px;
+}
+
+.login-page form {
+    background: rgba(255,255,255,0.96);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+    animation: loginCard 0.8s ease;
+}
+
+.login-page h2 {
+    text-align: center;
+}
+
+.login-page input {
+    border-radius: 14px;
+    padding: 14px;
+}
+
+.login-page button {
+    width: 100%;
+    border-radius: 14px;
+    padding: 13px;
+    background: linear-gradient(135deg, #6366f1, #2563eb);
+    box-shadow: 0 8px 20px rgba(37,99,235,0.3);
+}
+
+.login-page button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(37,99,235,0.45);
+}
+
+@media (max-width: 600px) {
+    .login-page header {
+        padding-top: 35px;
+    }
+
+    .login-page header h1 {
+        font-size: 27px;
+    }
+
+    .login-page form {
+        padding: 22px;
+    }
+}
+
+/* Modern Dashboard Design */
+.dashboard-header {
+    position: relative;
+    overflow: hidden;
+    background: #0f172a;
+    min-height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 0 0 28px 28px;
+}
+
+.dashboard-header::before,
+.dashboard-header::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(2px);
+    opacity: .35;
+    animation: dashboardFloat 6s ease-in-out infinite;
+}
+
+.dashboard-header::before {
+    width: 220px;
+    height: 220px;
+    background: #6366f1;
+    top: -100px;
+    left: -70px;
+}
+
+.dashboard-header::after {
+    width: 260px;
+    height: 260px;
+    background: #06b6d4;
+    right: -100px;
+    bottom: -130px;
+    animation-delay: 2s;
+}
+
+.dashboard-header > div {
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard-header h1 {
+    color: white;
+    font-size: 30px;
+    margin: 0;
+}
+
+.dashboard-header p {
+    color: #cbd5e1;
+    margin-top: 8px;
+}
+
+#navLogout {
+    border: 1px solid rgba(255,255,255,.25);
+    background: rgba(255,255,255,.08);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: .25s ease;
+}
+
+#navLogout:hover {
+    background: rgba(255,255,255,.18);
+    transform: translateY(-2px);
+}
+
+@keyframes dashboardFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(25px);
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-header {
+        min-height: 135px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 26px;
+    }
+
+    .dashboard-header p {
+        font-size: 13px;
+    }
+
+    #navLogout {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+}
+
+/* Modern navigation for all dashboard-style pages */
+.dashboard-header + .main-nav {
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid rgba(255,255,255,.08);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 16px;
+    margin: 12px;
+    padding: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.15);
+}
+
+.dashboard-header + .main-nav a,
+.dashboard-header + .main-nav #navLogout {
+    border-radius: 10px;
+    transition: .25s ease;
+}
+
+.dashboard-header + .main-nav a:hover,
+.dashboard-header + .main-nav #navLogout:hover {
+    transform: translateY(-2px);
+}
+
+/* Fix Fees navigation size */
+.main-nav a,
+.main-nav #navLogout {
+    box-sizing: border-box;
+    font-size: 14px;
+    padding: 10px 14px;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.main-nav {
+    align-items: center;
+}
+
+@media (max-width: 600px) {
+    .main-nav a,
+    .main-nav #navLogout {
+        font-size: 13px;
+        padding: 10px 8px;
+    }
+}

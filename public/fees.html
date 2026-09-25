@@ -9,10 +9,33 @@
 
 <body>
 
-<header>
-    <h1>🎓 My School</h1>
-    <p>Fee Management</p>
+<header class="dashboard-header">
+
+    <div>
+
+        <h1>🎓 My School</h1>
+
+        <p>
+            Fee Management
+        </p>
+
+    </div>
+
+
 </header>
+
+<nav class="main-nav">
+
+    <a href="/">🏠 Dashboard</a>
+    <a href="/students.html">👨‍🎓 Students</a>
+    <a href="/teachers.html">👨‍🏫 Teachers</a>
+    <a href="/attendance.html">📅 Attendance</a>
+    <a href="/attendance-report.html">📊 Reports</a>
+    <a href="/classes.html">🏫 Classes</a>
+    <a href="/fees.html" class="active">💰 Fees</a>
+
+    <a id="navLogout" href="/logout">🚪 Logout</a>
+</nav>
 
 <main>
 
@@ -52,16 +75,13 @@
 
     <h2>Fee Records</h2>
 
-    <div id="feeList"></div>
+    <div id="feeList" class="fee-list"></div>
 
     <br>
-
-    <a href="/">⬅ Back to Dashboard</a>
 
 </main>
 
 <script>
-
 const feeForm =
     document.getElementById("feeForm");
 
@@ -76,8 +96,207 @@ const feeList =
 
 async function loadStudents() {
 
-    const response =
-        await fetch("/api/students");
+    try {
 
-    const students =
-        await
+        const response =
+            await fetch("/api/students");
+
+        const students =
+            await response.json();
+
+        studentSelect.innerHTML =
+            '<option value="">Select Student</option>';
+
+        students.forEach(student => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = student.id;
+
+            option.textContent =
+                student.name +
+                " - Roll " +
+                student.roll;
+
+            studentSelect.appendChild(option);
+        });
+
+    } catch (error) {
+
+        console.log(
+            "Students load error:",
+            error
+        );
+    }
+}
+
+
+// Load fee records
+
+async function loadFees() {
+
+    try {
+
+        const response =
+            await fetch("/api/fees");
+
+        const fees =
+            await response.json();
+
+        feeList.innerHTML = "";
+
+        if (fees.length === 0) {
+
+            feeList.innerHTML =
+                "<p>No fee records found.</p>";
+
+            return;
+        }
+
+        fees.forEach(fee => {
+
+            const div =
+                document.createElement("div")
+
+            div.className = "fee-card";
+
+            div.innerHTML = `
+                <p><strong>Student:</strong>
+                    ${fee.studentName}
+                </p>
+
+                <p><strong>Total Fees:</strong>
+                    ${fee.totalFees}
+                </p>
+
+                <p><strong>Paid:</strong>
+                    ${fee.paidAmount}
+                </p>
+
+                <p><strong>Remaining:</strong>
+                    ${fee.remaining}
+                </p>
+
+                <p><strong>Date:</strong>
+                    ${fee.paymentDate}
+                </p>
+            `;
+
+            feeList.appendChild(div);
+        });
+
+    } catch (error) {
+
+        console.log(
+            "Fees load error:",
+            error
+        );
+    }
+}
+
+
+// Save fee payment
+
+feeForm.addEventListener(
+    "submit",
+    async function (event) {
+
+        event.preventDefault();
+
+        const totalFees =
+            Number(
+                document.getElementById(
+                    "totalFees"
+                ).value
+            );
+
+        const paidAmount =
+            Number(
+                document.getElementById(
+                    "paidAmount"
+                ).value
+            );
+
+        const remaining =
+            totalFees - paidAmount;
+
+        const paymentDate =
+            document.getElementById(
+                "paymentDate"
+            ).value;
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/fees",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            studentId:
+                                Number(
+                                    studentSelect.value
+                                ),
+
+                            totalFees:
+                                totalFees,
+
+                            paidAmount:
+                                paidAmount,
+
+                            remaining:
+                                remaining,
+
+                            paymentDate:
+                                paymentDate
+                        })
+                    }
+                );
+
+            const result =
+                await response.json();
+
+            if (result.error) {
+
+                alert(result.error);
+                return;
+            }
+
+            alert("Fee payment saved ✅");
+
+            feeForm.reset();
+
+            loadFees();
+
+        } catch (error) {
+
+            console.log(
+                "Fee save error:",
+                error
+            );
+
+            alert(
+                "Failed to save fee payment"
+            );
+        }
+    }
+);
+
+
+// Start page
+
+loadStudents();
+loadFees();
+
+</script>
+
+<script src="/script.js?v=3"></script>
+</body>
+</html>

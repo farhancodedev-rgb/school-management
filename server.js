@@ -1,6 +1,7 @@
+require("dotenv").config();
 const http = require("http");
+const crypto = require("crypto");
 const fs = require("fs");
-const initSqlJs = require("sql.js");
 const { Pool } = require("pg");
 
 const pool = new Pool({
@@ -11,135 +12,98 @@ const pool = new Pool({
 });
 
 const path = require("path");
-let db;
 let sessions = new Set();
 
 async function startServer() {
-
-const SQL = await initSqlJs({
-    locateFile: file =>
-        path.join(
-            __dirname,
-            "node_modules/sql.js/dist",
-            file
-        )
-});
-
-    if (fs.existsSync("school.db")) {
-        db = new SQL.Database(
-            fs.readFileSync("school.db")
-        );
-    } else {
-        db = new SQL.Database();
-    }
 
     // =========================
     // DATABASE TABLES
     // =========================
 
-    db.run(`
-        CREATE TABLE IF NOT EXISTS students (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            father TEXT NOT NULL,
-            className TEXT NOT NULL,
-            roll TEXT NOT NULL
-        )
-    `);
-
-    db.run(`
-        CREATE TABLE IF NOT EXISTS teachers (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            father TEXT NOT NULL,
-            subject TEXT NOT NULL,
-            phone TEXT NOT NULL
-        )
-    `);
-
-    db.run(`
-        CREATE TABLE IF NOT EXISTS attendance (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            studentId INTEGER NOT NULL,
-            date TEXT NOT NULL,
-            status TEXT NOT NULL
-        )
-    `);
-
-    db.run(`
-        CREATE TABLE IF NOT EXISTS fees (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            studentId INTEGER NOT NULL,
-            totalFees REAL NOT NULL,
-            paidAmount REAL NOT NULL,
-            remaining REAL NOT NULL,
-            paymentDate TEXT NOT NULL
-        )
-    `);
-
-    db.run(`
-        CREATE TABLE IF NOT EXISTS classes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            className TEXT NOT NULL,
-            section TEXT NOT NULL
-        )
-    `);
-
-      saveDatabase();
-
     // =========================
     // SERVER
     // =========================
 
-    const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
 
-        // =========================
-        // DASHBOARD API
-        // =========================
+// =========================
+// DASHBOARD API
+// =========================
 
-        if (
-            req.method === "GET" &&
-            req.url === "/api/dashboard"
-        ) {
-            const students =
-                db.exec("SELECT COUNT(*) AS total FROM students")[0]
-                    .values[0][0];
+if (
+    req.method === "GET" &&
+    req.url === "/api/dashboard"
+) {
+    try {
 
-            const teachers =
-                db.exec("SELECT COUNT(*) AS total FROM teachers")[0]
-                    .values[0][0];
+        const studentsResult = await pool.query(
+            "SELECT COUNT(*)::int AS total FROM students"
+        );
 
-            const classes =
-                db.exec("SELECT COUNT(*) AS total FROM classes")[0]
-                    .values[0][0];
+        const teachersResult = await pool.query(
+            "SELECT COUNT(*)::int AS total FROM teachers"
+        );
 
-            const today =
-                new Date().toISOString().split("T")[0];
+        const classesResult = await pool.query(
+            "SELECT COUNT(*)::int AS total FROM classes"
+        );
 
-            const attendance =
-                db.exec(
-                    `SELECT
-                        COUNT(*) AS total,
-                        SUM(CASE WHEN status = 'Present' THEN 1 ELSE 0 END) AS present
-                     FROM attendance
-                     WHERE date = '${today}'`
-                )[0].values[0];
+        const today =
+            new Date().toISOString().split("T")[0];
 
-            return sendJSON(res, {
-                students,
-                teachers,
-                classes,
-                attendance: {
-                    total: attendance[0] || 0,
-                    present: attendance[1] || 0
-                }
-            });
+        const attendanceResult = await pool.query(
+            `SELECT
+                COUNT(*)::int AS total,
+                COUNT(*) FILTER (
+                    WHERE LOWER(status) = 'present'
+                )::int AS present
+             FROM attendance
+             WHERE date = $1`,
+            [today]
+        );
+
+        return sendJSON(res, {
+            students: studentsResult.rows[0].total,
+            teachers: teachersResult.rows[0].total,
+            classes: classesResult.rows[0].total,
+            attendance: {
+                total: attendanceResult.rows[0].total,
+                present: attendanceResult.rows[0].present
+            }
+        });
+
+    } catch (error) {
+
+        console.log(
+            "Dashboard GET error:",
+            error.message
+        );
+
+        return sendJSON(res, {
+            error: "Failed to load dashboard"
+        });
+    }
+}
+
+ // ========================= LOGIN 
+// PROTECTION =========================
+
+
+        // DIRECT LOGOUT
+        if (req.method === "GET" && req.url === "/logout") {
+            const cookie = req.headers.cookie || "";
+            const match = cookie.match(/(?:^|;\\s*)session=([^;]+)/);
+
+            if (match) {
+                sessions.delete(match[1]);
+            }
+
+            res.writeHead(302, {
+                "Location": "/login.html",
+   "Set-Cookie": "session=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0" +
+(process.env.VERCEL ? "; Secure" : "")          });
+            return res.end();
         }
-
-
-// =========================
-// LOGIN PROTECTION
-// =========================
 
 function isLoggedIn(req) {
 
@@ -267,8 +231,8 @@ if (
         ) {
             return readBody(req, (login) => {
 
-                const correctUsername = "admin";
-                const correctPassword = "1234";
+                const correctUsername = process.env.ADMIN_USERNAME;
+                const correctPassword = process.env.ADMIN_PASSWORD;
 
                 if (
                     login.username === correctUsername &&
@@ -276,8 +240,7 @@ if (
                 ) {
 
                     const sessionId =
-                        Math.random().toString(36).substring(2) +
-                        Date.now().toString(36);
+                        crypto.randomBytes(32).toString("hex");
 
                     sessions.add(sessionId);
 
@@ -286,9 +249,9 @@ if (
                             "application/json; charset=utf-8",
                         "Set-Cookie":
                             "session=" +
-                            sessionId +
-                            "; HttpOnly; Path=/"
-                    });
+sessionId +
+"; HttpOnly; Path=/; SameSite=Lax" +
+(process.env.VERCEL ? "; Secure" : "")            });
 
                     return res.end(
                         JSON.stringify({
@@ -325,7 +288,7 @@ if (
         "Content-Type":
             "application/json; charset=utf-8",
         "Set-Cookie":
-            "session=; HttpOnly; Path=/; Max-Age=0"
+            "session=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0"
     });
 
     return res.end(
@@ -335,80 +298,98 @@ if (
     );
 }
 
-        // =========================
-        // STUDENTS
-        // =========================
+// =========================
+// STUDENTS
+// =========================
 
-        if (
-            req.method === "GET" &&
-            req.url === "/api/students"
-        ) {
-            const result = db.exec("SELECT * FROM students ORDER BY id DESC");
+if (
+    req.method === "GET" &&
+    req.url === "/api/students"
+) {
+    try {
+        const result = await pool.query(
+            `SELECT
+                id,
+                name,
+                father,
+                classname AS "className",
+                roll
+             FROM students
+             ORDER BY id DESC`
+        );
 
-            let students = [];
+        return sendJSON(res, result.rows);
 
-            if (result.length > 0) {
-                const columns = result[0].columns;
-                const values = result[0].values;
+    } catch (error) {
+        console.log("Students GET error:", error.message);
 
-                students = values.map(row => {
-                    const student = {};
+        return sendJSON(res, {
+            error: "Failed to load students"
+        });
+    }
+}
 
-                    columns.forEach((column, index) => {
-                        student[column] = row[index];
-                    });
 
-                    return student;
-                });
-            }
+if (
+    req.method === "POST" &&
+    req.url === "/api/students"
+) {
+    return readBody(req, async (student) => {
 
-            return sendJSON(res, students);
-        }
-
-        if (
-            req.method === "POST" &&
-            req.url === "/api/students"
-        ) {
-            return readBody(req, (student) => {
-
-                db.run(
-                    `INSERT INTO students
-                    (name, father, className, roll)
-                    VALUES (?, ?, ?, ?)`,
-                    [
-                        student.name,
-                        student.father,
-                        student.className,
-                        student.roll
-                    ]
-                );
-
-                saveDatabase();
-
-                return sendJSON(res, {
-                    message: "Student added"
-                });
-            });
-        }
-
-        if (
-            req.method === "DELETE" &&
-            req.url.startsWith("/api/students/")
-        ) {
-            const id =
-                req.url.split("/").pop();
-
-            db.run(
-                "DELETE FROM students WHERE id = ?",
-                [id]
+        try {
+            await pool.query(
+                `INSERT INTO students
+                (name, father, classname, roll)
+                VALUES ($1, $2, $3, $4)`,
+                [
+                    student.name,
+                    student.father,
+                    student.className,
+                    student.roll
+                ]
             );
 
-            saveDatabase();
+            return sendJSON(res, {
+                message: "Student added"
+            });
+
+        } catch (error) {
+            console.log("Students POST error:", error.message);
 
             return sendJSON(res, {
-                message: "Student deleted"
+                error: "Failed to add student"
             });
         }
+    });
+}
+
+
+if (
+    req.method === "DELETE" &&
+    req.url.startsWith("/api/students/")
+) {
+    const id = req.url.split("/").pop();
+
+    try {
+        await pool.query(
+            "DELETE FROM students WHERE id = $1",
+            [id]
+        );
+
+        return sendJSON(res, {
+            message: "Student deleted"
+        });
+
+    } catch (error) {
+        console.log("Students DELETE error:", error.message);
+
+        return sendJSON(res, {
+            error: "Failed to delete student"
+        });
+    }
+}
+
+
 // EDIT STUDENT
 
 if (
@@ -417,106 +398,130 @@ if (
 ) {
     const id = req.url.split("/").pop();
 
-    return readBody(req, (student) => {
+    return readBody(req, async (student) => {
 
-        db.run(
-            `UPDATE students
-             SET name = ?,
-                 father = ?,
-                 className = ?,
-                 roll = ?
-             WHERE id = ?`,
-            [
-                student.name,
-                student.father,
-                student.className,
-                student.roll,
-                id
-            ]
-        );
+        try {
+            await pool.query(
+                `UPDATE students
+                 SET name = $1,
+                     father = $2,
+                     classname = $3,
+                     roll = $4
+                 WHERE id = $5`,
+                [
+                    student.name,
+                    student.father,
+                    student.className,
+                    student.roll,
+                    id
+                ]
+            );
 
-        saveDatabase();
+            return sendJSON(res, {
+                message: "Student updated"
+            });
 
-        return sendJSON(res, {
-            message: "Student updated"
-        });
+        } catch (error) {
+            console.log("Students PUT error:", error.message);
+
+            return sendJSON(res, {
+                error: "Failed to update student"
+            });
+        }
     });
 }
 
-        // =========================
-        // TEACHERS
-        // =========================
+// =========================
+// TEACHERS
+// =========================
 
-        if (
-            req.method === "GET" &&
-            req.url === "/api/teachers"
-        ) {
-            const result = db.exec("SELECT * FROM teachers ORDER BY id DESC");
+if (
+    req.method === "GET" &&
+    req.url === "/api/teachers"
+) {
+    try {
+        const result = await pool.query(
+            `SELECT
+                id,
+                name,
+                father,
+                subject,
+                phone
+             FROM teachers
+             ORDER BY id DESC`
+        );
 
-            let teachers = [];
+        return sendJSON(res, result.rows);
 
-            if (result.length > 0) {
-                const columns = result[0].columns;
-                const values = result[0].values;
+    } catch (error) {
+        console.log("Teachers GET error:", error.message);
 
-                teachers = values.map(row => {
-                    const teacher = {};
+        return sendJSON(res, {
+            error: "Failed to load teachers"
+        });
+    }
+}
 
-                    columns.forEach((column, index) => {
-                        teacher[column] = row[index];
-                    });
 
-                    return teacher;
-                });
-            }
+if (
+    req.method === "POST" &&
+    req.url === "/api/teachers"
+) {
+    return readBody(req, async (teacher) => {
 
-            return sendJSON(res, teachers);
-        }
-
-        if (
-            req.method === "POST" &&
-            req.url === "/api/teachers"
-        ) {
-            return readBody(req, (teacher) => {
-
-                db.run(
-                    `INSERT INTO teachers
-                    (name, father, subject, phone)
-                    VALUES (?, ?, ?, ?)`,
-                    [
-                        teacher.name,
-                        teacher.father,
-                        teacher.subject,
-                        teacher.phone
-                    ]
-                );
-
-                saveDatabase();
-
-                return sendJSON(res, {
-                    message: "Teacher added"
-                });
-            });
-        }
-
-        if (
-            req.method === "DELETE" &&
-            req.url.startsWith("/api/teachers/")
-        ) {
-            const id =
-                req.url.split("/").pop();
-
-            db.run(
-                "DELETE FROM teachers WHERE id = ?",
-                [id]
+        try {
+            await pool.query(
+                `INSERT INTO teachers
+                (name, father, subject, phone)
+                VALUES ($1, $2, $3, $4)`,
+                [
+                    teacher.name,
+                    teacher.father,
+                    teacher.subject,
+                    teacher.phone
+                ]
             );
 
-            saveDatabase();
+            return sendJSON(res, {
+                message: "Teacher added"
+            });
+
+        } catch (error) {
+            console.log("Teachers POST error:", error.message);
 
             return sendJSON(res, {
-                message: "Teacher deleted"
+                error: "Failed to add teacher"
             });
         }
+    });
+}
+
+
+if (
+    req.method === "DELETE" &&
+    req.url.startsWith("/api/teachers/")
+) {
+    const id = req.url.split("/").pop();
+
+    try {
+        await pool.query(
+            "DELETE FROM teachers WHERE id = $1",
+            [id]
+        );
+
+        return sendJSON(res, {
+            message: "Teacher deleted"
+        });
+
+    } catch (error) {
+        console.log("Teachers DELETE error:", error.message);
+
+        return sendJSON(res, {
+            error: "Failed to delete teacher"
+        });
+    }
+}
+
 
 // EDIT TEACHER
 
@@ -526,35 +531,42 @@ if (
 ) {
     const id = req.url.split("/").pop();
 
-    return readBody(req, (teacher) => {
+    return readBody(req, async (teacher) => {
 
-        db.run(
-            `UPDATE teachers
-             SET name = ?,
-                 father = ?,
-                 subject = ?,
-                 phone = ?
-             WHERE id = ?`,
-            [
-                teacher.name,
-                teacher.father,
-                teacher.subject,
-                teacher.phone,
-                id
-            ]
-        );
+        try {
+            await pool.query(
+                `UPDATE teachers
+                 SET name = $1,
+                     father = $2,
+                     subject = $3,
+                     phone = $4
+                 WHERE id = $5`,
+                [
+                    teacher.name,
+                    teacher.father,
+                    teacher.subject,
+                    teacher.phone,
+                    id
+                ]
+            );
 
-        saveDatabase();
+            return sendJSON(res, {
+                message: "Teacher updated"
+            });
 
-          return sendJSON(res, {
-              message: "Teacher updated"
-          });
-      });
-  }     
+        } catch (error) {
+            console.log("Teachers PUT error:", error.message);
 
-   // =========================
-        // ATTENDANCE
-        // =========================
+            return sendJSON(res, {
+                error: "Failed to update teacher"
+            });
+        }
+    });
+}
+
+// =========================
+// ATTENDANCE
+// =========================
 
 if (
     req.method === "GET" &&
@@ -571,216 +583,336 @@ if (
     const studentId =
         url.searchParams.get("studentId");
 
-    let result;
+    try {
 
-    // Student attendance history
-    if (studentId) {
+        let result;
 
-        result = db.exec(
-            `SELECT *
-             FROM attendance
-             WHERE studentId = ?
-             ORDER BY date DESC, id DESC`,
-            [studentId]
+        // Student attendance history
+        if (studentId) {
+
+            result = await pool.query(
+                `SELECT
+                    id,
+                    studentid AS "studentId",
+                    date,
+                    status
+                 FROM attendance
+                 WHERE studentid = $1
+                 ORDER BY date DESC, id DESC`,
+                [studentId]
+            );
+
+        // Attendance for a specific date
+        } else if (date) {
+
+            result = await pool.query(
+                `SELECT
+                    id,
+                    studentid AS "studentId",
+                    date,
+                    status
+                 FROM attendance
+                 WHERE date = $1
+                 ORDER BY id DESC`,
+                [date]
+            );
+
+        // No filter
+        } else {
+
+            result = await pool.query(
+                `SELECT
+                    id,
+                    studentid AS "studentId",
+                    date,
+                    status
+                 FROM attendance
+                 ORDER BY date DESC, id DESC`
+            );
+        }
+
+        return sendJSON(res, result.rows);
+
+    } catch (error) {
+
+        console.log(
+            "Attendance GET error:",
+            error.message
         );
 
-    // Attendance for a specific date
-    } else if (date) {
-
-        result = db.exec(
-            `SELECT *
-             FROM attendance
-             WHERE date = ?
-             ORDER BY id DESC`,
-            [date]
-        );
-
-    // No filter
-    } else {
-
-        result = db.exec(
-            `SELECT *
-             FROM attendance
-             ORDER BY date DESC, id DESC`
-        );
+        return sendJSON(res, {
+            error: "Failed to load attendance"
+        });
     }
+}
 
-    return sendJSON(res, result);
+if (
+    req.method === "POST" &&
+    req.url === "/api/attendance"
+) {
+    return readBody(req, async (attendance) => {
 
-}     
-        if (
-            req.method === "POST" &&
-            req.url === "/api/attendance"
-        ) {
-            return readBody(req, (attendance) => {
+        try {
 
-                db.run(
-                    `INSERT INTO attendance
-                    (studentId, date, status)
-                    VALUES (?, ?, ?)`,
-                    [
-                        attendance.studentId,
-                        attendance.date,
-                        attendance.status
-                    ]
-                );
-
-                saveDatabase();
-
-                return sendJSON(res, {
-                    message: "Attendance saved"
-                });
-            });
-        }
-
-        // =========================
-        // FEES
-        // =========================
-
-        if (
-            req.method === "GET" &&
-            req.url === "/api/fees"
-        ) {
-            const result = db.exec(`
-                SELECT
-                    fees.id,
-                    students.name AS studentName,
-                    fees.totalFees,
-                    fees.paidAmount,
-                    fees.remaining,
-                    fees.paymentDate
-                FROM fees
-                JOIN students
-                ON fees.studentId = students.id
-                ORDER BY fees.id DESC
-            `);
-
-            return sendJSON(res, result);
-        }
-
-        if (
-            req.method === "POST" &&
-            req.url === "/api/fees"
-        ) {
-            return readBody(req, (fee) => {
-
-                db.run(
-                    `INSERT INTO fees
-                    (
-                        studentId,
-                        totalFees,
-                        paidAmount,
-                        remaining,
-                        paymentDate
-                    )
-                    VALUES (?, ?, ?, ?, ?)`,
-                    [
-                        fee.studentId,
-                        fee.totalFees,
-                        fee.paidAmount,
-                        fee.remaining,
-                        fee.paymentDate
-                    ]
-                );
-
-                saveDatabase();
-
-                return sendJSON(res, {
-                    message: "Fee payment saved"
-                });
-            });
-        }
-
-        // =========================
-        // CLASSES
-        // =========================
-
-        if (
-            req.method === "GET" &&
-            req.url === "/api/classes"
-        ) {
-            const result = db.exec(
-                "SELECT * FROM classes ORDER BY id DESC"
+            await pool.query(
+                `INSERT INTO attendance
+                (studentid, date, status)
+                VALUES ($1, $2, $3)`,
+                [
+                    attendance.studentId,
+                    attendance.date,
+                    attendance.status
+                ]
             );
-
-            return sendJSON(res, result);
-        }
-
-        if (
-            req.method === "POST" &&
-            req.url === "/api/classes"
-        ) {
-            return readBody(req, (classData) => {
-
-                db.run(
-                    `INSERT INTO classes
-                    (className, section)
-                    VALUES (?, ?)`,
-                    [
-                        classData.className,
-                        classData.section
-                    ]
-                );
-
-                saveDatabase();
-
-                return sendJSON(res, {
-                    message: "Class added"
-                });
-            });
-        }
-
-
-        // EDIT CLASS
-
-        if (
-            req.method === "PUT" &&
-            req.url.startsWith("/api/classes/")
-        ) {
-            const id =
-                req.url.split("/").pop();
-
-            return readBody(req, (classData) => {
-
-                db.run(
-                    `UPDATE classes
-                     SET className = ?,
-                         section = ?
-                     WHERE id = ?`,
-                    [
-                        classData.className,
-                        classData.section,
-                        id
-                    ]
-                );
-
-                saveDatabase();
-
-                return sendJSON(res, {
-                    message: "Class updated"
-                });
-            });
-        }
-
-        if (
-            req.method === "DELETE" &&
-            req.url.startsWith("/api/classes/")
-        ) {
-            const id =
-                req.url.split("/").pop();
-
-            db.run(
-                "DELETE FROM classes WHERE id = ?",
-                [id]
-            );
-
-            saveDatabase();
 
             return sendJSON(res, {
-                message: "Class deleted"
+                message: "Attendance saved"
+            });
+
+        } catch (error) {
+
+            console.log(
+                "Attendance POST error:",
+                error.message
+            );
+
+            return sendJSON(res, {
+                error: "Failed to save attendance"
             });
         }
+    });
+}
 
+// =========================
+// FEES
+// =========================
+
+if (
+    req.method === "GET" &&
+    req.url === "/api/fees"
+) {
+    try {
+
+        const result = await pool.query(`
+            SELECT
+                fees.id,
+                students.name AS "studentName",
+                fees.totalfees AS "totalFees",
+                fees.paidamount AS "paidAmount",
+                fees.remaining,
+                fees.paymentdate AS "paymentDate"
+            FROM fees
+            JOIN students
+            ON fees.studentid = students.id
+            ORDER BY fees.id DESC
+        `);
+
+        return sendJSON(res, result.rows);
+
+    } catch (error) {
+
+        console.log(
+            "Fees GET error:",
+            error.message
+        );
+
+        return sendJSON(res, {
+            error: "Failed to load fees"
+        });
+    }
+}
+
+
+if (
+    req.method === "POST" &&
+    req.url === "/api/fees"
+) {
+    return readBody(req, async (fee) => {
+
+        try {
+
+            await pool.query(
+                `INSERT INTO fees
+                (
+                    studentid,
+                    totalfees,
+                    paidamount,
+                    remaining,
+                    paymentdate
+                )
+                VALUES ($1, $2, $3, $4, $5)`,
+                [
+                    fee.studentId,
+                    fee.totalFees,
+                    fee.paidAmount,
+                    fee.remaining,
+                    fee.paymentDate
+                ]
+            );
+
+            return sendJSON(res, {
+                message: "Fee payment saved"
+            });
+
+        } catch (error) {
+
+            console.log(
+                "Fees POST error:",
+                error.message
+            );
+
+            return sendJSON(res, {
+                error: "Failed to save fee payment"
+            });
+        }
+    });
+}
+
+
+// =========================
+// CLASSES
+// =========================
+
+if (
+    req.method === "GET" &&
+    req.url === "/api/classes"
+) {
+    try {
+
+        const result = await pool.query(
+            `SELECT
+                id,
+                classname AS "className",
+                section
+             FROM classes
+             ORDER BY id DESC`
+        );
+
+        return sendJSON(res, result.rows);
+
+    } catch (error) {
+
+        console.log(
+            "Classes GET error:",
+            error.message
+        );
+
+        return sendJSON(res, {
+            error: "Failed to load classes"
+        });
+    }
+}
+
+
+
+if (
+    req.method === "POST" &&
+    req.url === "/api/classes"
+) {
+    return readBody(req, async (classData) => {
+
+        try {
+
+            await pool.query(
+                `INSERT INTO classes
+                (classname, section)
+                VALUES ($1, $2)`,
+                [
+                    classData.className,
+                    classData.section
+                ]
+            );
+
+            return sendJSON(res, {
+                message: "Class added"
+            });
+
+        } catch (error) {
+
+            console.log(
+                "Classes POST error:",
+                error.message
+            );
+
+            return sendJSON(res, {
+                error: "Failed to add class"
+            });
+        }
+    });
+}
+
+if (
+    req.method === "PUT" &&
+    req.url.startsWith("/api/classes/")
+) {
+    const id =
+        req.url.split("/").pop();
+
+    return readBody(req, async (classData) => {
+
+        try {
+
+            await pool.query(
+                `UPDATE classes
+                 SET classname = $1,
+                     section = $2
+                 WHERE id = $3`,
+                [
+                    classData.className,
+                    classData.section,
+                    id
+                ]
+            );
+
+            return sendJSON(res, {
+                message: "Class updated"
+            });
+
+        } catch (error) {
+
+            console.log(
+                "Classes PUT error:",
+                error.message
+            );
+
+            return sendJSON(res, {
+                error: "Failed to update class"
+            });
+        }
+    });
+}
+
+
+if (
+    req.method === "DELETE" &&
+    req.url.startsWith("/api/classes/")
+) {
+    const id =
+        req.url.split("/").pop();
+
+    try {
+
+        await pool.query(
+            "DELETE FROM classes WHERE id = $1",
+            [id]
+        );
+
+        return sendJSON(res, {
+            message: "Class deleted"
+        });
+
+    } catch (error) {
+
+        console.log(
+            "Classes DELETE error:",
+            error.message
+        );
+
+        return sendJSON(res, {
+            error: "Failed to delete class"
+        });
+    }
+}
         // =========================
         // NOT FOUND
         // =========================
@@ -792,13 +924,11 @@ if (
         res.end("Page not found");
     });
 
-    if (require.main === module) {
-        server.listen(process.env.PORT || 3000, () => {
-            console.log(
-                "School website running at http://localhost:3000"
-            );
-        });
-    }
+server.listen(process.env.PORT || 3000, () => {
+    console.log(
+        "School website running at http://localhost:3000"
+    );
+});
 
     return server;
 }
@@ -915,6 +1045,10 @@ function sendFile(res, file, type) {
 
         res.end(data);
     });
+}
+
+if (require.main === module) {
+    startServer();
 }
 
 module.exports = startServer;
