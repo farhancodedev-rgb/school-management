@@ -1,500 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Login - School Management</title>
-
-    <link rel="stylesheet" href="/style.css">
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            background: #f1f5f9;
-            color: #0f172a;
-        }
-
-        .login-page {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-        }
-
-        .login-container {
-            width: 100%;
-            max-width: 950px;
-            min-height: 570px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            overflow: hidden;
-            background: white;
-            border-radius: 28px;
-            box-shadow: 0 25px 70px rgba(15, 23, 42, .15);
-        }
-
-        /* LEFT SIDE */
-
-        .login-info {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 42px;
-            color: white;
-            background:
-                linear-gradient(
-                    145deg,
-                    #0f172a,
-                    #1e3a8a
-                );
-        }
-
-        .login-info::after {
-            content: "";
-            position: absolute;
-            width: 220px;
-            height: 220px;
-            right: -90px;
-            bottom: -90px;
-            border-radius: 50%;
-            background: rgba(255,255,255,.08);
-        }
-
-        .logo {
-            width: 62px;
-            height: 62px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 18px;
-            background: rgba(255,255,255,.12);
-            border: 1px solid rgba(255,255,255,.18);
-            font-size: 30px;
-        }
-
-        .login-info h1 {
-            max-width: 360px;
-            margin: 35px 0 15px;
-            font-size: 42px;
-            line-height: 1.1;
-        }
-
-        .login-info p {
-            max-width: 350px;
-            color: #cbd5e1;
-            line-height: 1.7;
-            font-size: 15px;
-        }
-
-        .feature-list {
-            display: grid;
-            gap: 12px;
-            margin-top: 30px;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #e2e8f0;
-            font-size: 14px;
-        }
-
-        /* RIGHT SIDE */
-
-        .login-form-area {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 45px;
-        }
-
-        .login-form {
-            width: 100%;
-            max-width: 360px;
-        }
-
-        .login-form h2 {
-            margin: 0 0 8px;
-            font-size: 30px;
-        }
-
-        .login-form .subtitle {
-            margin: 0 0 30px;
-            color: #64748b;
-            font-size: 14px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 700;
-            color: #334155;
-        }
-
-        .input-wrapper {
-            position: relative;
-        }
-
-
-        .input-wrapper input {
-            width: 100%;
-            height: 54px;
-            padding: 0 15px;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            background: #f8fafc;
-            font-size: 15px;
-            outline: none;
-            transition: .2s ease;
-        }
-
-        .input-wrapper input:focus {
-            background: white;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 4px rgba(37,99,235,.10);
-        }
-
-        .login-button {
-            width: 100%;
-            height: 54px;
-            margin-top: 5px;
-            border: 0;
-            border-radius: 12px;
-            background: #2563eb;
-            color: white;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: .2s ease;
-        }
-
-        .login-button:hover {
-            background: #1d4ed8;
-            transform: translateY(-1px);
-        }
-
-        .login-button:active {
-            transform: translateY(0);
-        }
-
-        #message {
-            min-height: 22px;
-            margin-top: 14px;
-            text-align: center;
-            color: #dc2626;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .home-link {
-            display: block;
-            margin-top: 25px;
-            text-align: center;
-            color: #64748b;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .home-link:hover {
-            color: #2563eb;
-        }
-
-        /* MOBILE */
-
-        @media (max-width: 700px) {
-
-            .login-page {
-                padding: 0;
-                align-items: stretch;
-            }
-
-            .login-container {
-                min-height: 100vh;
-                display: block;
-                border-radius: 0;
-                box-shadow: none;
-            }
-
-            .login-info {
-                min-height: 250px;
-                padding: 28px 22px;
-                justify-content: flex-start;
-            }
-
-            .login-info h1 {
-                margin: 20px 0 8px;
-                font-size: 30px;
-            }
-
-            .login-info p {
-                margin: 0;
-                font-size: 13px;
-            }
-
-            .feature-list {
-                display: none;
-            }
-
-            .logo {
-                width: 52px;
-                height: 52px;
-                font-size: 25px;
-                border-radius: 15px;
-            }
-
-            .login-form-area {
-                padding: 32px 22px 28px;
-                align-items: flex-start;
-            }
-
-            .login-form h2 {
-                font-size: 26px;
-            }
-
-            .login-form .subtitle {
-                margin-bottom: 25px;
-            }
-
-            .input-wrapper input,
-            .login-button {
-                height: 56px;
-            }
-        }
-
-        @media (max-width: 360px) {
-
-            .login-info {
-                min-height: 225px;
-                padding: 24px 18px;
-            }
-
-            .login-info h1 {
-                font-size: 26px;
-            }
-
-            .login-form-area {
-                padding: 28px 18px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Login - School Management</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+/* Login page styles (self-contained; move into style.css later if you like) */
+:root{--bg:#f4f6fb;--card:#fff;--tx:#1b2333;--mu:#6b7488;--pr:#4f46e5;--bd:#e3e7f0;--hd:rgba(255,255,255,.6);--ok:#1c9a58;--er:#d23c3c}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1220;--card:#181c30;--tx:#e8ebf5;--mu:#9099b3;--bd:#262b45;--hd:rgba(15,18,32,.6)}}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--tx);font:clamp(14px,3.6vw,16px)/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow-x:hidden}
+a{color:var(--pr);text-decoration:none}
+.top{position:fixed;top:0;left:0;right:0;height:48px;padding:env(safe-area-inset-top,0px) clamp(10px,3vw,24px) 0;box-sizing:content-box;display:flex;align-items:center;gap:8px;background:var(--hd);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--bd);font-size:clamp(13px,3.4vw,15px);z-index:10}
+.top b{font-weight:600}
+.top .sp{flex:1}
+.auth-container{min-height:100%;display:flex;align-items:center;justify-content:center;padding:calc(64px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px))}
+.auth-card{width:100%;max-width:400px;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:clamp(20px,6vw,32px);box-shadow:0 8px 30px rgba(0,0,0,.06)}
+.auth-logo{width:clamp(48px,14vw,60px);height:clamp(48px,14vw,60px);margin:0 auto 10px;border-radius:16px;background:rgba(79,70,229,.12);display:flex;align-items:center;justify-content:center;font-size:clamp(24px,7vw,30px)}
+.auth-card h1{text-align:center;font-size:clamp(20px,5.6vw,24px)}
+.auth-subtitle{text-align:center;color:var(--mu);margin:2px 0 18px;font-size:.92em}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:.88em;font-weight:500;margin-bottom:5px}
+.form-group input{width:100%;padding:11px 12px;font-size:16px;color:var(--tx);background:transparent;border:1px solid var(--bd);border-radius:10px;outline:none}
+.form-group input:focus{border-color:var(--pr);box-shadow:0 0 0 3px rgba(79,70,229,.18)}
+.btn-primary{width:100%;padding:12px;border:0;border-radius:10px;background:var(--pr);color:#fff;font-size:1em;font-weight:500;cursor:pointer}
+.btn-primary:active{opacity:.85}
+.form-message{min-height:1.4em;margin-top:12px;text-align:center;font-size:.9em;color:var(--mu)}
+.form-message.success{color:var(--ok)}
+.form-message.error{color:var(--er)}
+.auth-footer{margin-top:16px;padding-top:14px;border-top:1px solid var(--bd);text-align:center;font-size:.9em;color:var(--mu)}
+</style>
 </head>
 
 <body>
 
-<div class="login-page">
+<header class="top">
+    <a href="/">←</a>
+    <b>🏫 School Management</b>
+    <span class="sp"></span>
+</header>
 
-    <div class="login-container">
+<div class="auth-container">
 
-        <section class="login-info">
+    <div class="auth-card">
 
-            <div>
-                <div class="logo">🏫</div>
+        <div class="auth-logo">
+            🎓
+        </div>
 
-                <h1>
-                    School<br>
-                    Management
-                </h1>
+        <h1>School Management</h1>
+        <p class="auth-subtitle">Login to your account</p>
 
-                <p>
-                    Manage your school from one simple,
-                    organized dashboard.
-                </p>
+        <form id="loginForm">
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter username"
+                    required
+                    autocomplete="username"
+                >
             </div>
 
-            <div class="feature-list">
-
-                <div class="feature-item">
-                    ✓ Student management
-                </div>
-
-                <div class="feature-item">
-                    ✓ Attendance tracking
-                </div>
-
-                <div class="feature-item">
-                    ✓ Fees and reports
-                </div>
-
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter password"
+                    required
+                    autocomplete="current-password"
+                >
             </div>
 
-        </section>
+            <button type="submit" class="btn-primary">
+                🔐 Login
+            </button>
 
+            <p id="loginMessage" class="form-message"></p>
 
-        <section class="login-form-area">
+        </form>
 
-            <form class="login-form" id="loginForm">
-
-                <h2>Welcome back</h2>
-
-                <p class="subtitle">
-                    Sign in to access your admin dashboard.
-                </p>
-
-
-                <div class="input-group">
-
-                    <label for="username">
-                        Username
-                    </label>
-
-                    <div class="input-wrapper">
-
-                        
-
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            placeholder="Enter username"
-                            autocomplete="username"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div class="input-group">
-
-                    <label for="password">
-                        Password
-                    </label>
-
-                    <div class="input-wrapper">
-
-                        
-
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Enter password"
-                            autocomplete="current-password"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <button
-                    type="submit"
-                    class="login-button"
-                >
-                    Login to Dashboard
-                </button>
-
-                <div id="message"></div>
-
-                <a
-                    href="/"
-                    class="home-link"
-                >
-                    ← Back to website
-                </a>
-
-            </form>
-
-        </section>
+        <div class="auth-footer">
+            <p>
+                Don't have an account?
+                <a href="/register.html">Create School Account</a>
+            </p>
+        </div>
 
     </div>
 
 </div>
 
-
 <script>
+document
+    .getElementById("loginForm")
+    .addEventListener("submit", async function (e) {
 
-const loginForm =
-    document.getElementById("loginForm");
-
-const message =
-    document.getElementById("message");
-
-
-loginForm.addEventListener(
-    "submit",
-    async function(event) {
-
-        event.preventDefault();
-
-        message.textContent = "Signing in...";
+        e.preventDefault();
 
         const username =
-            document.getElementById("username").value;
+            document.getElementById("username").value.trim();
 
         const password =
             document.getElementById("password").value;
 
+        const message =
+            document.getElementById("loginMessage");
+
+        message.textContent = "Logging in...";
+        message.className = "form-message";
 
         try {
 
-            const response =
-                await fetch("/api/login", {
+            const response = await fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                    username,
+                    password
+                })
+            });
 
-                    method: "POST",
+            const data = await response.json();
 
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        username,
-                        password
-                    })
-                });
-
-
-            const result =
-                await response.json();
-
-
-            if (result.success) {
-
-                window.location.href =
-                    "/dashboard.html";
-
-            } else {
-
+            if (!response.ok || !data.success) {
                 message.textContent =
-                    result.message ||
-                    "Invalid username or password.";
+                    data.error || "Invalid username or password.";
 
+                message.className =
+                    "form-message error";
+
+                return;
             }
+
+            message.textContent =
+                "Login successful. Redirecting...";
+
+            message.className =
+                "form-message success";
+
+            setTimeout(() => {
+                window.location.href = "/dashboard.html";
+            }, 500);
 
         } catch (error) {
 
-            console.log(
-                "Login error:",
-                error
-            );
+            console.error(error);
 
             message.textContent =
                 "Unable to connect to server.";
 
+            message.className =
+                "form-message error";
         }
 
-    }
-);
-
+    });
 </script>
 
 </body>

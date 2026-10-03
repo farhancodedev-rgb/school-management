@@ -1,303 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>Attendance Report - Government Primary School Newabad</title>
-
-    <link
-        rel="stylesheet"
-        href="style.css">
-
-    <style>
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .report-tools {
-            background: white;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
-        }
-
-        .report-tools label {
-            display: block;
-            font-weight: bold;
-            margin: 8px 0;
-        }
-
-        .report-tools input,
-        .report-tools select {
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .summary {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .summary-card {
-            background: white;
-            padding: 18px 10px;
-            text-align: center;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-        }
-
-        .summary-card h3 {
-            margin: 0;
-            font-size: 13px;
-        }
-
-        .summary-card p {
-            margin: 7px 0 0;
-            font-size: 26px;
-            font-weight: bold;
-        }
-
-        .report-card {
-            background: white;
-            padding: 18px;
-            margin-bottom: 12px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-        }
-
-        .report-card h3 {
-            margin: 0 0 7px;
-        }
-
-        .report-card p {
-            margin: 5px 0;
-            color: var(--muted);
-        }
-
-        .status {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        .present {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .absent {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .not-marked {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .percentage {
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .empty-message {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            color: var(--muted);
-        }
-
-        .report-count {
-            color: var(--muted);
-            margin-bottom: 15px;
-        }
-
-        @media (max-width: 850px) {
-
-            .summary {
-                grid-template-columns: repeat(3, 1fr);
-            }
-
-        }
-
-        @media (max-width: 600px) {
-
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .summary {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
-            }
-
-            .summary-card {
-                padding: 14px 6px;
-            }
-
-            .summary-card p {
-                font-size: 22px;
-            }
-
-        }
-
-    </style>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Attendance Reports - School Management</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/layout.css">
 </head>
-
 
 <body>
 
-
 <header class="dashboard-header">
-
-    <h1>🎓 Government Primary School Newabad</h1>
-
-    <p>
-        Attendance History & Report
-    </p>
-
+    <div>
+        <h1>🎓 <span id="schoolName">My School</span></h1>
+        <p>Attendance Reports</p>
+    </div>
 </header>
 
-
 <nav class="main-nav">
-
-    <a href="/dashboard.html">
-        🏠 Dashboard
-    </a>
-
-    <a href="/students.html">
-        👨‍🎓 Students
-    </a>
-
-    <a href="/teachers.html">
-        👨‍🏫 Teachers
-    </a>
-
-    <a href="/attendance.html">
-        📅 Attendance
-    </a>
-
-    <a href="/attendance-report.html" class="active">
-        📊 Reports
-    </a>
-
-    <a href="/classes.html">
-        🏫 Classes
-    </a>
-
-    <a href="/fees.html">
-        💰 Fees
-    </a>
-    <a id="navLogout" href="/logout">🚪 Logout</a>
+    <a href="/dashboard.html">🏠 Dashboard</a>
+    <a href="/students.html">👨‍🎓 Students</a>
+    <a href="/teachers.html">👨‍🏫 Teachers</a>
+    <a href="/attendance.html">📅 Attendance</a>
+    <a href="/attendance-report.html" class="active">📊 Reports</a>
+    <a href="/classes.html">🏫 Classes</a>
+    <a href="/fees.html">💰 Fees</a>
+    <a href="/logout">🚪 Logout</a>
 </nav>
-
 
 <main>
 
-
+    <!-- Page Header -->
     <div class="page-header">
-
         <div>
+            <h2>📊 Attendance Reports</h2>
+            <p>View student attendance records.</p>
+        </div>
+    </div>
 
-            <h2>
-                📊 Attendance Report
-            </h2>
+    <!-- Filters -->
+    <section class="form-card">
 
-            <p style="color:var(--muted);">
-                View attendance for any date
-            </p>
+        <h3>🔎 Filter Report</h3>
+
+        <div class="filter-grid">
+
+            <div class="form-group">
+                <label for="reportDate">Date</label>
+                <input type="date" id="reportDate">
+            </div>
+
+            <div class="form-group">
+                <label for="studentFilter">Student</label>
+                <select id="studentFilter">
+                    <option value="">All Students</option>
+                </select>
+            </div>
 
         </div>
 
-        <strong id="reportDateLabel">
-            Today
-        </strong>
+        <div class="filter-actions">
 
-    </div>
+            <button type="button" id="loadReport" class="btn-primary">
+                🔍 Generate Report
+            </button>
 
+            <button type="button" id="clearFilter" class="btn-secondary">
+                Clear
+            </button>
 
-    <!-- FILTERS -->
-
-    <div class="report-tools">
-
-        <label for="reportDate">
-            📅 Select Date
-        </label>
-
-        <input
-            type="date"
-            id="reportDate">
-
-
-        <label for="searchStudent">
-            🔍 Search Student
-        </label>
-
-        <input
-            type="search"
-            id="searchStudent"
-            placeholder="Search by name or roll number...">
-
-
-        <label for="classFilter">
-            🏫 Filter Class
-        </label>
-
-        <select id="classFilter">
-
-            <option value="all">
-                All Classes
-            </option>
-
-        </select>
-
-    </div>
-
-
-    <!-- SUMMARY -->
-
-    <div id="summary"></div>
-
-
-    <div
-        id="reportCount"
-        class="report-count">
-    </div>
-
-
-    <!-- REPORT -->
-
-    <div id="report">
-
-        <div class="empty-message">
-            Loading report...
         </div>
 
-    </div>
+    </section>
 
+    <!-- Summary -->
+    <section class="stats">
 
-    <br>
+        <div class="stat-card">
+            <span class="stat-icon">👨‍🎓</span>
+            <h3>Students</h3>
+            <p id="totalStudents">0</p>
+        </div>
 
+        <div class="stat-card">
+            <span class="stat-icon">✅</span>
+            <h3>Present</h3>
+            <p id="presentCount">0</p>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">❌</span>
+            <h3>Absent</h3>
+            <p id="absentCount">0</p>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">📝</span>
+            <h3>Leave</h3>
+            <p id="leaveCount">0</p>
+        </div>
+
+    </section>
+
+    <!-- Attendance Table -->
+    <section class="table-card">
+
+        <div class="table-header">
+            <h3>📋 Attendance Records</h3>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student</th>
+                        <th>Class</th>
+                        <th>Roll</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="reportTable">
+                    <tr>
+                        <td colspan="6">Loading...</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
 
 </main>
 
@@ -306,140 +143,93 @@
 
 let students = [];
 
-let attendance = [];
+let attendanceRecords = [];
 
-
-const reportDate =
-    document.getElementById(
-        "reportDate"
-    );
-
-const searchStudent =
-    document.getElementById(
-        "searchStudent"
-    );
-
-const classFilter =
-    document.getElementById(
-        "classFilter"
-    );
-
-const report =
-    document.getElementById(
-        "report"
-    );
-
-const summary =
-    document.getElementById(
-        "summary"
-    );
+// Prevents record data from being interpreted as HTML
+function esc(value) {
+    return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
 
 
 /* =========================
-   TODAY
+   DATE
 ========================= */
 
-const today =
-    new Date()
-        .toISOString()
-        .split("T")[0];
+function getToday() {
 
-reportDate.value = today;
+    const now = new Date();
+
+    const year =
+        now.getFullYear();
+
+    const month =
+        String(now.getMonth() + 1).padStart(2, "0");
+
+    const day =
+        String(now.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+document.getElementById("reportDate").value = getToday();
 
 
 /* =========================
-   LOAD DATA
+   LOAD STUDENTS
 ========================= */
 
-async function loadReport() {
-
-    const date =
-        reportDate.value;
-
-
-    if (!date) {
-
-        alert(
-            "Please select a date."
-        );
-
-        return;
-
-    }
-
-
-    report.innerHTML = `
-        <div class="empty-message">
-            Loading report...
-        </div>
-    `;
-
+async function loadStudents() {
 
     try {
 
-        const studentsResponse =
-            await fetch(
-                "/api/students"
-            );
+        const response =
+            await fetch("/api/students", {
+                credentials: "include"
+            });
 
-
-        if (!studentsResponse.ok) {
-
-            throw new Error(
-                "Students API failed"
-            );
-
+        if (response.status === 401) {
+            window.location.href = "/login.html";
+            return;
         }
 
-
-        students =
-            await studentsResponse.json();
-
-
-        const attendanceResponse =
-            await fetch(
-                "/api/attendance?date=" +
-                encodeURIComponent(date)
-            );
-
-
-        if (!attendanceResponse.ok) {
-
-            throw new Error(
-                "Attendance API failed"
-            );
-
+        if (!response.ok) {
+            throw new Error("Unable to load students");
         }
 
+        students = await response.json();
 
-        attendance =
-            await attendanceResponse.json();
+        const select =
+            document.getElementById("studentFilter");
 
-
-        createClassFilter();
-
-        updateDateLabel();
-
-        renderReport();
-
-    }
-
-    catch (error) {
-
-        console.log(
-            "Report error:",
-            error
-        );
-
-
-        summary.innerHTML = "";
-
-
-        report.innerHTML = `
-            <div class="empty-message">
-                ❌ Could not load attendance report.
-            </div>
+        select.innerHTML = `
+            <option value="">All Students</option>
         `;
+
+        students.forEach(student => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = student.id;
+
+            option.textContent =
+                `${student.name || ""} - Class ${student.classname || ""} - Roll ${student.roll || ""}`;
+
+            select.appendChild(option);
+
+        });
+
+        loadReport();
+
+    } catch (error) {
+
+        console.error(error);
 
     }
 
@@ -447,64 +237,62 @@ async function loadReport() {
 
 
 /* =========================
-   CLASS FILTER
+   LOAD ATTENDANCE
 ========================= */
 
-function createClassFilter() {
+async function loadReport() {
 
-    const currentValue =
-        classFilter.value;
+    const date =
+        document.getElementById("reportDate").value;
 
+    const studentId =
+        document.getElementById("studentFilter").value;
 
-    const classes = [
-        ...new Set(
-            students
-                .map(
-                    student =>
-                        student.className
-                )
-                .filter(Boolean)
-        )
-    ];
+    try {
 
+        let url = "/api/attendance";
 
-    classFilter.innerHTML = `
-        <option value="all">
-            All Classes
-        </option>
-    `;
+        const params = new URLSearchParams();
 
-
-    classes.sort().forEach(
-        className => {
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-            option.value =
-                className;
-
-            option.textContent =
-                className;
-
-            classFilter.appendChild(
-                option
-            );
-
+        if (date) {
+            params.append("date", date);
         }
-    );
 
+        if (studentId) {
+            params.append("studentId", studentId);
+        }
 
-    if (
-        classes.includes(
-            currentValue
-        )
-    ) {
+        if (params.toString()) {
+            url += "?" + params.toString();
+        }
 
-        classFilter.value =
-            currentValue;
+        const response =
+            await fetch(url, {
+                credentials: "include"
+            });
+
+        if (response.status === 401) {
+            window.location.href = "/login.html";
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error("Unable to load attendance");
+        }
+
+        attendanceRecords = await response.json();
+
+        renderReport(attendanceRecords);
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("reportTable").innerHTML = `
+            <tr>
+                <td colspan="6">Unable to load report.</td>
+            </tr>
+        `;
 
     }
 
@@ -515,424 +303,150 @@ function createClassFilter() {
    RENDER REPORT
 ========================= */
 
-function renderReport() {
+function renderReport(records) {
 
-    const search =
-        searchStudent.value
-            .toLowerCase()
-            .trim();
-
-
-    const selectedClass =
-        classFilter.value;
-
-
-    const filtered =
-        students.filter(
-            student => {
-
-                const name =
-                    String(
-                        student.name || ""
-                    )
-                    .toLowerCase();
-
-
-                const roll =
-                    String(
-                        student.roll || ""
-                    )
-                    .toLowerCase();
-
-
-                const matchesSearch =
-                    name.includes(search) ||
-                    roll.includes(search);
-
-
-                const matchesClass =
-                    selectedClass === "all" ||
-                    student.className ===
-                        selectedClass;
-
-
-                return (
-                    matchesSearch &&
-                    matchesClass
-                );
-
-            }
-        );
-
+    const table =
+        document.getElementById("reportTable");
 
     let present = 0;
+
     let absent = 0;
-    let notMarked = 0;
 
+    let leave = 0;
 
-    /*
-     * Summary should represent
-     * the selected class/search results.
-     */
+    if (!records.length) {
 
-    filtered.forEach(
-        student => {
-
-            const record =
-                attendance.find(
-                    item =>
-                        item.studentId ==
-                        student.id
-                );
-
-
-            const status =
-                record
-                    ? record.status
-                    : "Not Marked";
-
-
-            if (
-                status === "Present"
-            ) {
-                present++;
-            }
-
-            else if (
-                status === "Absent"
-            ) {
-                absent++;
-            }
-
-            else {
-                notMarked++;
-            }
-
-        }
-    );
-
-
-    const total =
-        filtered.length;
-
-
-    const marked =
-        present + absent;
-
-
-    let percentage = 0;
-
-
-    if (marked > 0) {
-
-        percentage =
-            Math.round(
-                (present / marked) * 100
-            );
-
-    }
-
-
-    /* SUMMARY */
-
-    summary.innerHTML = `
-
-        <div class="summary">
-
-            <div class="summary-card">
-
-                <h3>
-                    👨‍🎓 Total
-                </h3>
-
-                <p>
-                    ${total}
-                </p>
-
-            </div>
-
-
-            <div class="summary-card">
-
-                <h3>
-                    ✅ Present
-                </h3>
-
-                <p>
-                    ${present}
-                </p>
-
-            </div>
-
-
-            <div class="summary-card">
-
-                <h3>
-                    ❌ Absent
-                </h3>
-
-                <p>
-                    ${absent}
-                </p>
-
-            </div>
-
-
-            <div class="summary-card">
-
-                <h3>
-                    ⏳ Not Marked
-                </h3>
-
-                <p>
-                    ${notMarked}
-                </p>
-
-            </div>
-
-
-            <div class="summary-card">
-
-                <h3>
-                    📈 Attendance
-                </h3>
-
-                <p class="percentage">
-                    ${percentage}%
-                </p>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    document.getElementById(
-        "reportCount"
-    ).textContent =
-        "Showing " +
-        total +
-        " student" +
-        (total === 1 ? "" : "s");
-
-
-    /* REPORT LIST */
-
-    report.innerHTML = "";
-
-
-    if (!filtered.length) {
-
-        report.innerHTML = `
-            <div class="empty-message">
-                🔍 No students found.
-            </div>
+        table.innerHTML = `
+            <tr>
+                <td colspan="6">No attendance records found.</td>
+            </tr>
         `;
+
+        updateSummary(0, 0, 0, 0);
 
         return;
 
     }
 
+    records.forEach(record => {
 
-    filtered.forEach(
-        student => {
+        const status =
+            String(record.status || "").toLowerCase();
 
-            const record =
-                attendance.find(
-                    item =>
-                        item.studentId ==
-                        student.id
-                );
+        if (status === "present") {
+            present++;
+        }
+        else if (status === "absent") {
+            absent++;
+        }
+        else if (status === "leave") {
+            leave++;
+        }
 
+    });
 
-            const status =
-                record
-                    ? record.status
-                    : "Not Marked";
+    table.innerHTML =
 
+        records.map(record => {
 
-            let statusClass =
-                "not-marked";
+            let status =
+                String(record.status || "");
 
+            let statusClass = "";
 
-            if (
-                status === "Present"
-            ) {
-
-                statusClass =
-                    "present";
-
+            if (status.toLowerCase() === "present") {
+                statusClass = "status-present";
+            }
+            else if (status.toLowerCase() === "absent") {
+                statusClass = "status-absent";
+            }
+            else if (status.toLowerCase() === "leave") {
+                statusClass = "status-leave";
             }
 
+            return `
 
-            if (
-                status === "Absent"
-            ) {
+                <tr>
 
-                statusClass =
-                    "absent";
+                    <td data-label="ID">${esc(record.id)}</td>
 
-            }
+                    <td data-label="Student">${esc(record.name || record.studentname)}</td>
 
+                    <td data-label="Class">${esc(record.classname)}</td>
 
-            const div =
-                document.createElement(
-                    "div"
-                );
+                    <td data-label="Roll">${esc(record.roll)}</td>
 
+                    <td data-label="Date">${esc(record.date)}</td>
 
-            div.className =
-                "report-card";
+                    <td data-label="Status">
+                        <span class="${statusClass}">${esc(status)}</span>
+                    </td>
 
-
-            div.innerHTML = `
-
-                <h3>
-                    👨‍🎓
-                    ${escapeHTML(
-                        student.name
-                    )}
-                </h3>
-
-                <p>
-                    🏫 Class:
-                    ${escapeHTML(
-                        student.className
-                    )}
-                </p>
-
-                <p>
-                    🔢 Roll No:
-                    ${escapeHTML(
-                        student.roll
-                    )}
-                </p>
-
-                <p>
-
-                    Status:
-
-                    <span
-                        class="status ${statusClass}">
-
-                        ${status}
-
-                    </span>
-
-                </p>
+                </tr>
 
             `;
 
+        }).join("");
 
-            report.appendChild(
-                div
-            );
-
-        }
+    updateSummary(
+        records.length,
+        present,
+        absent,
+        leave
     );
 
 }
 
 
 /* =========================
-   DATE LABEL
+   SUMMARY
 ========================= */
 
-function updateDateLabel() {
+function updateSummary(total, present, absent, leave) {
 
-    const date =
-        reportDate.value;
+    document.getElementById("totalStudents").textContent = total;
 
+    document.getElementById("presentCount").textContent = present;
 
-    if (!date) return;
+    document.getElementById("absentCount").textContent = absent;
 
-
-    const selected =
-        new Date(
-            date + "T00:00:00"
-        );
-
-
-    document.getElementById(
-        "reportDateLabel"
-    ).textContent =
-        selected.toLocaleDateString(
-            "en-US",
-            {
-                day: "numeric",
-                month: "short",
-                year: "numeric"
-            }
-        );
+    document.getElementById("leaveCount").textContent = leave;
 
 }
 
 
 /* =========================
-   EVENTS
+   BUTTONS
 ========================= */
 
-reportDate.addEventListener(
-    "change",
-    loadReport
-);
+document
+    .getElementById("loadReport")
+    .addEventListener("click", loadReport);
 
 
-searchStudent.addEventListener(
-    "input",
-    renderReport
-);
+document
+    .getElementById("clearFilter")
+    .addEventListener("click", function() {
 
+        document.getElementById("reportDate").value =
+            getToday();
 
-classFilter.addEventListener(
-    "change",
-    renderReport
-);
+        document.getElementById("studentFilter").value = "";
 
+        loadReport();
 
-/* =========================
-   HTML SAFETY
-========================= */
-
-function escapeHTML(value) {
-
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    )
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-    .replace(
-        /'/g,
-        "&#039;"
-    );
-
-}
+    });
 
 
 /* =========================
    START
 ========================= */
 
-loadReport();
+loadStudents();
 
 </script>
 
-<script src="/script.js?v=3"></script>
-<script src="/mobile-nav.js"></script>
+<script src="/layout.js"></script>
+
 </body>
 </html>

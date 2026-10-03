@@ -1,31 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fees - Government Primary School Newabad</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Fees - School Management</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/layout.css">
 </head>
 
 <body>
 
 <header class="dashboard-header">
-
     <div>
-
-        <h1>🎓 Government Primary School Newabad</h1>
-
-        <p>
-            Fee Management
-        </p>
-
+        <h1>🎓 <span id="schoolName">My School</span></h1>
+        <p>Fee Management</p>
     </div>
-
-
 </header>
 
 <nav class="main-nav">
-
     <a href="/dashboard.html">🏠 Dashboard</a>
     <a href="/students.html">👨‍🎓 Students</a>
     <a href="/teachers.html">👨‍🏫 Teachers</a>
@@ -33,79 +25,169 @@
     <a href="/attendance-report.html">📊 Reports</a>
     <a href="/classes.html">🏫 Classes</a>
     <a href="/fees.html" class="active">💰 Fees</a>
-
-    <a id="navLogout" href="/logout">🚪 Logout</a>
+    <a href="/logout">🚪 Logout</a>
 </nav>
 
 <main>
 
-    <h2>💰 Add Fee Payment</h2>
+    <div class="page-header">
+        <div>
+            <h2>💰 Fees</h2>
+            <p>Manage student fees and payments.</p>
+        </div>
+    </div>
 
-    <form id="feeForm">
+    <!-- Fee Form -->
+    <section class="form-card">
 
-        <select id="studentId" required>
-            <option value="">Select Student</option>
-        </select>
+        <h3>➕ Add Fee Payment</h3>
 
-        <input
-            type="number"
-            id="totalFees"
-            placeholder="Total Fees"
-            required
-        >
+        <form id="feeForm">
 
-        <input
-            type="number"
-            id="paidAmount"
-            placeholder="Paid Amount"
-            required
-        >
+            <div class="form-group">
+                <label for="studentId">Student</label>
+                <select id="studentId" required>
+                    <option value="">Select Student</option>
+                </select>
+            </div>
 
-        <input
-            type="date"
-            id="paymentDate"
-            required
-        >
+            <div class="form-group">
+                <label for="totalFees">Total Fees</label>
+                <input type="number" id="totalFees" min="0" step="0.01" inputmode="decimal" placeholder="Total fees" required>
+            </div>
 
-        <button type="submit">
-            💾 Save Payment
-        </button>
+            <div class="form-group">
+                <label for="paidAmount">Paid Amount</label>
+                <input type="number" id="paidAmount" min="0" step="0.01" inputmode="decimal" placeholder="Paid amount" required>
+            </div>
 
-    </form>
+            <div class="form-group">
+                <label for="remaining">Remaining</label>
+                <input type="number" id="remaining" readonly placeholder="Remaining amount">
+            </div>
 
-    <h2>Fee Records</h2>
+            <div class="form-group">
+                <label for="paymentDate">Payment Date</label>
+                <input type="date" id="paymentDate" required>
+            </div>
 
-    <div id="feeList" class="fee-list"></div>
+            <button type="submit" class="btn-primary">
+                💾 Save Fee
+            </button>
 
-    <br>
+            <p id="message"></p>
+
+        </form>
+
+    </section>
+
+    <!-- Fee List -->
+    <section class="table-card">
+
+        <div class="table-header">
+            <h3>📋 Fee Records</h3>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student</th>
+                        <th>Total</th>
+                        <th>Paid</th>
+                        <th>Remaining</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody id="feesTable">
+                    <tr>
+                        <td colspan="6">Loading...</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
 
 </main>
 
+
 <script>
-const feeForm =
-    document.getElementById("feeForm");
 
-const studentSelect =
-    document.getElementById("studentId");
+let students = [];
 
-const feeList =
-    document.getElementById("feeList");
+// Prevents record data from being interpreted as HTML
+function esc(value) {
+    return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
 
 
-// Load students into dropdown
+/* =========================
+   DATE
+========================= */
+
+function getToday() {
+
+    const now = new Date();
+
+    const year =
+        now.getFullYear();
+
+    const month =
+        String(now.getMonth() + 1)
+            .padStart(2, "0");
+
+    const day =
+        String(now.getDate())
+            .padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+
+document.getElementById("paymentDate").value = getToday();
+
+
+/* =========================
+   LOAD STUDENTS
+========================= */
 
 async function loadStudents() {
 
     try {
 
         const response =
-            await fetch("/api/students");
+            await fetch("/api/students", {
+                credentials: "include"
+            });
 
-        const students =
-            await response.json();
+        if (response.status === 401) {
+            window.location.href = "/login.html";
+            return;
+        }
 
-        studentSelect.innerHTML =
-            '<option value="">Select Student</option>';
+        if (!response.ok) {
+            throw new Error("Unable to load students");
+        }
+
+        students = await response.json();
+
+        const select =
+            document.getElementById("studentId");
+
+        select.innerHTML = `
+            <option value="">Select Student</option>
+        `;
 
         students.forEach(student => {
 
@@ -115,189 +197,261 @@ async function loadStudents() {
             option.value = student.id;
 
             option.textContent =
-                student.name +
-                " - Roll " +
-                student.roll;
+                `${student.name || ""} - Class ${student.classname || ""} - Roll ${student.roll || ""}`;
 
-            studentSelect.appendChild(option);
+            select.appendChild(option);
+
         });
 
     } catch (error) {
 
-        console.log(
-            "Students load error:",
-            error
-        );
+        console.error(error);
+
     }
+
 }
 
 
-// Load fee records
+/* =========================
+   REMAINING CALCULATION
+========================= */
+
+function calculateRemaining() {
+
+    const total =
+        Number(document.getElementById("totalFees").value) || 0;
+
+    const paid =
+        Number(document.getElementById("paidAmount").value) || 0;
+
+    const remaining =
+        Math.max(total - paid, 0);
+
+    document.getElementById("remaining").value =
+        remaining.toFixed(2);
+
+}
+
+
+document.getElementById("totalFees")
+    .addEventListener("input", calculateRemaining);
+
+document.getElementById("paidAmount")
+    .addEventListener("input", calculateRemaining);
+
+
+/* =========================
+   SAVE FEE
+========================= */
+
+document
+    .getElementById("feeForm")
+    .addEventListener("submit", async function(e) {
+
+        e.preventDefault();
+
+        const studentId =
+            Number(document.getElementById("studentId").value);
+
+        const totalFees =
+            Number(document.getElementById("totalFees").value);
+
+        const paidAmount =
+            Number(document.getElementById("paidAmount").value);
+
+        const remaining =
+            Math.max(totalFees - paidAmount, 0);
+
+        const paymentDate =
+            document.getElementById("paymentDate").value;
+
+        const message =
+            document.getElementById("message");
+
+        if (!studentId) {
+
+            message.textContent =
+                "Please select a student.";
+
+            return;
+
+        }
+
+        if (paidAmount > totalFees) {
+
+            message.textContent =
+                "Paid amount cannot be greater than total fees.";
+
+            return;
+
+        }
+
+        try {
+
+            const response =
+                await fetch("/api/fees", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    credentials: "include",
+
+                    body: JSON.stringify({
+
+                        studentId,
+
+                        totalFees,
+
+                        paidAmount,
+
+                        remaining,
+
+                        paymentDate
+
+                    })
+
+                });
+
+            const data =
+                await response.json();
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error ||
+                    "Unable to save fee"
+                );
+
+            }
+
+            message.textContent =
+                "Fee saved successfully.";
+
+            message.style.color = "green";
+
+            document.getElementById("feeForm").reset();
+
+            document.getElementById("paymentDate").value =
+                getToday();
+
+            document.getElementById("remaining").value = "";
+
+            loadFees();
+
+        } catch (error) {
+
+            console.error(error);
+
+            message.textContent = error.message;
+
+            message.style.color = "red";
+
+        }
+
+    });
+
+
+/* =========================
+   LOAD FEES
+========================= */
 
 async function loadFees() {
 
     try {
 
         const response =
-            await fetch("/api/fees");
+            await fetch("/api/fees", {
+                credentials: "include"
+            });
+
+        if (response.status === 401) {
+            window.location.href = "/login.html";
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error("Unable to load fees");
+        }
 
         const fees =
             await response.json();
 
-        feeList.innerHTML = "";
-
-        if (fees.length === 0) {
-
-            feeList.innerHTML =
-                "<p>No fee records found.</p>";
-
-            return;
-        }
-
-        fees.forEach(fee => {
-
-            const div =
-                document.createElement("div")
-
-            div.className = "fee-card";
-
-            div.innerHTML = `
-                <p><strong>Student:</strong>
-                    ${fee.studentName}
-                </p>
-
-                <p><strong>Total Fees:</strong>
-                    ${fee.totalFees}
-                </p>
-
-                <p><strong>Paid:</strong>
-                    ${fee.paidAmount}
-                </p>
-
-                <p><strong>Remaining:</strong>
-                    ${fee.remaining}
-                </p>
-
-                <p><strong>Date:</strong>
-                    ${fee.paymentDate}
-                </p>
-            `;
-
-            feeList.appendChild(div);
-        });
+        renderFees(fees);
 
     } catch (error) {
 
-        console.log(
-            "Fees load error:",
-            error
-        );
+        console.error(error);
+
+        document.getElementById("feesTable").innerHTML = `
+            <tr>
+                <td colspan="6">Unable to load fee records.</td>
+            </tr>
+        `;
+
     }
+
 }
 
 
-// Save fee payment
+/* =========================
+   RENDER FEES
+========================= */
 
-feeForm.addEventListener(
-    "submit",
-    async function (event) {
+function renderFees(fees) {
 
-        event.preventDefault();
+    const table =
+        document.getElementById("feesTable");
 
-        const totalFees =
-            Number(
-                document.getElementById(
-                    "totalFees"
-                ).value
-            );
+    if (!fees.length) {
 
-        const paidAmount =
-            Number(
-                document.getElementById(
-                    "paidAmount"
-                ).value
-            );
+        table.innerHTML = `
+            <tr>
+                <td colspan="6">No fee records found.</td>
+            </tr>
+        `;
 
-        const remaining =
-            totalFees - paidAmount;
+        return;
 
-        const paymentDate =
-            document.getElementById(
-                "paymentDate"
-            ).value;
-
-        try {
-
-            const response =
-                await fetch(
-                    "/api/fees",
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body: JSON.stringify({
-                            studentId:
-                                Number(
-                                    studentSelect.value
-                                ),
-
-                            totalFees:
-                                totalFees,
-
-                            paidAmount:
-                                paidAmount,
-
-                            remaining:
-                                remaining,
-
-                            paymentDate:
-                                paymentDate
-                        })
-                    }
-                );
-
-            const result =
-                await response.json();
-
-            if (result.error) {
-
-                alert(result.error);
-                return;
-            }
-
-            alert("Fee payment saved ✅");
-
-            feeForm.reset();
-
-            loadFees();
-
-        } catch (error) {
-
-            console.log(
-                "Fee save error:",
-                error
-            );
-
-            alert(
-                "Failed to save fee payment"
-            );
-        }
     }
-);
+
+    table.innerHTML =
+        fees.map(fee => `
+
+            <tr>
+
+                <td data-label="ID">${esc(fee.id)}</td>
+
+                <td data-label="Student">${esc(fee.studentname || fee.name)}</td>
+
+                <td data-label="Total">${Number(fee.totalfees || 0).toFixed(2)}</td>
+
+                <td data-label="Paid">${Number(fee.paidamount || 0).toFixed(2)}</td>
+
+                <td data-label="Remaining">${Number(fee.remaining || 0).toFixed(2)}</td>
+
+                <td data-label="Date">${esc(fee.paymentdate)}</td>
+
+            </tr>
+
+        `).join("");
+
+}
 
 
-// Start page
+/* =========================
+   START
+========================= */
 
 loadStudents();
+
 loadFees();
 
 </script>
 
-<script src="/script.js?v=3"></script>
-<script src="/mobile-nav.js"></script>
+<script src="/layout.js"></script>
+
 </body>
 </html>
