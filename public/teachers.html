@@ -1,852 +1,400 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>Teachers - My School</title>
-
-    <link
-        rel="stylesheet"
-        href="style.css">
-
-    <style>
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .search-box {
-            background: white;
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
-        }
-
-        .search-box input {
-            margin: 0;
-        }
-
-        #teacherList {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .teacher-card {
-            background: white;
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
-
-        .teacher-card h3 {
-            margin-top: 0;
-        }
-
-        .teacher-info {
-            color: var(--muted);
-            line-height: 1.8;
-        }
-
-        .teacher-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 15px;
-        }
-
-        .teacher-actions button {
-            flex: 1;
-        }
-
-        .edit-btn {
-            background: #2563eb;
-        }
-
-        .delete-btn {
-            background: #dc2626;
-        }
-
-        .empty-message {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            color: var(--muted);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.55);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-        }
-
-        .modal-box {
-            background: white;
-            width: 100%;
-            max-width: 500px;
-            padding: 22px;
-            border-radius: 18px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-        }
-
-        .modal-box h2 {
-            margin-top: 0;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .modal-actions button {
-            flex: 1;
-        }
-
-        .cancel-btn {
-            background: #64748b;
-        }
-
-        @media (max-width: 650px) {
-
-            #teacherList {
-                grid-template-columns: 1fr;
-            }
-
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .teacher-actions {
-                flex-direction: column;
-            }
-
-        }
-
-    </style>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Teachers - School Management</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/layout.css">
 </head>
-
 
 <body>
 
 <header class="dashboard-header">
-
     <div>
-
-        <h1>🎓 My School</h1>
-
-        <p>
-            Teacher Management
-        </p>
-
+        <h1>🎓 <span id="schoolName">My School</span></h1>
+        <p>Teacher Management</p>
     </div>
-
-
 </header>
 
-
 <nav class="main-nav">
-
-    <a href="/dashboard.html">
-        🏠 Dashboard
-    </a>
-
-    <a href="/students.html">
-        👨‍🎓 Students
-    </a>
-
-    <a href="/teachers.html" class="active">
-        👨‍🏫 Teachers
-    </a>
-
-    <a href="/attendance.html">
-        📅 Attendance
-    </a>
-
-    <a href="/attendance-report.html">
-        📊 Reports
-    </a>
-
-    <a href="/classes.html">
-        🏫 Classes
-    </a>
-    <a href="/fees.html">
-        💰 Fees
-    </a>
-
-    <a id="navLogout" href="/logout">🚪 Logout</a>
+    <a href="/dashboard.html">🏠 Dashboard</a>
+    <a href="/students.html">👨‍🎓 Students</a>
+    <a href="/teachers.html" class="active">👨‍🏫 Teachers</a>
+    <a href="/attendance.html">📅 Attendance</a>
+    <a href="/attendance-report.html">📊 Reports</a>
+    <a href="/classes.html">🏫 Classes</a>
+    <a href="/fees.html">💰 Fees</a>
+    <a href="/logout">🚪 Logout</a>
 </nav>
-
 
 <main>
 
     <div class="page-header">
-
         <div>
-
-            <h2>
-                👨‍🏫 Teachers
-            </h2>
-
-            <p style="color:var(--muted);">
-                Add and manage school teachers
-            </p>
-
+            <h2>👨‍🏫 Teachers</h2>
+            <p>Manage teachers of your school.</p>
         </div>
-
-        <strong id="teacherTotal">
-            0 Teachers
-        </strong>
-
     </div>
 
+    <!-- Teacher Form -->
+    <section class="form-card">
 
-    <!-- ADD TEACHER -->
+        <h3 id="formTitle">➕ Add Teacher</h3>
 
-    <form id="teacherForm">
+        <form id="teacherForm">
 
-        <h3>
-            ➕ Add New Teacher
-        </h3>
+            <input type="hidden" id="teacherId">
 
-        <input
-            type="text"
-            id="name"
-            placeholder="Teacher Name"
-            required>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" placeholder="Teacher name" required>
+            </div>
 
-        <input
-            type="text"
-            id="father"
-            placeholder="Father Name"
-            required>
+            <div class="form-group">
+                <label for="father">Father Name</label>
+                <input type="text" id="father" placeholder="Father name" required>
+            </div>
 
-        <input
-            type="text"
-            id="subject"
-            placeholder="Subject"
-            required>
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" placeholder="e.g. Mathematics" required>
+            </div>
 
-        <input
-            type="text"
-            id="phone"
-            placeholder="Phone Number"
-            required>
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" placeholder="Phone number">
+            </div>
 
-        <button type="submit">
-            ➕ Add Teacher
-        </button>
+            <button type="submit" class="btn-primary">
+                💾 Save Teacher
+            </button>
 
-    </form>
-
-
-    <!-- SEARCH -->
-
-    <div class="search-box">
-
-        <input
-            type="search"
-            id="searchTeacher"
-            placeholder="🔍 Search teacher, subject or phone...">
-
-    </div>
-
-
-    <!-- TEACHER LIST -->
-
-    <div id="teacherList">
-
-        <p>
-            Loading teachers...
-        </p>
-
-    </div>
-
-</main>
-
-
-<!-- EDIT MODAL -->
-
-<div
-    id="editModal"
-    class="modal">
-
-    <div class="modal-box">
-
-        <h2>
-            ✏️ Edit Teacher
-        </h2>
-
-        <input
-            type="text"
-            id="editName"
-            placeholder="Teacher Name">
-
-        <input
-            type="text"
-            id="editFather"
-            placeholder="Father Name">
-
-        <input
-            type="text"
-            id="editSubject"
-            placeholder="Subject">
-
-        <input
-            type="text"
-            id="editPhone"
-            placeholder="Phone Number">
-
-        <div class="modal-actions">
-
-            <button
-                class="cancel-btn"
-                onclick="closeEditModal()">
+            <button type="button" id="cancelBtn" class="btn-secondary" style="display:none;">
                 Cancel
             </button>
 
-            <button
-                onclick="saveEdit()">
-                💾 Save Changes
-            </button>
+            <p id="message"></p>
+
+        </form>
+
+    </section>
+
+    <!-- Teacher List -->
+    <section class="table-card">
+
+        <div class="table-header">
+            <h3>📋 Teacher List</h3>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Father</th>
+                        <th>Subject</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="teachersTable">
+                    <tr>
+                        <td colspan="6">Loading...</td>
+                    </tr>
+                </tbody>
+
+            </table>
 
         </div>
 
-    </div>
+    </section>
 
-</div>
+</main>
 
 
 <script>
 
 let teachers = [];
 
-let editingTeacherId = null;
-
-
-/* =========================
-   LOAD TEACHERS
-========================= */
+// Prevents teacher data from being interpreted as HTML
+function esc(value) {
+    return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
 
 async function loadTeachers() {
 
     try {
 
         const response =
-            await fetch("/api/teachers");
+            await fetch("/api/teachers", {
+                credentials: "include"
+            });
 
-        teachers =
-            await response.json();
+        if (response.status === 401) {
+            window.location.href = "/login.html";
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error("Failed to load teachers");
+        }
+
+        teachers = await response.json();
 
         renderTeachers();
 
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("teachersTable").innerHTML = `
+            <tr>
+                <td colspan="6">Unable to load teachers.</td>
+            </tr>
+        `;
     }
-
-    catch (error) {
-
-        console.log(
-            "Teacher loading error:",
-            error
-        );
-
-        document.getElementById(
-            "teacherList"
-        ).innerHTML =
-            "<div class='empty-message'>❌ Could not load teachers.</div>";
-
-    }
-
 }
 
-
-/* =========================
-   RENDER
-========================= */
 
 function renderTeachers() {
 
-    const list =
-        document.getElementById(
-            "teacherList"
-        );
+    const table =
+        document.getElementById("teachersTable");
 
-    const search =
-        document.getElementById(
-            "searchTeacher"
-        ).value
-        .toLowerCase()
-        .trim();
+    if (!teachers.length) {
 
-
-    const filtered =
-        teachers.filter(teacher => {
-
-            return (
-
-                String(teacher.name || "")
-                    .toLowerCase()
-                    .includes(search)
-
-                ||
-
-                String(teacher.father || "")
-                    .toLowerCase()
-                    .includes(search)
-
-                ||
-
-                String(teacher.subject || "")
-                    .toLowerCase()
-                    .includes(search)
-
-                ||
-
-                String(teacher.phone || "")
-                    .toLowerCase()
-                    .includes(search)
-
-            );
-
-        });
-
-
-    document.getElementById(
-        "teacherTotal"
-    ).textContent =
-        teachers.length +
-        (teachers.length === 1
-            ? " Teacher"
-            : " Teachers");
-
-
-    if (!filtered.length) {
-
-        list.innerHTML = `
-            <div class="empty-message">
-                🔍 No teachers found.
-            </div>
+        table.innerHTML = `
+            <tr>
+                <td colspan="6">No teachers found.</td>
+            </tr>
         `;
 
         return;
-
     }
 
+    table.innerHTML =
+        teachers.map(teacher => `
 
-    list.innerHTML =
-        filtered.map(teacher => `
+            <tr>
 
-            <div class="teacher-card">
+                <td data-label="ID">${esc(teacher.id)}</td>
 
-                <h3>
-                    👨‍🏫 ${escapeHTML(teacher.name)}
-                </h3>
+                <td data-label="Name">${esc(teacher.name)}</td>
 
-                <div class="teacher-info">
+                <td data-label="Father">${esc(teacher.father)}</td>
 
-                    <div>
-                        👨‍👦 Father:
-                        ${escapeHTML(teacher.father)}
-                    </div>
+                <td data-label="Subject">${esc(teacher.subject)}</td>
 
-                    <div>
-                        📚 Subject:
-                        ${escapeHTML(teacher.subject)}
-                    </div>
+                <td data-label="Phone">${esc(teacher.phone)}</td>
 
-                    <div>
-                        📱 Phone:
-                        ${escapeHTML(teacher.phone)}
-                    </div>
+                <td data-label="Actions">
 
-                </div>
+                    <span>
+                        <button
+                            onclick="editTeacher(${Number(teacher.id)})"
+                            class="btn-small"
+                        >
+                            ✏️
+                        </button>
 
+                        <button
+                            onclick="deleteTeacher(${Number(teacher.id)})"
+                            class="btn-small btn-danger"
+                        >
+                            🗑️
+                        </button>
+                    </span>
 
-                <div class="teacher-actions">
+                </td>
 
-                    <button
-                        class="edit-btn"
-                        onclick="openEditModal(${teacher.id})">
-
-                        ✏️ Edit
-
-                    </button>
-
-
-                    <button
-                        class="delete-btn"
-                        onclick="deleteTeacher(${teacher.id})">
-
-                        🗑️ Delete
-
-                    </button>
-
-                </div>
-
-            </div>
+            </tr>
 
         `).join("");
-
 }
 
 
-/* =========================
-   ADD TEACHER
-========================= */
+document
+    .getElementById("teacherForm")
+    .addEventListener("submit", async function(e) {
 
-document.getElementById(
-    "teacherForm"
-).addEventListener(
-    "submit",
-    async function(event) {
+        e.preventDefault();
 
-        event.preventDefault();
-
+        const id =
+            document.getElementById("teacherId").value;
 
         const teacher = {
 
             name:
-                document.getElementById(
-                    "name"
-                ).value.trim(),
+                document.getElementById("name").value.trim(),
 
             father:
-                document.getElementById(
-                    "father"
-                ).value.trim(),
+                document.getElementById("father").value.trim(),
 
             subject:
-                document.getElementById(
-                    "subject"
-                ).value.trim(),
+                document.getElementById("subject").value.trim(),
 
             phone:
-                document.getElementById(
-                    "phone"
-                ).value.trim()
+                document.getElementById("phone").value.trim()
 
         };
 
-
         try {
 
+            const url =
+                id
+                    ? `/api/teachers/${id}`
+                    : "/api/teachers";
+
+            const method =
+                id ? "PUT" : "POST";
+
             const response =
-                await fetch(
-                    "/api/teachers",
-                    {
+                await fetch(url, {
 
-                        method: "POST",
+                    method,
 
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
 
-                        body:
-                            JSON.stringify(
-                                teacher
-                            )
+                    credentials: "include",
 
-                    }
-                );
+                    body: JSON.stringify(teacher)
 
+                });
+
+            const data =
+                await response.json();
 
             if (!response.ok) {
 
                 throw new Error(
-                    "Failed to add teacher"
+                    data.error ||
+                    "Unable to save teacher"
                 );
-
             }
 
+            document.getElementById("message").textContent =
+                id
+                    ? "Teacher updated successfully."
+                    : "Teacher added successfully.";
 
-            this.reset();
+            resetForm();
 
-            await loadTeachers();
+            loadTeachers();
 
+        } catch (error) {
 
-            alert(
-                "Teacher added successfully! ✅"
-            );
-
-        }
-
-        catch (error) {
-
-            console.log(error);
-
-            alert(
-                "Could not add teacher ❌"
-            );
+            document.getElementById("message").textContent =
+                error.message;
 
         }
 
-    }
-);
+    });
 
 
-/* =========================
-   SEARCH
-========================= */
-
-document.getElementById(
-    "searchTeacher"
-).addEventListener(
-    "input",
-    renderTeachers
-);
-
-
-/* =========================
-   EDIT MODAL
-========================= */
-
-function openEditModal(id) {
+function editTeacher(id) {
 
     const teacher =
-        teachers.find(
-            item => item.id == id
-        );
+        teachers.find(t => t.id == id);
 
     if (!teacher) return;
 
+    document.getElementById("teacherId").value = teacher.id;
 
-    editingTeacherId = id;
+    document.getElementById("name").value = teacher.name || "";
 
+    document.getElementById("father").value = teacher.father || "";
 
-    document.getElementById(
-        "editName"
-    ).value =
-        teacher.name || "";
+    document.getElementById("subject").value = teacher.subject || "";
 
+    document.getElementById("phone").value = teacher.phone || "";
 
-    document.getElementById(
-        "editFather"
-    ).value =
-        teacher.father || "";
+    document.getElementById("formTitle").textContent =
+        "✏️ Edit Teacher";
 
+    document.getElementById("cancelBtn").style.display =
+        "inline-block";
 
-    document.getElementById(
-        "editSubject"
-    ).value =
-        teacher.subject || "";
-
-
-    document.getElementById(
-        "editPhone"
-    ).value =
-        teacher.phone || "";
-
-
-    document.getElementById(
-        "editModal"
-    ).style.display =
-        "flex";
-
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
 
-
-function closeEditModal() {
-
-    editingTeacherId = null;
-
-    document.getElementById(
-        "editModal"
-    ).style.display =
-        "none";
-
-}
-
-
-/* =========================
-   SAVE EDIT
-========================= */
-
-async function saveEdit() {
-
-    if (!editingTeacherId) return;
-
-
-    const teacher = {
-
-        name:
-            document.getElementById(
-                "editName"
-            ).value.trim(),
-
-        father:
-            document.getElementById(
-                "editFather"
-            ).value.trim(),
-
-        subject:
-            document.getElementById(
-                "editSubject"
-            ).value.trim(),
-
-        phone:
-            document.getElementById(
-                "editPhone"
-            ).value.trim()
-
-    };
-
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/teachers/" +
-                editingTeacherId,
-                {
-
-                    method: "PUT",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify(
-                            teacher
-                        )
-
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Update failed"
-            );
-
-        }
-
-
-        closeEditModal();
-
-        await loadTeachers();
-
-
-        alert(
-            "Teacher updated successfully! ✅"
-        );
-
-    }
-
-    catch (error) {
-
-        console.log(error);
-
-        alert(
-            "Could not update teacher ❌"
-        );
-
-    }
-
-}
-
-
-/* =========================
-   DELETE
-========================= */
 
 async function deleteTeacher(id) {
 
-    if (
-        !confirm(
-            "Delete this teacher?"
-        )
-    ) {
+    if (!confirm(
+        "Are you sure you want to delete this teacher?"
+    )) {
         return;
     }
-
 
     try {
 
         const response =
             await fetch(
-                "/api/teachers/" + id,
+                `/api/teachers/${id}`,
                 {
-                    method: "DELETE"
+                    method: "DELETE",
+                    credentials: "include"
                 }
             );
 
+        const data =
+            await response.json();
 
         if (!response.ok) {
-
             throw new Error(
-                "Delete failed"
+                data.error ||
+                "Unable to delete teacher"
             );
-
         }
 
+        loadTeachers();
 
-        await loadTeachers();
+    } catch (error) {
 
-
-        alert(
-            "Teacher deleted successfully! 🗑️"
-        );
+        alert(error.message);
 
     }
-
-    catch (error) {
-
-        console.log(error);
-
-        alert(
-            "Could not delete teacher ❌"
-        );
-
-    }
-
 }
 
 
-/* =========================
-   HTML SAFETY
-========================= */
+function resetForm() {
 
-function escapeHTML(value) {
+    document.getElementById("teacherForm").reset();
 
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    document.getElementById("teacherId").value = "";
 
+    document.getElementById("formTitle").textContent =
+        "➕ Add Teacher";
+
+    document.getElementById("cancelBtn").style.display =
+        "none";
 }
 
 
-/* =========================
-   INITIAL LOAD
-========================= */
+document
+    .getElementById("cancelBtn")
+    .addEventListener("click", resetForm);
+
 
 loadTeachers();
 
 </script>
 
-<script src="/script.js?v=3"></script>
+<script src="/layout.js"></script>
+
 </body>
 </html>

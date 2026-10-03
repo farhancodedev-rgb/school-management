@@ -1,109 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Dashboard - School Management</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+/* Responsive dashboard layer: loads after style.css so it wins */
+:root{--bg:#f4f6fb;--card:#fff;--tx:#1b2333;--mu:#6b7488;--pr:#4f46e5;--bd:#e3e7f0;--hd:rgba(255,255,255,.6);--sb:#1e2235;--sbt:#c9cee0;--sw:240px;--top:48px}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1220;--card:#181c30;--tx:#e8ebf5;--mu:#9099b3;--bd:#262b45;--hd:rgba(15,18,32,.6)}}
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(var(--top) + env(safe-area-inset-top,0px))}
+body{margin:0;background:var(--bg);color:var(--tx);font:clamp(14px,3.6vw,16px)/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,p{margin:0}
 
-    <title>My School - Dashboard</title>
+/* Small transparent header */
+.dashboard-header{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:8px;
+ height:calc(var(--top) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) clamp(8px,3vw,20px) 0;
+ background:var(--hd);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--bd);color:var(--tx)}
+.dashboard-header h1{font-size:clamp(14px,4vw,17px);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dashboard-header p{display:none;font-size:12px;color:var(--mu)}
+.dashboard-header > div{min-width:0}
+#navToggle{width:36px;height:36px;border:0;border-radius:8px;background:transparent;color:var(--tx);font-size:20px;cursor:pointer;flex:none}
+#navToggle:hover{background:var(--bd)}
 
-    <link rel="stylesheet" href="style.css">
+/* Hidden / show sidebar (your existing nav) */
+.main-nav{position:fixed;top:0;bottom:0;left:0;z-index:40;width:var(--sw);max-width:80vw;display:flex;flex-direction:column;gap:2px;
+ background:var(--sb);padding:calc(12px + env(safe-area-inset-top,0px)) 10px calc(12px + env(safe-area-inset-bottom,0px));
+ overflow-y:auto;transform:translateX(-100%);transition:transform .25s ease}
+.main-nav.open{transform:none}
+.main-nav a{display:block;padding:11px 12px;border-radius:8px;color:var(--sbt);font-size:14px;white-space:nowrap}
+.main-nav a:hover,.main-nav a.active{background:rgba(255,255,255,.1);color:#fff}
+.main-nav #navLogout{margin-top:auto}
+#navOverlay{position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.45);display:none}
+#navOverlay.show{display:block}
+
+/* Content */
+main{padding:calc(var(--top) + env(safe-area-inset-top,0px) + 14px) clamp(12px,3vw,28px) calc(24px + env(safe-area-inset-bottom,0px));max-width:1200px;margin:auto}
+.welcome-section{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:6px;margin-bottom:14px}
+.welcome-section h2{font-size:clamp(18px,5vw,24px)}
+.welcome-section p,#lastUpdated{color:var(--mu);font-size:clamp(12px,3.2vw,14px)}
+.section-title{font-size:clamp(15px,4.2vw,18px);margin:18px 0 10px}
+
+/* Fluid grids: fields adjust to screen */
+.stats,.dashboard{display:grid;gap:clamp(8px,2vw,16px)}
+.stats{grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr))}
+.dashboard{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.stat-card,.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:clamp(10px,3vw,18px);color:var(--tx)}
+.card{display:block;transition:transform .15s}
+.card:active{transform:scale(.98)}
+.stat-icon,.card-icon{font-size:clamp(20px,6vw,28px);display:block}
+.stat-card h3{font-size:clamp(11px,3vw,13px);font-weight:500;color:var(--mu);margin:4px 0 2px}
+.stat-card p{font-size:clamp(20px,6vw,28px);font-weight:700}
+.card h3{font-size:clamp(14px,3.8vw,16px);margin:4px 0 2px}
+.card p{font-size:clamp(12px,3.2vw,13px);color:var(--mu)}
+
+/* Desktop: sidebar always visible, toggle collapses it */
+@media(min-width:900px){
+ .dashboard-header p{display:block}
+ .main-nav{transform:none;max-width:none}
+ .dashboard-header,main{margin-left:var(--sw);transition:margin .25s}
+ .dashboard-header{left:0;right:0;padding-left:clamp(8px,2vw,20px)}
+ body.collapsed .main-nav{transform:translateX(-100%)}
+ body.collapsed .dashboard-header,body.collapsed main{margin-left:0}
+ #navOverlay{display:none!important}
+}
+</style>
 </head>
 
 <body>
 
 <header class="dashboard-header">
+
+    <button id="navToggle" type="button" aria-label="Toggle menu">☰</button>
+
     <div>
-        <h1>🎓 My School</h1>
+        <h1>
+            🎓 <span id="schoolName">My School</span>
+        </h1>
+
         <p>School Management Dashboard</p>
     </div>
 
 </header>
 
+<div id="navOverlay"></div>
 
-<nav class="main-nav">
+<nav class="main-nav" id="mainNav">
 
-    <a href="/dashboard.html" class="active">🏠 Dashboard</a>
-    <a href="/students.html">👨‍🎓 Students</a>
-    <a href="/teachers.html">👨‍🏫 Teachers</a>
-    <a href="/attendance.html">📅 Attendance</a>
-    <a href="/attendance-report.html">📊 Reports</a>
-    <a href="/classes.html">🏫 Classes</a>
-<a href="/fees.html">💰 Fees</a>
-    <a id="navLogout" href="/logout">🚪 Logout</a>
+    <a href="/dashboard.html" class="active">
+        🏠 Dashboard
+    </a>
+
+    <a href="/students.html">
+        👨‍🎓 Students
+    </a>
+
+    <a href="/teachers.html">
+        👨‍🏫 Teachers
+    </a>
+
+    <a href="/attendance.html">
+        📅 Attendance
+    </a>
+
+    <a href="/attendance-report.html">
+        📊 Reports
+    </a>
+
+    <a href="/classes.html">
+        🏫 Classes
+    </a>
+
+    <a href="/fees.html">
+        💰 Fees
+    </a>
+
+    <a id="navLogout" href="/logout">
+        🚪 Logout
+    </a>
 
 </nav>
-
 
 <main>
 
     <div class="welcome-section">
+
         <div>
             <h2>📊 Dashboard</h2>
-            <p>Welcome to your school management system.</p>
+
+            <p>
+                Welcome to your school management system.
+            </p>
         </div>
 
         <span id="lastUpdated">
             Updating...
         </span>
+
     </div>
 
 
-    <!-- MAIN STATISTICS -->
+    <!-- Statistics -->
 
     <section class="stats">
 
         <div class="stat-card">
             <span class="stat-icon">👨‍🎓</span>
             <h3>Students</h3>
-            <p id="studentCount">0</p>
+            <p id="studentsCount">0</p>
         </div>
 
         <div class="stat-card">
             <span class="stat-icon">👨‍🏫</span>
             <h3>Teachers</h3>
-            <p id="teacherCount">0</p>
+            <p id="teachersCount">0</p>
         </div>
 
         <div class="stat-card">
             <span class="stat-icon">🏫</span>
             <h3>Classes</h3>
-            <p id="classCount">0</p>
-        </div>
-
-    </section>
-
-
-    <!-- ATTENDANCE -->
-
-    <h2 class="section-title">📅 Today's Attendance</h2>
-
-    <section class="stats">
-
-        <div class="stat-card attendance-present">
-            <span class="stat-icon">✅</span>
-            <h3>Present</h3>
-            <p id="presentCount">0</p>
-        </div>
-
-        <div class="stat-card attendance-absent">
-            <span class="stat-icon">❌</span>
-            <h3>Absent</h3>
-            <p id="absentCount">0</p>
+            <p id="classesCount">0</p>
         </div>
 
         <div class="stat-card">
-            <span class="stat-icon">📈</span>
-            <h3>Attendance</h3>
-            <p id="attendancePercentage">0%</p>
+            <span class="stat-icon">📅</span>
+            <h3>Present Today</h3>
+            <p id="attendanceCount">0</p>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">💰</span>
+            <h3>Fees</h3>
+            <p id="feesCount">0</p>
         </div>
 
     </section>
 
 
-    <!-- QUICK ACTIONS -->
+    <!-- Quick Actions -->
 
-    <h2 class="section-title">⚡ Quick Actions</h2>
+    <h2 class="section-title">
+        ⚡ Quick Actions
+    </h2>
+
 
     <section class="dashboard">
 
@@ -127,8 +208,8 @@
 
         <a href="/attendance-report.html" class="card">
             <span class="card-icon">📊</span>
-            <h3>Attendance Report</h3>
-            <p>View attendance history</p>
+            <h3>Reports</h3>
+            <p>View attendance reports</p>
         </a>
 
         <a href="/classes.html" class="card">
@@ -137,129 +218,108 @@
             <p>Manage classes</p>
         </a>
 
-<a href="/fees.html" class="card">
-    <span class="card-icon">💰</span>
-    <h3>Fees</h3>
-    <p>Manage fee payments</p>
-</a>
+        <a href="/fees.html" class="card">
+            <span class="card-icon">💰</span>
+            <h3>Fees</h3>
+            <p>Manage fees</p>
+        </a>
 
     </section>
-
-
-
 
 </main>
 
 
 <script>
 
-async function logout() {
-
-    try {
-
-        const response = await fetch("/api/logout", {
-            method: "POST"
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            window.location.href = "/login.html";
-        }
-
-    } catch (error) {
-
-        console.log("Logout error:", error);
-
-    }
-
-}
-
-
 async function loadDashboard() {
 
     try {
 
-
-
-        /* =========================
-           DASHBOARD API
-        ========================= */
-
         const response =
-            await fetch("/api/dashboard");
+            await fetch("/api/dashboard", {
+                credentials: "include"
+            });
+
+        if (!response.ok) {
+
+            window.location.href =
+                "/login.html";
+
+            return;
+        }
 
         const data =
             await response.json();
 
+        // School name
+        if (data.schoolName) {
+            document.getElementById(
+                "schoolName"
+            ).textContent = data.schoolName;
+        }
 
-        /* COUNTS */
+        // Students
+        document.getElementById(
+            "studentsCount"
+        ).textContent =
+            data.students || 0;
+
+        // Teachers
+        document.getElementById(
+            "teachersCount"
+        ).textContent =
+            data.teachers || 0;
+
+        // Classes
+        document.getElementById(
+            "classesCount"
+        ).textContent =
+            data.classes || 0;
+
+        // Attendance
+        let present = 0;
+
+        if (data.attendance) {
+
+            if (
+                typeof data.attendance === "object"
+            ) {
+
+                present =
+                    data.attendance.present || 0;
+
+            } else {
+
+                present =
+                    data.attendance || 0;
+            }
+        }
 
         document.getElementById(
-            "studentCount"
-        ).textContent = data.students || 0;
-
-
-        document.getElementById(
-            "teacherCount"
-        ).textContent = data.teachers || 0;
-
-
-        document.getElementById(
-            "classCount"
-        ).textContent = data.classes || 0;
-
-
-        /* =========================
-           ATTENDANCE
-        ========================= */
-
-        const present =
-            data.attendance?.present || 0;
-
-        const total =
-            data.attendance?.total || 0;
-
-        const absent =
-            Math.max(total - present, 0);
-
-
-        const percentage =
-            total > 0
-                ? Math.round((present / total) * 100)
-                : 0;
-
-
-        document.getElementById(
-            "presentCount"
+            "attendanceCount"
         ).textContent = present;
 
-
+        // Fees
         document.getElementById(
-            "absentCount"
-        ).textContent = absent;
-
-
-        document.getElementById(
-            "attendancePercentage"
+            "feesCount"
         ).textContent =
-            percentage + "%";
+            data.fees || 0;
 
-
-        /* =========================
-           LAST UPDATED
-        ========================= */
+        // Last updated
+        const now = new Date();
 
         document.getElementById(
             "lastUpdated"
         ).textContent =
-            "Updated: " +
-            new Date().toLocaleTimeString();
-
+            "Updated " +
+            now.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit"
+            });
 
     } catch (error) {
 
-        console.log(
+        console.error(
             "Dashboard error:",
             error
         );
@@ -269,18 +329,40 @@ async function loadDashboard() {
 }
 
 
-/* INITIAL LOAD */
-
 loadDashboard();
 
+</script>
 
-/* AUTO REFRESH */
 
-setInterval(
-    loadDashboard,
-    30000
-);
+<!-- Sidebar show/hide (replaces /mobile-nav.js on this page) -->
+<script>
+(function () {
+    var nav = document.getElementById("mainNav");
+    var ov = document.getElementById("navOverlay");
+    var btn = document.getElementById("navToggle");
 
+    function closeNav() {
+        nav.classList.remove("open");
+        ov.classList.remove("show");
+    }
+
+    btn.addEventListener("click", function () {
+        if (window.innerWidth >= 900) {
+            document.body.classList.toggle("collapsed");
+        } else {
+            nav.classList.toggle("open");
+            ov.classList.toggle("show");
+        }
+    });
+
+    ov.addEventListener("click", closeNav);
+
+    nav.addEventListener("click", function (e) {
+        if (e.target.closest("a")) closeNav();
+    });
+
+    window.addEventListener("resize", closeNav);
+})();
 </script>
 
 </body>

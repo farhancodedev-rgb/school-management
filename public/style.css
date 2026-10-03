@@ -447,7 +447,7 @@ footer {
 
 
 /* =========================
-   MOBILE
+   wMOBILE
 ========================= */
 
 @media (max-width: 600px) {
@@ -1260,6 +1260,483 @@ body:has(#loginForm) button:hover {
 }
 
 
+/* =========================
+   REGISTER PAGE
+========================= */
+
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 16px;
+    background: #f5f7fb;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 500px;
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 10px 35px rgba(15, 23, 42, 0.12);
+}
+
+.login-logo {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    border-radius: 50%;
+    font-size: 35px;
+}
+
+.login-card h1 {
+    text-align: center;
+    margin: 0;
+    color: #172033;
+}
+
+.login-subtitle {
+    text-align: center;
+    color: #64748b;
+    margin: 8px 0 25px;
+}
+
+.login-card label {
+    display: block;
+    margin: 14px 0 6px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.login-card input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #dbe2ea;
+    border-radius: 9px;
+    font-size: 15px;
+    outline: none;
+    transition: 0.2s;
+}
+
+.login-card input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.login-card hr {
+    border: 0;
+    border-top: 1px solid #e2e8f0;
+    margin: 25px 0;
+}
+
+.login-card h3 {
+    margin-bottom: 10px;
+    color: #172033;
+}
+
+.btn-primary {
+    width: 100%;
+    border: none;
+    margin-top: 22px;
+    padding: 13px;
+    border-radius: 9px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-primary:hover {
+    background: #1e40af;
+}
+
+#message {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 22px;
+    color: #64748b;
+}
+
+.register-link a {
+    color: #2563eb;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+    .login-container {
+        padding: 15px;
+    }
+
+    .login-card {
+        padding: 25px 20px;
+        border-radius: 14px;
+    }
+
+    .login-card h1 {
+        font-size: 24px;
+    }
+
+}
+
+/* =========================
+   MOBILE NAVBAR
+========================= */
+
+@media (max-width: 600px) {
+
+    .main-nav {
+        justify-content: flex-start;
+        gap: 5px;
+        padding: 7px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+
+        scrollbar-width: none;
+    }
+
+    .main-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .main-nav a {
+        flex: 0 0 auto;
+
+        font-size: 12px;
+        padding: 7px 9px;
+
+        border-radius: 7px;
+        white-space: nowrap;
+    }
+}
+
+/* =========================
+   MOBILE NAV TOGGLE
+========================= */
+
+.mobile-nav-toggle {
+    display: none;
+}
+
+@media (max-width: 600px) {
+
+    .mobile-nav-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 38px;
+        height: 38px;
+
+        margin: 8px auto 4px;
+
+        border: none;
+        border-radius: 8px;
+
+        background: var(--primary);
+        color: white;
+
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .main-nav {
+        display: none;
+    }
+
+    .main-nav.mobile-nav-open {
+        display: flex;
+    }
+
+    .main-nav a {
+        font-size: 12px;
+        padding: 7px 9px;
+    }
+}
+
+
+/* Mobile menu button position */
+
+@media (max-width: 600px) {
+
+    .mobile-nav-toggle {
+        margin: 8px 10px;
+        width: 36px;
+        height: 36px;
+        font-size: 19px;
+    }
+
+    .main-nav {
+        margin: 0 10px 10px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+    }
+
+    .main-nav a {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: left;
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+}
+
+
+/* =========================
+   MOBILE HEADER + MENU
+========================= */
+
+@media (max-width: 600px) {
+
+    header,
+    .dashboard-header {
+        background: white;
+        color: #111827;
+        padding: 12px 10px;
+        min-height: 56px;
+
+        position: relative;
+    }
+
+    header h1,
+    .dashboard-header h1 {
+        font-size: 20px;
+        margin: 0 0 3px;
+    }
+
+    header p,
+    .dashboard-header p {
+        font-size: 11px;
+        color: #6b7280;
+    }
+
+    .mobile-nav-toggle {
+        position: absolute;
+
+        left: 10px;
+        top: 10px;
+
+        margin: 0;
+
+        width: 36px;
+        height: 36px;
+
+        background: white;
+        color: #111827;
+
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+
+        font-size: 20px;
+        line-height: 1;
+
+        box-shadow: none;
+        z-index: 20;
+    }
+
+    .mobile-nav-toggle:active {
+        background: #f3f4f6;
+    }
+}
+
+
+
+/* =========================
+   COMPACT MOBILE DASHBOARD
+========================= */
+
+@media (max-width: 600px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    header,
+    .dashboard-header {
+        padding: 8px 10px;
+        min-height: 48px;
+    }
+
+    header h1,
+    .dashboard-header h1 {
+        font-size: 18px;
+        margin-bottom: 2px;
+    }
+
+    header p,
+    .dashboard-header p {
+        font-size: 10px;
+    }
+
+    main {
+        padding: 8px 10px;
+    }
+
+    .welcome-section {
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+
+    .welcome-section h2 {
+        font-size: 17px;
+        margin: 2px 0;
+    }
+
+    .welcome-section p {
+        font-size: 10px;
+        margin: 2px 0;
+    }
+
+    #lastUpdated {
+        font-size: 9px;
+        white-space: nowrap;
+    }
+
+    /* 3 compact columns */
+    .stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+
+    .stat-card {
+        padding: 7px 3px;
+        border-radius: 9px;
+    }
+
+    .stat-icon {
+        font-size: 19px;
+        margin-bottom: 2px;
+    }
+
+    .stat-card h3 {
+        font-size: 9px;
+        margin: 2px 0;
+    }
+
+    .stat-card p {
+        font-size: 19px;
+        margin: 2px 0 0;
+    }
+
+    /* Dashboard cards */
+    .dashboard {
+        gap: 6px;
+    }
+
+    .dashboard > * {
+        padding: 8px;
+        border-radius: 9px;
+    }
+
+    .dashboard h3 {
+        font-size: 12px;
+        margin: 2px 0 4px;
+    }
+
+    .dashboard p {
+        font-size: 10px;
+    }
+}
+
+/* =========================
+   MOBILE QUICK ACTIONS
+========================= */
+
+@media (max-width: 600px) {
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        margin-top: 8px;
+    }
+
+    .quick-actions a,
+    .quick-actions button {
+        min-height: 34px;
+        padding: 6px 5px;
+        font-size: 10px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+    }
+
+    .quick-actions .icon {
+        font-size: 15px;
+    }
+
+}
+
+
+/* =========================
+   MOBILE QUICK ACTIONS
+========================= */
+
+@media (max-width: 600px) {
+
+    .section-title {
+        font-size: 15px;
+        margin: 8px 0 6px;
+    }
+
+    /* Quick Action cards */
+    .dashboard {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+
+    .dashboard .card {
+        padding: 8px 5px;
+        min-height: 55px;
+        border-radius: 9px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        text-align: center;
+    }
+
+    .dashboard .card-icon {
+        font-size: 20px;
+        margin-bottom: 2px;
+    }
+
+    .dashboard .card h3 {
+        font-size: 11px;
+        margin: 2px 0;
+    }
+
+    .dashboard .card p {
+        font-size: 9px;
+        margin: 0;
+    }
+
+}
+
 cd ~/school-management
 
 cat >> public/style.css <<'EOF'
+

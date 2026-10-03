@@ -54,14 +54,6 @@ async function getSession(sessionId) {
     return result.rows[0] || null;
 }
 
-async function deleteSession(sessionId) {
-    await pool.query(
-        "DELETE FROM sessions WHERE id = $1",
-        [sessionId]
-    );
-}
-
-
 async function requireSession(req) {
 
     const cookie =
@@ -86,11 +78,9 @@ async function requireSession(req) {
         return null;
     }
 
+async function requireRole(req, allowedRoles = []) {
     return session;
 }
-
-async function requireRole(req, allowedRoles = []) {
-
     const session =
         await requireSession(req);
 
@@ -107,6 +97,16 @@ async function requireRole(req, allowedRoles = []) {
 
     return session;
 }
+
+
+async function deleteSession(sessionId) {
+    await pool.query(
+        "DELETE FROM sessions WHERE id = $1",
+        [sessionId]
+    );
+}
+
+
 async function startServer() {
 
     // =========================
@@ -304,7 +304,7 @@ if (
         // DIRECT LOGOUT
         if (req.method === "GET" && req.url === "/logout") {
             const cookie = req.headers.cookie || "";
-            const match = cookie.match(/(?:^|;\s*)session=([^;]+)/);
+            const match = cookie.match(/(?:^|;\\s*)session=([^;]+)/);
 
             if (match) {
            
@@ -358,7 +358,7 @@ async function getSession(sessionId) {
 
 if (
     req.method === "GET" &&
-    req.url !== "/login.html" && req.url !== "/register.html" && req.url !== "/style.css" && req.url !== "/mobile-nav.js" && req.url !== "/" &&
+    req.url !== "/login.html" && req.url !== "/" &&
     !(await isLoggedIn(req))
 ) {
     res.writeHead(302, {
@@ -464,22 +464,6 @@ if (
                 "text/css"
             );
         }
-        if (req.method === "GET" && req.url === "/mobile-nav.js") {
-            return sendFile(
-                res,
-                "mobile-nav.js",
-                "application/javascript"
-            );
-        }
-
-        if (req.method === "GET" && req.url === "/layout.css") {
-            return sendFile(res, "layout.css", "text/css");
-        }
-
-        if (req.method === "GET" && req.url === "/layout.js") {
-            return sendFile(res, "layout.js", "application/javascript");
-        }
-
 
 
 
@@ -597,7 +581,7 @@ if (
                     schoolId,
                     username,
                     passwordHash,
-                    "admin"
+                    "teacher"
                 ]
             );
 
@@ -953,7 +937,7 @@ if (!session || !session.school_id) {
                     id,
                     name,
                     father,
-                    classname,
+                    classname AS "className",
                     roll
                  FROM students
                  WHERE school_id = $1
@@ -1029,7 +1013,7 @@ if (
                 [
                     student.name,
                     student.father,
-                    (student.classname || student.className),
+                    student.className,
                     student.roll,
                     session.school_id
                 ]
@@ -1202,7 +1186,7 @@ if (session.role !== "admin") {
                     [
                         student.name,
                         student.father,
-                        (student.classname || student.className),
+                        student.className,
                         student.roll,
                         id,
                         session.school_id
@@ -1568,34 +1552,69 @@ if (
             }, 401);
         }
 
-        const params = [session.school_id];
-        let where = "students.school_id = $1";
+        let result;
 
-        if (date) {
-            params.push(date);
-            where += " AND attendance.date = $" + params.length;
-        }
-
+        // Student attendance history
         if (studentId) {
-            params.push(studentId);
-            where += " AND attendance.studentid = $" + params.length;
-        }
 
-        const result = await pool.query(
-            `SELECT
-                attendance.id,
-                attendance.studentid AS "studentId",
-                attendance.date::text AS date,
-                attendance.status,
-                students.name,
-                students.classname,
-                students.roll
-             FROM attendance
-             JOIN students ON attendance.studentid = students.id
-             WHERE ${where}
-             ORDER BY attendance.date DESC, attendance.id DESC`,
-            params
-        );
+            result = await pool.query(
+                `SELECT
+                    attendance.id,
+                    attendance.studentid AS "studentId",
+                    attendance.date,
+                    attendance.status
+                 FROM attendance
+                 JOIN students
+                 ON attendance.studentid = students.id
+                 WHERE attendance.studentid = $1
+                 AND students.school_id = $2
+                 ORDER BY attendance.date DESC,
+                          attendance.id DESC`,
+                [
+                    studentId,
+                    session.school_id
+                ]
+            );
+
+        // Attendance for a specific date
+        } else if (date) {
+
+            result = await pool.query(
+                `SELECT
+                    attendance.id,
+                    attendance.studentid AS "studentId",
+                    attendance.date,
+                    attendance.status
+                 FROM attendance
+                 JOIN students
+                 ON attendance.studentid = students.id
+                 WHERE attendance.date = $1
+                 AND attendance.school_id = $2
+                 ORDER BY attendance.id DESC`,
+                [
+                    date,
+                    session.school_id
+                ]
+            );
+
+        // All attendance
+        } else {
+
+            result = await pool.query(
+                `SELECT
+                    attendance.id,
+                    attendance.studentid AS "studentId",
+                    attendance.date,
+                    attendance.status
+                 FROM attendance
+                 JOIN students
+                 ON attendance.studentid = students.id
+                 WHERE students.school_id = $1
+                 ORDER BY attendance.date DESC,
+                          attendance.id DESC`,
+                [session.school_id]
+            );
+        }
 
         return sendJSON(res, result.rows);
 
@@ -1739,11 +1758,11 @@ if (
             await pool.query(
                 `SELECT
                     fees.id,
-                    students.name AS studentname,
-                    fees.totalfees,
-                    fees.paidamount,
+                    students.name AS "studentName",
+                    fees.totalfees AS "totalFees",
+                    fees.paidamount AS "paidAmount",
                     fees.remaining,
-                    fees.paymentdate::text AS paymentdate
+                    fees.paymentdate AS "paymentDate"
                  FROM fees
                  JOIN students
                  ON fees.studentid = students.id
@@ -1821,13 +1840,6 @@ if (
                 }, 404);
             }
 
-            const total = Number(fee.totalFees);
-            const paid = Number(fee.paidAmount);
-
-            if (!(total >= 0) || !(paid >= 0) || paid > total) {
-                return sendJSON(res, { error: "Invalid fee amounts" }, 400);
-            }
-
             await pool.query(
                 `INSERT INTO fees
                 (
@@ -1842,7 +1854,7 @@ if (
                     fee.studentId,
                     fee.totalFees,
                     fee.paidAmount,
-                    (total - paid),
+                    fee.remaining,
                     fee.paymentDate
                 ]
             );

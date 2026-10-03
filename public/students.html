@@ -1,852 +1,399 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>Students - My School</title>
-
-    <link
-        rel="stylesheet"
-        href="style.css">
-
-    <style>
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .search-box {
-            background: white;
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
-        }
-
-        .search-box input {
-            margin: 0;
-        }
-
-        #studentList {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .student-card {
-            background: white;
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
-
-        .student-card h3 {
-            margin-top: 0;
-        }
-
-        .student-info {
-            color: var(--muted);
-            line-height: 1.7;
-        }
-
-        .student-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 15px;
-        }
-
-        .student-actions button {
-            flex: 1;
-        }
-
-        .edit-btn {
-            background: #2563eb;
-        }
-
-        .delete-btn {
-            background: #dc2626;
-        }
-
-        .empty-message {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            color: var(--muted);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.55);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-        }
-
-        .modal-box {
-            background: white;
-            width: 100%;
-            max-width: 500px;
-            padding: 22px;
-            border-radius: 18px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-        }
-
-        .modal-box h2 {
-            margin-top: 0;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .modal-actions button {
-            flex: 1;
-        }
-
-        .cancel-btn {
-            background: #64748b;
-        }
-
-        @media (max-width: 650px) {
-
-            #studentList {
-                grid-template-columns: 1fr;
-            }
-
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .student-actions {
-                flex-direction: column;
-            }
-
-        }
-
-    </style>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Students - School Management</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/layout.css">
 </head>
-
 
 <body>
 
 <header class="dashboard-header">
-
     <div>
-
-        <h1>🎓 My School</h1>
-
-        <p>
-            Student Management
-        </p>
-
+        <h1>🎓 <span id="schoolName">My School</span></h1>
+        <p>Student Management</p>
     </div>
-
-
 </header>
 
-
 <nav class="main-nav">
-
-    <a href="/dashboard.html">
-        🏠 Dashboard
-    </a>
-
-    <a href="/students.html" class="active">
-        👨‍🎓 Students
-    </a>
-
-    <a href="/teachers.html">
-        👨‍🏫 Teachers
-    </a>
-
-    <a href="/attendance.html">
-        📅 Attendance
-    </a>
-
-    <a href="/attendance-report.html">
-        📊 Reports
-    </a>
-
-    <a href="/classes.html">
-        🏫 Classes
-    </a>
-    <a href="/fees.html">
-        💰 Fees
-    </a>
-
-    <a id="navLogout" href="/logout">🚪 Logout</a>
+    <a href="/dashboard.html">🏠 Dashboard</a>
+    <a href="/students.html" class="active">👨‍🎓 Students</a>
+    <a href="/teachers.html">👨‍🏫 Teachers</a>
+    <a href="/attendance.html">📅 Attendance</a>
+    <a href="/attendance-report.html">📊 Reports</a>
+    <a href="/classes.html">🏫 Classes</a>
+    <a href="/fees.html">💰 Fees</a>
+    <a href="/logout">🚪 Logout</a>
 </nav>
-
 
 <main>
 
     <div class="page-header">
-
         <div>
-
-            <h2>
-                👨‍🎓 Students
-            </h2>
-
-            <p style="color:var(--muted);">
-                Add and manage school students
-            </p>
-
+            <h2>👨‍🎓 Students</h2>
+            <p>Manage students of your school.</p>
         </div>
-
-        <strong id="studentTotal">
-            0 Students
-        </strong>
-
     </div>
 
+    <section class="form-card">
 
-    <!-- ADD STUDENT -->
+        <h3 id="formTitle">➕ Add Student</h3>
 
-    <form id="studentForm">
+        <form id="studentForm">
 
-        <h3>
-            ➕ Add New Student
-        </h3>
+            <input type="hidden" id="studentId">
 
-        <input
-            type="text"
-            id="name"
-            placeholder="Student Name"
-            required>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" placeholder="Student name" required>
+            </div>
 
-        <input
-            type="text"
-            id="father"
-            placeholder="Father Name"
-            required>
+            <div class="form-group">
+                <label for="father">Father Name</label>
+                <input type="text" id="father" placeholder="Father name" required>
+            </div>
 
-        <input
-            type="text"
-            id="className"
-            placeholder="Class"
-            required>
+            <div class="form-group">
+                <label for="classname">Class</label>
+                <input type="text" id="classname" placeholder="e.g. Class 5" required>
+            </div>
 
-        <input
-            type="text"
-            id="roll"
-            placeholder="Roll Number"
-            required>
+            <div class="form-group">
+                <label for="roll">Roll Number</label>
+                <input type="text" id="roll" placeholder="Roll number" required>
+            </div>
 
-        <button type="submit">
-            ➕ Add Student
-        </button>
+            <button type="submit" class="btn-primary">
+                💾 Save Student
+            </button>
 
-    </form>
-
-
-    <!-- SEARCH -->
-
-    <div class="search-box">
-
-        <input
-            type="search"
-            id="searchStudent"
-            placeholder="🔍 Search student, father, class or roll...">
-
-    </div>
-
-
-    <!-- STUDENT LIST -->
-
-    <div id="studentList">
-
-        <p>
-            Loading students...
-        </p>
-
-    </div>
-
-</main>
-
-
-<!-- EDIT MODAL -->
-
-<div
-    id="editModal"
-    class="modal">
-
-    <div class="modal-box">
-
-        <h2>
-            ✏️ Edit Student
-        </h2>
-
-        <input
-            type="text"
-            id="editName"
-            placeholder="Student Name">
-
-        <input
-            type="text"
-            id="editFather"
-            placeholder="Father Name">
-
-        <input
-            type="text"
-            id="editClass"
-            placeholder="Class">
-
-        <input
-            type="text"
-            id="editRoll"
-            placeholder="Roll Number">
-
-        <div class="modal-actions">
-
-            <button
-                class="cancel-btn"
-                onclick="closeEditModal()">
+            <button type="button" id="cancelBtn" class="btn-secondary" style="display:none;">
                 Cancel
             </button>
 
-            <button
-                onclick="saveEdit()">
-                💾 Save Changes
-            </button>
+            <p id="message"></p>
+
+        </form>
+
+    </section>
+
+
+    <section class="table-card">
+
+        <div class="table-header">
+            <h3>📋 Student List</h3>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Father</th>
+                        <th>Class</th>
+                        <th>Roll</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="studentsTable">
+                    <tr>
+                        <td colspan="6">Loading...</td>
+                    </tr>
+                </tbody>
+
+            </table>
 
         </div>
 
-    </div>
+    </section>
 
-</div>
+</main>
 
 
 <script>
 
 let students = [];
 
-let editingStudentId = null;
-
-
-/* =========================
-   LOAD STUDENTS
-========================= */
+// Prevents student names from being interpreted as HTML
+function esc(value) {
+    return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
 
 async function loadStudents() {
 
     try {
 
         const response =
-            await fetch("/api/students");
+            await fetch("/api/students", {
+                credentials: "include"
+            });
 
-        students =
-            await response.json();
+        if (response.status === 401) {
+            window.location.href = "/login.html";
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error("Failed to load students");
+        }
+
+        students = await response.json();
 
         renderStudents();
 
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("studentsTable").innerHTML = `
+            <tr>
+                <td colspan="6">Unable to load students.</td>
+            </tr>
+        `;
     }
-
-    catch (error) {
-
-        console.log(
-            "Student loading error:",
-            error
-        );
-
-        document.getElementById(
-            "studentList"
-        ).innerHTML =
-            "<div class='empty-message'>❌ Could not load students.</div>";
-
-    }
-
 }
 
-
-/* =========================
-   RENDER
-========================= */
 
 function renderStudents() {
 
-    const list =
-        document.getElementById(
-            "studentList"
-        );
+    const table =
+        document.getElementById("studentsTable");
 
-    const search =
-        document.getElementById(
-            "searchStudent"
-        ).value
-        .toLowerCase()
-        .trim();
+    if (!students.length) {
 
-
-    const filtered =
-        students.filter(student => {
-
-            return (
-
-                String(student.name || "")
-                    .toLowerCase()
-                    .includes(search)
-
-                ||
-
-                String(student.father || "")
-                    .toLowerCase()
-                    .includes(search)
-
-                ||
-
-                String(student.className || "")
-                    .toLowerCase()
-                    .includes(search)
-
-                ||
-
-                String(student.roll || "")
-                    .toLowerCase()
-                    .includes(search)
-
-            );
-
-        });
-
-
-    document.getElementById(
-        "studentTotal"
-    ).textContent =
-        students.length +
-        (students.length === 1
-            ? " Student"
-            : " Students");
-
-
-    if (!filtered.length) {
-
-        list.innerHTML = `
-            <div class="empty-message">
-                🔍 No students found.
-            </div>
+        table.innerHTML = `
+            <tr>
+                <td colspan="6">No students found.</td>
+            </tr>
         `;
 
         return;
-
     }
 
+    table.innerHTML =
+        students.map(student => `
 
-    list.innerHTML =
-        filtered.map(student => `
+            <tr>
 
-            <div class="student-card">
+                <td data-label="ID">${esc(student.id)}</td>
 
-                <h3>
-                    👨‍🎓 ${escapeHTML(student.name)}
-                </h3>
+                <td data-label="Name">${esc(student.name)}</td>
 
-                <div class="student-info">
+                <td data-label="Father">${esc(student.father)}</td>
 
-                    <div>
-                        👨‍👦 Father:
-                        ${escapeHTML(student.father)}
-                    </div>
+                <td data-label="Class">${esc(student.classname)}</td>
 
-                    <div>
-                        🏫 Class:
-                        ${escapeHTML(student.className)}
-                    </div>
+                <td data-label="Roll">${esc(student.roll)}</td>
 
-                    <div>
-                        🔢 Roll No:
-                        ${escapeHTML(student.roll)}
-                    </div>
+                <td data-label="Actions">
 
-                </div>
+                    <span>
+                        <button
+                            onclick="editStudent(${Number(student.id)})"
+                            class="btn-small"
+                        >
+                            ✏️
+                        </button>
 
+                        <button
+                            onclick="deleteStudent(${Number(student.id)})"
+                            class="btn-small btn-danger"
+                        >
+                            🗑️
+                        </button>
+                    </span>
 
-                <div class="student-actions">
+                </td>
 
-                    <button
-                        class="edit-btn"
-                        onclick="openEditModal(${student.id})">
-
-                        ✏️ Edit
-
-                    </button>
-
-
-                    <button
-                        class="delete-btn"
-                        onclick="deleteStudent(${student.id})">
-
-                        🗑️ Delete
-
-                    </button>
-
-                </div>
-
-            </div>
+            </tr>
 
         `).join("");
-
 }
 
 
-/* =========================
-   ADD STUDENT
-========================= */
+document
+    .getElementById("studentForm")
+    .addEventListener("submit", async function(e) {
 
-document.getElementById(
-    "studentForm"
-).addEventListener(
-    "submit",
-    async function(event) {
+        e.preventDefault();
 
-        event.preventDefault();
-
+        const id =
+            document.getElementById("studentId").value;
 
         const student = {
 
             name:
-                document.getElementById(
-                    "name"
-                ).value.trim(),
+                document.getElementById("name").value.trim(),
 
             father:
-                document.getElementById(
-                    "father"
-                ).value.trim(),
+                document.getElementById("father").value.trim(),
 
-            className:
-                document.getElementById(
-                    "className"
-                ).value.trim(),
+            classname:
+                document.getElementById("classname").value.trim(),
 
             roll:
-                document.getElementById(
-                    "roll"
-                ).value.trim()
+                document.getElementById("roll").value.trim()
 
         };
 
-
         try {
 
+            const url =
+                id
+                    ? `/api/students/${id}`
+                    : "/api/students";
+
+            const method =
+                id ? "PUT" : "POST";
+
             const response =
-                await fetch(
-                    "/api/students",
-                    {
+                await fetch(url, {
 
-                        method: "POST",
+                    method,
 
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
 
-                        body:
-                            JSON.stringify(
-                                student
-                            )
+                    credentials: "include",
 
-                    }
-                );
+                    body: JSON.stringify(student)
 
+                });
+
+            const data =
+                await response.json();
 
             if (!response.ok) {
 
                 throw new Error(
-                    "Failed to add student"
+                    data.error ||
+                    "Unable to save student"
                 );
-
             }
 
+            document.getElementById("message").textContent =
+                id
+                    ? "Student updated successfully."
+                    : "Student added successfully.";
 
-            this.reset();
+            resetForm();
 
-            await loadStudents();
+            loadStudents();
 
+        } catch (error) {
 
-            alert(
-                "Student added successfully! ✅"
-            );
-
-        }
-
-        catch (error) {
-
-            console.log(error);
-
-            alert(
-                "Could not add student ❌"
-            );
+            document.getElementById("message").textContent =
+                error.message;
 
         }
 
-    }
-);
+    });
 
 
-/* =========================
-   SEARCH
-========================= */
-
-document.getElementById(
-    "searchStudent"
-).addEventListener(
-    "input",
-    renderStudents
-);
-
-
-/* =========================
-   EDIT MODAL
-========================= */
-
-function openEditModal(id) {
+function editStudent(id) {
 
     const student =
-        students.find(
-            item => item.id == id
-        );
+        students.find(s => s.id == id);
 
     if (!student) return;
 
+    document.getElementById("studentId").value = student.id;
 
-    editingStudentId = id;
+    document.getElementById("name").value = student.name || "";
 
+    document.getElementById("father").value = student.father || "";
 
-    document.getElementById(
-        "editName"
-    ).value =
-        student.name || "";
+    document.getElementById("classname").value = student.classname || "";
 
+    document.getElementById("roll").value = student.roll || "";
 
-    document.getElementById(
-        "editFather"
-    ).value =
-        student.father || "";
+    document.getElementById("formTitle").textContent =
+        "✏️ Edit Student";
 
+    document.getElementById("cancelBtn").style.display =
+        "inline-block";
 
-    document.getElementById(
-        "editClass"
-    ).value =
-        student.className || "";
-
-
-    document.getElementById(
-        "editRoll"
-    ).value =
-        student.roll || "";
-
-
-    document.getElementById(
-        "editModal"
-    ).style.display =
-        "flex";
-
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
 
-
-function closeEditModal() {
-
-    editingStudentId = null;
-
-    document.getElementById(
-        "editModal"
-    ).style.display =
-        "none";
-
-}
-
-
-/* =========================
-   SAVE EDIT
-========================= */
-
-async function saveEdit() {
-
-    if (!editingStudentId) return;
-
-
-    const student = {
-
-        name:
-            document.getElementById(
-                "editName"
-            ).value.trim(),
-
-        father:
-            document.getElementById(
-                "editFather"
-            ).value.trim(),
-
-        className:
-            document.getElementById(
-                "editClass"
-            ).value.trim(),
-
-        roll:
-            document.getElementById(
-                "editRoll"
-            ).value.trim()
-
-    };
-
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/students/" +
-                editingStudentId,
-                {
-
-                    method: "PUT",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify(
-                            student
-                        )
-
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Update failed"
-            );
-
-        }
-
-
-        closeEditModal();
-
-        await loadStudents();
-
-
-        alert(
-            "Student updated successfully! ✅"
-        );
-
-    }
-
-    catch (error) {
-
-        console.log(error);
-
-        alert(
-            "Could not update student ❌"
-        );
-
-    }
-
-}
-
-
-/* =========================
-   DELETE
-========================= */
 
 async function deleteStudent(id) {
 
-    if (
-        !confirm(
-            "Delete this student?"
-        )
-    ) {
+    if (!confirm(
+        "Are you sure you want to delete this student?"
+    )) {
         return;
     }
-
 
     try {
 
         const response =
             await fetch(
-                "/api/students/" + id,
+                `/api/students/${id}`,
                 {
-                    method: "DELETE"
+                    method: "DELETE",
+                    credentials: "include"
                 }
             );
 
+        const data =
+            await response.json();
 
         if (!response.ok) {
-
             throw new Error(
-                "Delete failed"
+                data.error ||
+                "Unable to delete student"
             );
-
         }
 
+        loadStudents();
 
-        await loadStudents();
+    } catch (error) {
 
-
-        alert(
-            "Student deleted successfully! 🗑️"
-        );
+        alert(error.message);
 
     }
-
-    catch (error) {
-
-        console.log(error);
-
-        alert(
-            "Could not delete student ❌"
-        );
-
-    }
-
 }
 
 
-/* =========================
-   HTML SAFETY
-========================= */
+function resetForm() {
 
-function escapeHTML(value) {
+    document.getElementById("studentForm").reset();
 
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    document.getElementById("studentId").value = "";
 
+    document.getElementById("formTitle").textContent =
+        "➕ Add Student";
+
+    document.getElementById("cancelBtn").style.display =
+        "none";
 }
 
 
-/* =========================
-   INITIAL LOAD
-========================= */
+document
+    .getElementById("cancelBtn")
+    .addEventListener("click", resetForm);
+
 
 loadStudents();
 
 </script>
 
-<script src="/script.js?v=3"></script>
+<script src="/layout.js"></script>
+
 </body>
 </html>
