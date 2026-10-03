@@ -9,7 +9,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>Students - My School</title>
+    <title>Students - Government Primary School Newabad</title>
 
     <link
         rel="stylesheet"
@@ -151,7 +151,7 @@
 
     <div>
 
-        <h1>🎓 My School</h1>
+        <h1>🎓 Government Primary School Newabad</h1>
 
         <p>
             Student Management
@@ -780,7 +780,6 @@ async function deleteStudent(id) {
         return;
     }
 
-
     try {
 
         const response =
@@ -791,35 +790,34 @@ async function deleteStudent(id) {
                 }
             );
 
+        const data =
+            await response.json();
 
         if (!response.ok) {
 
-            throw new Error(
+            alert(
+                data.error ||
                 "Delete failed"
             );
 
+            return;
         }
-
 
         await loadStudents();
 
-
         alert(
+            data.message ||
             "Student deleted successfully! 🗑️"
         );
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
         console.log(error);
 
         alert(
-            "Could not delete student ❌"
+            "Could not connect to server ❌"
         );
-
     }
-
 }
 
 
@@ -848,5 +846,6 @@ loadStudents();
 </script>
 
 <script src="/script.js?v=3"></script>
+<script src="/mobile-nav.js"></script>
 </body>
 </html>

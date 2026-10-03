@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>My School - Dashboard</title>
+    <title>Government Primary School Newabad - Dashboard</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -14,7 +14,9 @@
 
 <header class="dashboard-header">
     <div>
-        <h1>🎓 My School</h1>
+
+<h1>🎓 <span id="schoolName">My School</span></h1>
+
         <p>School Management Dashboard</p>
     </div>
 
@@ -191,6 +193,12 @@ async function loadDashboard() {
 
         const data =
             await response.json();
+const schoolName =
+    data.schoolName || "My School";
+
+document.getElementById(
+    "schoolName"
+).textContent = schoolName;
 
 
         /* COUNTS */
@@ -283,5 +291,6 @@ setInterval(
 
 </script>
 
+<script src="/mobile-nav.js"></script>
 </body>
 </html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create School Account</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<main class="login-container">
+
+    <div class="login-card">
+
+        <div class="login-logo">🎓</div>
+
+        <h1>Create School Account</h1>
+
+        <p class="login-subtitle">
+            Register your school to get started
+        </p>
+
+        <form id="registerForm">
+
+            <label for="username">
+                Username
+            </label>
+
+            <input
+                type="text"
+                id="username"
+                placeholder="Enter username"
+                required
+                minlength="3"
+            >
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter password"
+                required
+                minlength="8"
+            >
+
+            <label for="schoolName">
+                School Name
+            </label>
+
+            <input
+                type="text"
+                id="schoolName"
+                placeholder="Enter school name"
+                required
+            >
+
+            <button
+                type="submit"
+                class="btn-primary"
+            >
+                Create School Account
+            </button>
+
+            <p id="message"></p>
+
+        </form>
+
+        <p class="register-link">
+            Already have an account?
+            <a href="/login.html">Login</a>
+        </p>
+
+    </div>
+
+</main>
+
+<script>
+
+document
+    .getElementById("registerForm")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const message =
+            document.getElementById("message");
+
+        message.textContent =
+            "Creating account...";
+
+        const data = {
+
+            username:
+                document
+                    .getElementById("username")
+                    .value
+                    .trim(),
+
+            password:
+                document
+                    .getElementById("password")
+                    .value,
+
+            schoolName:
+                document
+                    .getElementById("schoolName")
+                    .value
+                    .trim()
+
+        };
+
+        try {
+
+            const response =
+                await fetch("/api/register", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify(data)
+
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+
+                message.textContent =
+                    "✅ School account created!";
+
+                setTimeout(() => {
+                    window.location.href =
+                        "/login.html";
+                }, 1200);
+
+            } else {
+
+                message.textContent =
+                    "❌ " +
+                    (result.message ||
+                    "Registration failed.");
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            message.textContent =
+                "❌ Server connection failed.";
+
+        }
+
+    });
+
+</script>
+
+</body>
+</html>
